@@ -3,14 +3,21 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-07-20T04:00:00.000Z</updated>
+    <updated>2025-07-20T06:42:52.161Z</updated>
     <category term="Hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
     <entry>
-        <id>https://bae-ace.github.io/2025/07/20/hello-world/</id>
+        <id>https://bae-ace.github.io/2025/07/20/linux%E5%9F%BA%E7%A1%80/</id>
+        <title></title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/20/linux%E5%9F%BA%E7%A1%80/"/>
+        <content type="html"></content>
+        <updated>2025-07-20T06:42:52.161Z</updated>
+    </entry>
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/20/hello/</id>
         <title>你好，博客世界！</title>
-        <link rel="alternate" href="https://bae-ace.github.io/2025/07/20/hello-world/"/>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/20/hello/"/>
         <content type="html">&lt;p&gt;🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～&lt;/p&gt;
 &lt;p&gt;如果你看到这篇文章，说明博客已经启动成功啦！&lt;/p&gt;
 &lt;hr&gt;

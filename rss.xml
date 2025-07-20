@@ -5,15 +5,22 @@
         <link>https://bae-ace.github.io</link>
         <description>bae的个人博客</description>
         <language>zh-CN</language>
-        <pubDate>Sun, 20 Jul 2025 12:00:00 +0800</pubDate>
-        <lastBuildDate>Sun, 20 Jul 2025 12:00:00 +0800</lastBuildDate>
+        <pubDate>Sun, 20 Jul 2025 14:42:52 +0800</pubDate>
+        <lastBuildDate>Sun, 20 Jul 2025 14:42:52 +0800</lastBuildDate>
         <category>Hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
         <item>
-            <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/hello-world/</guid>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/linux%E5%9F%BA%E7%A1%80/</guid>
+            <title></title>
+            <link>https://bae-ace.github.io/2025/07/20/linux%E5%9F%BA%E7%A1%80/</link>
+            <pubDate>Sun, 20 Jul 2025 14:42:52 +0800</pubDate>
+            <description><![CDATA[  ]]></description>
+        </item>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/hello/</guid>
             <title>你好，博客世界！</title>
-            <link>https://bae-ace.github.io/2025/07/20/hello-world/</link>
+            <link>https://bae-ace.github.io/2025/07/20/hello/</link>
             <category>Hexo</category>
             <category>博客搭建</category>
             <category>初始测试</category>
