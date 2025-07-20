@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>你好，博客世界！</title>
+    <link href="/2025/07/20/hello-world/"/>
+    <url>/2025/07/20/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～</p><p>如果你看到这篇文章，说明博客已经启动成功啦！</p><hr>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>博客搭建</tag>
+      
+      <tag>初始测试</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
