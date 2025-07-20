@@ -3,12 +3,155 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客 • Posts by &#34;命令&#34; tag</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-07-20T07:41:52.000Z</updated>
+    <updated>2025-07-20T15:51:13.000Z</updated>
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/</id>
+        <title>通用搜索引擎技巧</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/"/>
+        <content type="html">&lt;h2 id=&#34;🔍-通用搜索引擎技巧（百度-Google-Bing）&#34;&gt;&lt;a href=&#34;#🔍-通用搜索引擎技巧（百度-Google-Bing）&#34; class=&#34;headerlink&#34; title=&#34;🔍 通用搜索引擎技巧（百度 &amp;#x2F; Google &amp;#x2F; Bing）&#34;&gt;&lt;/a&gt;🔍 通用搜索引擎技巧（百度 &amp;#x2F; Google &amp;#x2F; Bing）&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;🌐 &lt;strong&gt;按网站域名搜索（site）&lt;/strong&gt;&lt;br&gt;用于限定搜索结果来自某一特定网站&amp;#x2F;域名。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;site:cc.com&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🔗 &lt;strong&gt;按页面链接结构搜索（inurl）&lt;/strong&gt;&lt;br&gt;用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：&lt;br&gt;示例关键词：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PHP 网站：&lt;code&gt;inurl:index.php?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ASP 网站：&lt;code&gt;inurl:index.asp?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ASPX 网站：&lt;code&gt;inurl:index.aspx?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;JSP 网站：&lt;code&gt;inurl:index.jsp?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;📛 &lt;strong&gt;按页面标题搜索（intitle）&lt;/strong&gt;&lt;br&gt;用于搜索网页标题中包含特定关键词的页面。&lt;br&gt;示例关键词：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;协会：&lt;code&gt;intitle:协会&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;bae：&lt;code&gt;intitle:bae&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;大使馆：&lt;code&gt;intitle:大使馆&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;五眼联盟：&lt;code&gt;intitle:五眼联盟&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🎯 &lt;strong&gt;精确匹配关键词（双引号）&lt;/strong&gt;&lt;br&gt;用于精确匹配短语或全名，不允许中间插词。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🔗 &lt;strong&gt;组合搜索（多个语法结合）&lt;/strong&gt;&lt;br&gt;可以将多个语法结合使用，提高搜索精准度。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;intitle:bae site:bae.com&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;📑 &lt;strong&gt;高级搜索界面（百度）&lt;/strong&gt;&lt;br&gt;使用百度提供的高级搜索界面进行图形化配置：&lt;br&gt;&lt;a href=&#34;http://www.baidu.com/gaoji/advanced.html&#34;&gt;百度高级搜索&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🔎-Google-搜索（语法与百度类似）&#34;&gt;&lt;a href=&#34;#🔎-Google-搜索（语法与百度类似）&#34; class=&#34;headerlink&#34; title=&#34;🔎 Google 搜索（语法与百度类似）&#34;&gt;&lt;/a&gt;🔎 Google 搜索（语法与百度类似）&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;功能&lt;/th&gt;
+&lt;th&gt;搜索语法&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;指定站点&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;site:&amp;quot;cc.com&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PHP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.php?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ASP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.asp?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ASPX&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.aspx?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JSP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.jsp?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;标题包含&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:大使馆&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;精确搜索&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;组合搜索&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:bae site:bae.com&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🛰️-网络空间搜索引擎（资产搜索）&#34;&gt;&lt;a href=&#34;#🛰️-网络空间搜索引擎（资产搜索）&#34; class=&#34;headerlink&#34; title=&#34;🛰️ 网络空间搜索引擎（资产搜索）&#34;&gt;&lt;/a&gt;🛰️ 网络空间搜索引擎（资产搜索）&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;平台&lt;/th&gt;
+&lt;th&gt;网址&lt;/th&gt;
+&lt;th&gt;功能说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;ZoomEye&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://www.zoomeye.org/&#34;&gt;ZoomEye - Cyberspace Search Engine&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;中国开发的网络空间搜索引擎，可搜索主机、服务、组件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FOFA&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://fofa.info/&#34;&gt;FOFA&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;面向安全研究人员的资产搜索引擎，支持语法化查询&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shodan&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://www.shodan.io/&#34;&gt;Shodan&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;国外最知名的网络空间搜索引擎，可查开放端口、设备系统信息等&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;✅-总结对比表&#34;&gt;&lt;a href=&#34;#✅-总结对比表&#34; class=&#34;headerlink&#34; title=&#34;✅ 总结对比表&#34;&gt;&lt;/a&gt;✅ 总结对比表&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;搜索方式&lt;/th&gt;
+&lt;th&gt;典型语法&lt;/th&gt;
+&lt;th&gt;主要用途&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;site:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;site:cc.com&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;限定搜索域名&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;inurl:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:index.php?id=1&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;搜索网站结构&amp;#x2F;脚本语言&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;intitle:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:bae&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;页面标题匹配&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;&amp;quot;&lt;/code&gt;（双引号）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;精确短语搜索&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;多语法组合&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:协会 site:gov.cn&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;精准定位内容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ZoomEye &amp;#x2F; FOFA &amp;#x2F; Shodan&lt;/td&gt;
+&lt;td&gt;Web 界面 &amp;#x2F; API&lt;/td&gt;
+&lt;td&gt;网络空间资产搜索，安全情报分析&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;pre&gt;&lt;code class=&#34;hljs&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+        <category term="linux" />
+        <category term="命令" />
+        <updated>2025-07-20T15:51:13.000Z</updated>
+    </entry>
     <entry>
         <id>https://bae-ace.github.io/2025/07/20/linux%E5%9F%BA%E7%A1%80/</id>
         <title>linux基础</title>

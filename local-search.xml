@@ -4,6 +4,27 @@
   
   
   <entry>
+    <title>通用搜索引擎技巧</title>
+    <link href="/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/"/>
+    <url>/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/</url>
+    
+    <content type="html"><![CDATA[<h2 id="🔍-通用搜索引擎技巧（百度-Google-Bing）"><a href="#🔍-通用搜索引擎技巧（百度-Google-Bing）" class="headerlink" title="🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing）"></a>🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing）</h2><ol><li><p>🌐 <strong>按网站域名搜索（site）</strong><br>用于限定搜索结果来自某一特定网站&#x2F;域名。<br>示例：<br><code>site:cc.com</code></p></li><li><p>🔗 <strong>按页面链接结构搜索（inurl）</strong><br>用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：<br>示例关键词：</p><ul><li>PHP 网站：<code>inurl:index.php?id=1</code></li><li>ASP 网站：<code>inurl:index.asp?id=1</code></li><li>ASPX 网站：<code>inurl:index.aspx?id=1</code></li><li>JSP 网站：<code>inurl:index.jsp?id=1</code></li></ul></li><li><p>📛 <strong>按页面标题搜索（intitle）</strong><br>用于搜索网页标题中包含特定关键词的页面。<br>示例关键词：</p><ul><li>协会：<code>intitle:协会</code></li><li>bae：<code>intitle:bae</code></li><li>大使馆：<code>intitle:大使馆</code></li><li>五眼联盟：<code>intitle:五眼联盟</code></li></ul></li><li><p>🎯 <strong>精确匹配关键词（双引号）</strong><br>用于精确匹配短语或全名，不允许中间插词。<br>示例：<br><code>&quot;教育&quot;</code></p></li><li><p>🔗 <strong>组合搜索（多个语法结合）</strong><br>可以将多个语法结合使用，提高搜索精准度。<br>示例：<br><code>intitle:bae site:bae.com</code></p></li><li><p>📑 <strong>高级搜索界面（百度）</strong><br>使用百度提供的高级搜索界面进行图形化配置：<br><a href="http://www.baidu.com/gaoji/advanced.html">百度高级搜索</a></p></li></ol><hr><h2 id="🔎-Google-搜索（语法与百度类似）"><a href="#🔎-Google-搜索（语法与百度类似）" class="headerlink" title="🔎 Google 搜索（语法与百度类似）"></a>🔎 Google 搜索（语法与百度类似）</h2><table><thead><tr><th>功能</th><th>搜索语法</th></tr></thead><tbody><tr><td>指定站点</td><td><code>site:&quot;cc.com&quot;</code></td></tr><tr><td>PHP</td><td><code>inurl:&quot;index.php?id=1&quot;</code></td></tr><tr><td>ASP</td><td><code>inurl:&quot;index.asp?id=1&quot;</code></td></tr><tr><td>ASPX</td><td><code>inurl:&quot;index.aspx?id=1&quot;</code></td></tr><tr><td>JSP</td><td><code>inurl:&quot;index.jsp?id=1&quot;</code></td></tr><tr><td>标题包含</td><td><code>intitle:大使馆</code></td></tr><tr><td>精确搜索</td><td><code>&quot;教育&quot;</code></td></tr><tr><td>组合搜索</td><td><code>intitle:bae site:bae.com</code></td></tr></tbody></table><hr><h2 id="🛰️-网络空间搜索引擎（资产搜索）"><a href="#🛰️-网络空间搜索引擎（资产搜索）" class="headerlink" title="🛰️ 网络空间搜索引擎（资产搜索）"></a>🛰️ 网络空间搜索引擎（资产搜索）</h2><table><thead><tr><th>平台</th><th>网址</th><th>功能说明</th></tr></thead><tbody><tr><td>ZoomEye</td><td><a href="https://www.zoomeye.org/">ZoomEye - Cyberspace Search Engine</a></td><td>中国开发的网络空间搜索引擎，可搜索主机、服务、组件</td></tr><tr><td>FOFA</td><td><a href="https://fofa.info/">FOFA</a></td><td>面向安全研究人员的资产搜索引擎，支持语法化查询</td></tr><tr><td>Shodan</td><td><a href="https://www.shodan.io/">Shodan</a></td><td>国外最知名的网络空间搜索引擎，可查开放端口、设备系统信息等</td></tr></tbody></table><hr><h2 id="✅-总结对比表"><a href="#✅-总结对比表" class="headerlink" title="✅ 总结对比表"></a>✅ 总结对比表</h2><table><thead><tr><th>搜索方式</th><th>典型语法</th><th>主要用途</th></tr></thead><tbody><tr><td><code>site:</code></td><td><code>site:cc.com</code></td><td>限定搜索域名</td></tr><tr><td><code>inurl:</code></td><td><code>inurl:index.php?id=1</code></td><td>搜索网站结构&#x2F;脚本语言</td></tr><tr><td><code>intitle:</code></td><td><code>intitle:bae</code></td><td>页面标题匹配</td></tr><tr><td><code>&quot;&quot;</code>（双引号）</td><td><code>&quot;教育&quot;</code></td><td>精确短语搜索</td></tr><tr><td>多语法组合</td><td><code>intitle:协会 site:gov.cn</code></td><td>精准定位内容</td></tr><tr><td>ZoomEye &#x2F; FOFA &#x2F; Shodan</td><td>Web 界面 &#x2F; API</td><td>网络空间资产搜索，安全情报分析</td></tr></tbody></table><pre><code class="hljs"></code></pre>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+      <tag>命令</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>linux基础</title>
     <link href="/2025/07/20/linux%E5%9F%BA%E7%A1%80/"/>
     <url>/2025/07/20/linux%E5%9F%BA%E7%A1%80/</url>
