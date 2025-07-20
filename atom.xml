@@ -218,7 +218,11 @@
         <id>https://bae-ace.github.io/2025/07/20/hello-world/</id>
         <title>hello-world</title>
         <link rel="alternate" href="https://bae-ace.github.io/2025/07/20/hello-world/"/>
-        <content type="html">&lt;p&gt;🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～&lt;br&gt;如果你看到这篇文章，说明博客已经启动成功啦！&lt;br&gt;&lt;img src=&#34;/img/exanple.jpg&#34;&gt;&lt;/p&gt;
+        <content type="html">&lt;p&gt;🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～&lt;/p&gt;
+&lt;div class=&#34;note note-note-primary&#34;&gt;
+            &lt;p&gt;如果你看到这篇文章，说明博客已经启动成功啦！&lt;/p&gt;
+          &lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;/img/exanple.jpg&#34;&gt;&lt;/p&gt;
 </content>
         <category term="hexo" />
         <category term="博客搭建" />

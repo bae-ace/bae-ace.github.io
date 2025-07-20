@@ -20,7 +20,7 @@
             "url": "https://bae-ace.github.io/2025/07/20/hello-world/",
             "title": "hello-world",
             "date_published": "2025-07-20T07:39:53.000Z",
-            "content_html": "<p>🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～<br>如果你看到这篇文章，说明博客已经启动成功啦！<br><img src=\"/img/exanple.jpg\"></p>\n",
+            "content_html": "<p>🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～</p>\n<div class=\"note note-note-primary\">\n            <p>如果你看到这篇文章，说明博客已经启动成功啦！</p>\n          </div>\n<p><img src=\"/img/exanple.jpg\"></p>\n",
             "tags": [
                 "hexo",
                 "博客搭建",
