@@ -21,25 +21,26 @@
   <meta name="author" content="bae">
   <meta name="keywords" content="">
   
-    <meta name="description" content="🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing） 🌐 按网站域名搜索（site）用于限定搜索结果来自某一特定网站&#x2F;域名。示例：site:cc.com  🔗 按页面链接结构搜索（inurl）用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：示例关键词：  PHP 网站：inurl:index.php?id&#x3D;1 ASP 网站：inurl:">
+    <meta name="description" content="1️⃣ Subfinder 项目地址：🔗 https:&#x2F;&#x2F;github.com&#x2F;projectdiscovery&#x2F;subfinder   功能：快速、可靠的子域名枚举工具，集成多个被动数据源   语言：Go  ✅ 安装配置123456789101112131415161718192021222324252627282930313233343536373839# 安装 Go 语言环境sudo ap">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通用搜索引擎技巧">
-<meta property="og:url" content="https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:title" content="子域名枚举工具">
+<meta property="og:url" content="https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/index.html">
 <meta property="og:site_name" content="bae的博客">
-<meta property="og:description" content="🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing） 🌐 按网站域名搜索（site）用于限定搜索结果来自某一特定网站&#x2F;域名。示例：site:cc.com  🔗 按页面链接结构搜索（inurl）用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：示例关键词：  PHP 网站：inurl:index.php?id&#x3D;1 ASP 网站：inurl:">
+<meta property="og:description" content="1️⃣ Subfinder 项目地址：🔗 https:&#x2F;&#x2F;github.com&#x2F;projectdiscovery&#x2F;subfinder   功能：快速、可靠的子域名枚举工具，集成多个被动数据源   语言：Go  ✅ 安装配置123456789101112131415161718192021222324252627282930313233343536373839# 安装 Go 语言环境sudo ap">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://bae-ace.github.io/img/search.jpg">
-<meta property="article:published_time" content="2025-07-20T15:51:13.000Z">
-<meta property="article:modified_time" content="2025-07-20T16:08:04.804Z">
+<meta property="og:image" content="https://bae-ace.github.io/img/tools1.jpg">
+<meta property="article:published_time" content="2025-07-21T01:30:22.000Z">
+<meta property="article:modified_time" content="2025-07-21T01:36:03.084Z">
 <meta property="article:author" content="bae">
-<meta property="article:tag" content="linux">
-<meta property="article:tag" content="命令">
+<meta property="article:tag" content="信息收集">
+<meta property="article:tag" content="子域名">
+<meta property="article:tag" content="渗透测试">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://bae-ace.github.io/img/search.jpg">
+<meta name="twitter:image" content="https://bae-ace.github.io/img/tools1.jpg">
   
   
   
-  <title>通用搜索引擎技巧 - bae的博客</title>
+  <title>子域名枚举工具 - bae的博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -270,7 +271,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="通用搜索引擎技巧"></span>
+            <span id="subtitle" data-typed-text="子域名枚举工具"></span>
           
         </div>
 
@@ -286,8 +287,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-20 23:51" pubdate>
-           2025 年 07 月 20 日 , 晚上 11:51 , 星期日
+        <time datetime="2025-07-21 09:30" pubdate>
+           2025 年 07 月 21 日 , 上午 09:30 , 星期一
         </time>
       </span>
     
@@ -299,7 +300,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          553 字
+          745 字
         
       </span>
     
@@ -310,7 +311,7 @@
         
         
         
-          5 分钟
+          7 分钟
         
       </span>
     
@@ -356,145 +357,124 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">通用搜索引擎技巧</h1>
+            <h1 id="seo-header">子域名枚举工具</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="🔍-通用搜索引擎技巧（百度-Google-Bing）"><a href="#🔍-通用搜索引擎技巧（百度-Google-Bing）" class="headerlink" title="🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing）"></a>🔍 通用搜索引擎技巧（百度 &#x2F; Google &#x2F; Bing）</h2><ol>
-<li><p>🌐 <strong>按网站域名搜索（site）</strong><br>用于限定搜索结果来自某一特定网站&#x2F;域名。<br>示例：<br><code>site:cc.com</code></p>
+                <h2 id="1️⃣-Subfinder"><a href="#1️⃣-Subfinder" class="headerlink" title="1️⃣ Subfinder"></a>1️⃣ Subfinder</h2><ul>
+<li><strong>项目地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/projectdiscovery/subfinder">🔗 https://github.com/projectdiscovery/subfinder</a>  </li>
+<li><strong>功能</strong>：快速、可靠的子域名枚举工具，集成多个被动数据源  </li>
+<li><strong>语言</strong>：Go</li>
+</ul>
+<h3 id="✅-安装配置"><a href="#✅-安装配置" class="headerlink" title="✅ 安装配置"></a>✅ 安装配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 Go 语言环境</span><br><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install golang-go -y<br><br><span class="hljs-comment"># 验证 Go 安装</span><br>go version<br><br><span class="hljs-comment"># 配置 Go 环境变量（按需）</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export GOPATH=$HOME/go&#x27;</span> &gt;&gt; ~/.zshrc<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export PATH=$PATH:$GOPATH/bin&#x27;</span> &gt;&gt; ~/.zshrc<br><span class="hljs-built_in">source</span> ~/.zshrc<br><br><span class="hljs-comment"># 设置 Go 模块代理</span><br>go <span class="hljs-built_in">env</span> -w GOPROXY=https://goproxy.cn,direct<br><br><span class="hljs-comment"># 安装 Subfinder</span><br>go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest<br><br><span class="hljs-comment"># 验证安装</span><br>subfinder -version || <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s <span class="hljs-variable">$HOME</span>/go/bin/subfinder /usr/local/bin/subfinder<br>​````<br><br><span class="hljs-comment">### 🛠 常见用法</span><br><br>​```bash<br><span class="hljs-comment"># 基本子域名枚举</span><br>subfinder -d example.com<br><br><span class="hljs-comment"># 输出到文件</span><br>subfinder -d example.com -o result.txt<br><br><span class="hljs-comment"># 使用配置文件（推荐设置 API）</span><br>subfinder -d example.com -pc subfinder-config.yaml<br><br><span class="hljs-comment"># 批量扫描多个域名</span><br>subfinder -dL domains.txt -oL output.txt<br><br><span class="hljs-comment"># 配合 httpx 探测活跃子域</span><br>subfinder -d example.com | httpx -silent<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2️⃣-Knock"><a href="#2️⃣-Knock" class="headerlink" title="2️⃣ Knock"></a>2️⃣ Knock</h2><ul>
+<li><p><strong>项目地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/guelfoweb/knock">🔗 https://github.com/guelfoweb/knock</a></p>
 </li>
-<li><p>🔗 <strong>按页面链接结构搜索（inurl）</strong><br>用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：<br>示例关键词：</p>
+<li><p><strong>功能</strong>：Python 编写的子域名爆破工具，使用字典枚举</p>
+</li>
+<li><p><strong>语言</strong>：Python</p>
+</li>
+<li><p><strong>特点</strong>：</p>
 <ul>
-<li>PHP 网站：<code>inurl:index.php?id=1</code></li>
-<li>ASP 网站：<code>inurl:index.asp?id=1</code></li>
-<li>ASPX 网站：<code>inurl:index.aspx?id=1</code></li>
-<li>JSP 网站：<code>inurl:index.jsp?id=1</code></li>
+<li>可自定义字典进行暴力枚举</li>
+<li>支持 WHOIS 检测</li>
+<li>脚本化扩展能力强</li>
 </ul>
 </li>
-<li><p>📛 <strong>按页面标题搜索（intitle）</strong><br>用于搜索网页标题中包含特定关键词的页面。<br>示例关键词：</p>
+</ul>
+<h3 id="✅-安装方式"><a href="#✅-安装方式" class="headerlink" title="✅ 安装方式"></a>✅ 安装方式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/guelfoweb/knock.git<br><span class="hljs-built_in">cd</span> knock<br>pip3 install -r requirements.txt<br></code></pre></td></tr></table></figure>
+
+<h3 id="🛠-常见用法"><a href="#🛠-常见用法" class="headerlink" title="🛠 常见用法"></a>🛠 常见用法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用默认字典</span><br>python3 knockpy.py example.com<br><br><span class="hljs-comment"># 指定字典</span><br>python3 knockpy.py example.com -w /path/to/wordlist.txt<br><br><span class="hljs-comment"># 输出结果保存到目录</span><br>python3 knockpy.py example.com -o output_dir<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3️⃣-TheHarvester"><a href="#3️⃣-TheHarvester" class="headerlink" title="3️⃣ TheHarvester"></a>3️⃣ TheHarvester</h2><ul>
+<li><p><strong>项目地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/laramies/theHarvester">🔗 https://github.com/laramies/theHarvester</a></p>
+</li>
+<li><p><strong>功能</strong>：信息收集利器，可用于枚举子域名、邮箱、员工、IP 等</p>
+</li>
+<li><p><strong>语言</strong>：Python</p>
+</li>
+<li><p><strong>特点</strong>：</p>
 <ul>
-<li>协会：<code>intitle:协会</code></li>
-<li>bae：<code>intitle:bae</code></li>
-<li>大使馆：<code>intitle:大使馆</code></li>
-<li>五眼联盟：<code>intitle:五眼联盟</code></li>
+<li>被动信息收集，支持多个搜索引擎</li>
+<li>可收集邮箱&#x2F;IP 等社工信息</li>
+<li>适合 APT 情报分析与前期侦察</li>
 </ul>
 </li>
-<li><p>🎯 <strong>精确匹配关键词（双引号）</strong><br>用于精确匹配短语或全名，不允许中间插词。<br>示例：<br><code>&quot;教育&quot;</code></p>
-</li>
-<li><p>🔗 <strong>组合搜索（多个语法结合）</strong><br>可以将多个语法结合使用，提高搜索精准度。<br>示例：<br><code>intitle:bae site:bae.com</code></p>
-</li>
-<li><p>📑 <strong>高级搜索界面（百度）</strong><br>使用百度提供的高级搜索界面进行图形化配置：<br><a target="_blank" rel="noopener" href="http://www.baidu.com/gaoji/advanced.html">百度高级搜索</a></p>
-</li>
-</ol>
+</ul>
+<h3 id="✅-安装方式（Kali-自带）"><a href="#✅-安装方式（Kali-自带）" class="headerlink" title="✅ 安装方式（Kali 自带）"></a>✅ 安装方式（Kali 自带）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/laramies/theHarvester.git<br><span class="hljs-built_in">cd</span> theHarvester<br>pip3 install -r requirements.txt<br>python3 theHarvester.py -h<br></code></pre></td></tr></table></figure>
+
+<h3 id="🛠-常见用法-1"><a href="#🛠-常见用法-1" class="headerlink" title="🛠 常见用法"></a>🛠 常见用法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用 Baidu 枚举子域</span><br>python3 theHarvester.py -d example.com -b baidu<br><br><span class="hljs-comment"># 多个搜索引擎组合使用</span><br>python3 theHarvester.py -d example.com -b bing,crtsh<br><br><span class="hljs-comment"># 输出为 HTML 文件</span><br>python3 theHarvester.py -d example.com -b bing -f result<br><br><span class="hljs-comment"># 查看所有支持的数据源</span><br>python3 theHarvester.py -h<br></code></pre></td></tr></table></figure>
+
 <hr>
-<h2 id="🔎-Google-搜索（语法与百度类似）"><a href="#🔎-Google-搜索（语法与百度类似）" class="headerlink" title="🔎 Google 搜索（语法与百度类似）"></a>🔎 Google 搜索（语法与百度类似）</h2><table>
+<h2 id="4️⃣-Amass"><a href="#4️⃣-Amass" class="headerlink" title="4️⃣ Amass"></a>4️⃣ Amass</h2><ul>
+<li><p><strong>项目地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/OWASP/Amass">🔗 https://github.com/OWASP/Amass</a></p>
+</li>
+<li><p><strong>功能</strong>：最强大的子域名枚举框架之一，支持主动&#x2F;被动混合模式，数据可视化</p>
+</li>
+<li><p><strong>语言</strong>：Go</p>
+</li>
+<li><p><strong>特点</strong>：</p>
+<ul>
+<li>支持主动扫描 + 被动收集 + 混合模式</li>
+<li>支持 ASN 分析、DNS 爆破、端口识别等</li>
+<li>输出格式支持 TXT&#x2F;JSON&#x2F;GDF 等</li>
+<li>可视化结果可联动 Neo4j、Maltego</li>
+</ul>
+</li>
+</ul>
+<h3 id="✅-安装方式（Kali-可直接安装）"><a href="#✅-安装方式（Kali-可直接安装）" class="headerlink" title="✅ 安装方式（Kali 可直接安装）"></a>✅ 安装方式（Kali 可直接安装）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install amass<br><span class="hljs-comment"># 或者使用 go 安装</span><br>go install -v github.com/owasp-amass/amass/v4/...@latest<br></code></pre></td></tr></table></figure>
+
+<h3 id="🛠-常见用法-2"><a href="#🛠-常见用法-2" class="headerlink" title="🛠 常见用法"></a>🛠 常见用法</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 被动模式枚举</span><br>amass enum -passive -d example.com<br><br><span class="hljs-comment"># 主动扫描模式（需 DNS 解析权限）</span><br>amass enum -active -d example.com<br><br><span class="hljs-comment"># 暴力破解 + 源信息标注</span><br>amass enum -brute -d example.com -src<br><br><span class="hljs-comment"># 输出结构化结果（JSON）</span><br>amass enum -d example.com -oA amass_output<br><br><span class="hljs-comment"># 可视化分析图谱</span><br>amass viz -d3 -<span class="hljs-built_in">dir</span> amass_output<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="📦-工具对比总结表"><a href="#📦-工具对比总结表" class="headerlink" title="📦 工具对比总结表"></a>📦 工具对比总结表</h2><table>
 <thead>
 <tr>
-<th>功能</th>
-<th>搜索语法</th>
+<th>工具</th>
+<th>模式</th>
+<th>特点</th>
+<th>是否支持暴力</th>
+<th>是否需配置 API</th>
+<th>输出格式</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>指定站点</td>
-<td><code>site:&quot;cc.com&quot;</code></td>
+<td>Subfinder</td>
+<td>被动</td>
+<td>快速、支持 API、多源整合</td>
+<td>否</td>
+<td>是（可选）</td>
+<td>TXT &#x2F; JSON</td>
 </tr>
 <tr>
-<td>PHP</td>
-<td><code>inurl:&quot;index.php?id=1&quot;</code></td>
+<td>Knock</td>
+<td>字典暴力</td>
+<td>简单、定制强、易扩展</td>
+<td>✅ 是</td>
+<td>否</td>
+<td>TXT</td>
 </tr>
 <tr>
-<td>ASP</td>
-<td><code>inurl:&quot;index.asp?id=1&quot;</code></td>
+<td>TheHarvester</td>
+<td>被动</td>
+<td>多维情报收集，社工必备</td>
+<td>否</td>
+<td>否</td>
+<td>TXT &#x2F; HTML</td>
 </tr>
 <tr>
-<td>ASPX</td>
-<td><code>inurl:&quot;index.aspx?id=1&quot;</code></td>
-</tr>
-<tr>
-<td>JSP</td>
-<td><code>inurl:&quot;index.jsp?id=1&quot;</code></td>
-</tr>
-<tr>
-<td>标题包含</td>
-<td><code>intitle:大使馆</code></td>
-</tr>
-<tr>
-<td>精确搜索</td>
-<td><code>&quot;教育&quot;</code></td>
-</tr>
-<tr>
-<td>组合搜索</td>
-<td><code>intitle:bae site:bae.com</code></td>
+<td>Amass</td>
+<td>主动 &#x2F; 被动 &#x2F; 混合</td>
+<td>架构完整、可视化输出、功能最强大</td>
+<td>✅ 是</td>
+<td>✅ 建议配置</td>
+<td>TXT &#x2F; JSON &#x2F; GDF</td>
 </tr>
 </tbody></table>
-<hr>
-<h2 id="🛰️-网络空间搜索引擎（资产搜索）"><a href="#🛰️-网络空间搜索引擎（资产搜索）" class="headerlink" title="🛰️ 网络空间搜索引擎（资产搜索）"></a>🛰️ 网络空间搜索引擎（资产搜索）</h2><table>
-<thead>
-<tr>
-<th>平台</th>
-<th>网址</th>
-<th>功能说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>ZoomEye</td>
-<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/">ZoomEye - Cyberspace Search Engine</a></td>
-<td>中国开发的网络空间搜索引擎，可搜索主机、服务、组件</td>
-</tr>
-<tr>
-<td>FOFA</td>
-<td><a target="_blank" rel="noopener" href="https://fofa.info/">FOFA</a></td>
-<td>面向安全研究人员的资产搜索引擎，支持语法化查询</td>
-</tr>
-<tr>
-<td>Shodan</td>
-<td><a target="_blank" rel="noopener" href="https://www.shodan.io/">Shodan</a></td>
-<td>国外最知名的网络空间搜索引擎，可查开放端口、设备系统信息等</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="✅-总结对比表"><a href="#✅-总结对比表" class="headerlink" title="✅ 总结对比表"></a>✅ 总结对比表</h2><table>
-<thead>
-<tr>
-<th>搜索方式</th>
-<th>典型语法</th>
-<th>主要用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>site:</code></td>
-<td><code>site:cc.com</code></td>
-<td>限定搜索域名</td>
-</tr>
-<tr>
-<td><code>inurl:</code></td>
-<td><code>inurl:index.php?id=1</code></td>
-<td>搜索网站结构&#x2F;脚本语言</td>
-</tr>
-<tr>
-<td><code>intitle:</code></td>
-<td><code>intitle:bae</code></td>
-<td>页面标题匹配</td>
-</tr>
-<tr>
-<td><code>&quot;&quot;</code>（双引号）</td>
-<td><code>&quot;教育&quot;</code></td>
-<td>精确短语搜索</td>
-</tr>
-<tr>
-<td>多语法组合</td>
-<td><code>intitle:协会 site:gov.cn</code></td>
-<td>精准定位内容</td>
-</tr>
-<tr>
-<td>ZoomEye &#x2F; FOFA &#x2F; Shodan</td>
-<td>Web 界面 &#x2F; API</td>
-<td>网络空间资产搜索，安全情报分析</td>
-</tr>
-</tbody></table>
-<pre><code class="hljs">
-</code></pre>
 
                 
               </div>
@@ -507,9 +487,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/linux/" class="print-no-link">#linux</a>
+        <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" class="print-no-link">#信息收集</a>
       
-        <a href="/tags/%E5%91%BD%E4%BB%A4/" class="print-no-link">#命令</a>
+        <a href="/tags/%E5%AD%90%E5%9F%9F%E5%90%8D/" class="print-no-link">#子域名</a>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
       
     </div>
   
@@ -521,8 +503,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>通用搜索引擎技巧</div>
-      <div>https://bae-ace.github.io/2025/07/20/通用搜索引擎技巧/</div>
+      <div>子域名枚举工具</div>
+      <div>https://bae-ace.github.io/2025/07/21/子域名枚举工具/</div>
     </div>
     <div class="license-meta">
       
@@ -534,7 +516,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年7月20日</div>
+          <div>2025年7月21日</div>
         </div>
       
       
@@ -566,18 +548,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/" title="子域名枚举工具">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">子域名枚举工具</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/20/linux%E5%9F%BA%E7%A1%80/" title="linux基础">
-                        <span class="hidden-mobile">linux基础</span>
+                      <a href="/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/" title="通用搜索引擎技巧">
+                        <span class="hidden-mobile">通用搜索引擎技巧</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

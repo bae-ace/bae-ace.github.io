@@ -4,11 +4,14 @@
     <title>bae的博客 • Posts by &#34;命令&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-20T15:51:13.000Z</updated>
+    <category term="linux" />
+    <category term="命令" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <category term="渗透测试" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
-    <category term="linux" />
-    <category term="命令" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/</id>
         <title>通用搜索引擎技巧</title>
