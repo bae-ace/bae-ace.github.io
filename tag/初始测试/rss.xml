@@ -7,14 +7,16 @@
         <language>zh-CN</language>
         <pubDate>Sun, 20 Jul 2025 15:39:53 +0800</pubDate>
         <lastBuildDate>Sun, 20 Jul 2025 15:39:53 +0800</lastBuildDate>
-        <category>linux</category>
-        <category>命令</category>
-        <category>信息收集</category>
-        <category>子域名</category>
+        <category>工具</category>
+        <category>sqlmap</category>
         <category>渗透测试</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
+        <category>linux</category>
+        <category>命令</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/hello-world/</guid>
             <title>hello-world</title>
@@ -27,7 +29,7 @@
 &lt;div class=&#34;note note-note-primary&#34;&gt;
             &lt;p&gt;如果你看到这篇文章，说明博客已经启动成功啦！&lt;/p&gt;
           &lt;/div&gt;
-&lt;p&gt;&lt;img src=&#34;/img/exanple.jpg&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://bae-ace.github.io/img/exanple.jpg&#34;&gt;&lt;/p&gt;
  ]]></description>
         </item>
     </channel>
