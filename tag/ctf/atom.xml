@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://bae-ace.github.io</id>
+    <title>bae的博客 • Posts by &#34;ctf&#34; tag</title>
+    <link href="https://bae-ace.github.io" />
+    <updated>2025-07-22T12:41:04.000Z</updated>
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/</id>
+        <title>ELF 文件保护机制与 ROP 构造详解</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/"/>
+        <content type="html">&lt;h1 id=&#34;ELF-文件保护机制与-ROP-构造详解&#34;&gt;&lt;a href=&#34;#ELF-文件保护机制与-ROP-构造详解&#34; class=&#34;headerlink&#34; title=&#34;ELF 文件保护机制与 ROP 构造详解&#34;&gt;&lt;/a&gt;ELF 文件保护机制与 ROP 构造详解&lt;/h1&gt;&lt;p&gt;在 CTF（Capture The Flag）竞赛和二进制漏洞利用中，理解 ELF（Executable and Linkable Format）文件的架构信息及其保护机制至关重要。本文将详细分析 ELF 文件的架构特性、常见保护机制、函数调用约定，以及如何通过 ROP（Return-Oriented Programming）技术进行漏洞利用。&lt;/p&gt;
+&lt;h2 id=&#34;ELF-架构信息&#34;&gt;&lt;a href=&#34;#ELF-架构信息&#34; class=&#34;headerlink&#34; title=&#34;ELF 架构信息&#34;&gt;&lt;/a&gt;ELF 架构信息&lt;/h2&gt;&lt;p&gt;ELF 文件是 Linux 系统下常见的可执行文件格式，其架构信息直接影响漏洞利用的策略。以下是关键点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;目标程序架构&lt;/strong&gt;：本文以 &lt;code&gt;amd64-64-little&lt;/code&gt;（64 位小端序）为例。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;作用&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;函数调用约定&lt;/strong&gt;：决定了参数传递方式（如寄存器或栈）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ROP 构造&lt;/strong&gt;：需要根据架构选择合适的 gadget。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统调用号&lt;/strong&gt;：不同架构下系统调用号（如 &lt;code&gt;read&lt;/code&gt;、&lt;code&gt;write&lt;/code&gt;）存在差异。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;保护机制总览&#34;&gt;&lt;a href=&#34;#保护机制总览&#34; class=&#34;headerlink&#34; title=&#34;保护机制总览&#34;&gt;&lt;/a&gt;保护机制总览&lt;/h2&gt;&lt;p&gt;ELF 文件通常启用多种保护机制以增强安全性。以下是常见保护机制及其在 PWN（二进制漏洞利用）中的作用与绕过方式：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;保护项&lt;/th&gt;
+&lt;th&gt;状态&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th&gt;在 PWN 中的作用与利用方式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;RELRO&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Partial RELRO&lt;/td&gt;
+&lt;td&gt;GOT 表部分受保护，GOT 可写&lt;/td&gt;
+&lt;td&gt;可通过 ret2got 改写函数指针（如 &lt;code&gt;write&lt;/code&gt; → &lt;code&gt;system&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;RELRO&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Full RELRO&lt;/td&gt;
+&lt;td&gt;GOT 表完全不可写&lt;/td&gt;
+&lt;td&gt;无法改写 GOT，只能泄露 GOT 地址后构造 ROP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Stack Canary&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;No Canary Found&lt;/td&gt;
+&lt;td&gt;栈无溢出检测&lt;/td&gt;
+&lt;td&gt;可直接栈溢出控制返回地址&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Stack Canary&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Canary Found&lt;/td&gt;
+&lt;td&gt;启用栈溢出检测机制&lt;/td&gt;
+&lt;td&gt;需先泄露 Canary 值，否则程序崩溃&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NX&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;NX Enabled&lt;/td&gt;
+&lt;td&gt;栈不可执行&lt;/td&gt;
+&lt;td&gt;无法执行 Shellcode，需用 ROP 或 ret2libc&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;PIE&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;No PIE (固定基址，如 0x400000)&lt;/td&gt;
+&lt;td&gt;程序基址固定&lt;/td&gt;
+&lt;td&gt;地址可静态分析，ROP 构造更简单&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;PIE&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;PIE Enabled&lt;/td&gt;
+&lt;td&gt;基址随机化&lt;/td&gt;
+&lt;td&gt;需先泄露模块基址，ROP 构造更复杂&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;CTF-常见题型与保护机制&#34;&gt;&lt;a href=&#34;#CTF-常见题型与保护机制&#34; class=&#34;headerlink&#34; title=&#34;CTF 常见题型与保护机制&#34;&gt;&lt;/a&gt;CTF 常见题型与保护机制&lt;/h3&gt;&lt;p&gt;不同类型的 CTF 题目通常搭配特定的保护机制，影响利用方式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ROP &amp;#x2F; ret2libc 题&lt;/strong&gt;：通常有 NX 保护，无 PIE 或仅 Partial RELRO，便于构造 ROP 链。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;格式化字符串题&lt;/strong&gt;：常搭配 Full RELRO，限制 GOT 重写，需利用格式化字符串漏洞泄露地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;堆题&lt;/strong&gt;：通常有 Stack Canary，挑战在于绕过 Canary 或利用堆漏洞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Shellcode 类题&lt;/strong&gt;：一般无 NX 保护，允许在栈上直接执行注入的 Shellcode。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;函数原型与调用方式&#34;&gt;&lt;a href=&#34;#函数原型与调用方式&#34; class=&#34;headerlink&#34; title=&#34;函数原型与调用方式&#34;&gt;&lt;/a&gt;函数原型与调用方式&lt;/h2&gt;&lt;h3 id=&#34;常用函数原型&#34;&gt;&lt;a href=&#34;#常用函数原型&#34; class=&#34;headerlink&#34; title=&#34;常用函数原型&#34;&gt;&lt;/a&gt;常用函数原型&lt;/h3&gt;&lt;p&gt;以下是 PWN 中常用的标准库函数及其参数说明：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;ssize_t write(int fd, const void *buf, size_t count);&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fd&lt;/code&gt;：文件描述符（如 &lt;code&gt;1&lt;/code&gt; 表示标准输出）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;buf&lt;/code&gt;：待输出数据的起始地址，可用于泄露内存内容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;count&lt;/code&gt;：输出字节数，需控制以避免泄露过多数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;ssize_t read(int fd, void *buf, size_t count);&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fd&lt;/code&gt;：文件描述符（如 &lt;code&gt;0&lt;/code&gt; 表示标准输入）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;buf&lt;/code&gt;：写入数据的目标地址（如栈、堆或 BSS 段）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;count&lt;/code&gt;：读取字节数，可用于触发溢出或布置 ROP 链。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;int puts(const char *s);&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt;：字符串起始地址，遇 &lt;code&gt;\x00&lt;/code&gt; 终止。&lt;/li&gt;
+&lt;li&gt;常用于泄露 GOT 表中的函数地址（如 &lt;code&gt;puts(puts_got)&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;int printf(const char *format, ...);&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;format&lt;/code&gt;：格式化字符串。&lt;/li&gt;
+&lt;li&gt;可利用格式化字符串漏洞泄露任意地址内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;参数传递方式对比&#34;&gt;&lt;a href=&#34;#参数传递方式对比&#34; class=&#34;headerlink&#34; title=&#34;参数传递方式对比&#34;&gt;&lt;/a&gt;参数传递方式对比&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;架构&lt;/th&gt;
+&lt;th&gt;参数传递方式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;32 位 (x86)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;所有参数通过栈从右向左压入&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;64 位 (x86_64)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;前 6 个参数通过寄存器传递：&lt;code&gt;RDI&lt;/code&gt;, &lt;code&gt;RSI&lt;/code&gt;, &lt;code&gt;RDX&lt;/code&gt;, &lt;code&gt;RCX&lt;/code&gt;, &lt;code&gt;R8&lt;/code&gt;, &lt;code&gt;R9&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;提示&lt;/strong&gt;：在 64 位 ROP 构造中，常用 gadget 包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pop rdi; ret&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pop rsi; pop r15; ret&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pop rdx; ret&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;系统调用号（syscall）&#34;&gt;&lt;a href=&#34;#系统调用号（syscall）&#34; class=&#34;headerlink&#34; title=&#34;系统调用号（syscall）&#34;&gt;&lt;/a&gt;系统调用号（syscall）&lt;/h3&gt;&lt;p&gt;系统调用号因架构不同而异，常用函数的调用号如下：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;函数&lt;/th&gt;
+&lt;th&gt;x86 (32 位)&lt;/th&gt;
+&lt;th&gt;x86_64 (64 位)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;read&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;write&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;execve&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;11&lt;/td&gt;
+&lt;td&gt;59&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;x86&lt;/strong&gt;：使用 &lt;code&gt;int 0x80&lt;/code&gt; 触发系统调用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;x86_64&lt;/strong&gt;：使用 &lt;code&gt;syscall&lt;/code&gt; 指令，通过设置 &lt;code&gt;rax&lt;/code&gt; 寄存器控制系统调用类型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;常见函数-ROP-构造&#34;&gt;&lt;a href=&#34;#常见函数-ROP-构造&#34; class=&#34;headerlink&#34; title=&#34;常见函数 ROP 构造&#34;&gt;&lt;/a&gt;常见函数 ROP 构造&lt;/h2&gt;&lt;p&gt;以下展示如何针对常用函数构造 ROP 链，分别以 32 位和 64 位架构为例。假设使用 &lt;code&gt;pwntools&lt;/code&gt; 的 &lt;code&gt;flat&lt;/code&gt; 函数来构造 payload。&lt;/p&gt;
+&lt;h3 id=&#34;write-函数&#34;&gt;&lt;a href=&#34;#write-函数&#34; class=&#34;headerlink&#34; title=&#34;write 函数&#34;&gt;&lt;/a&gt;write 函数&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;32 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;b&amp;#x27;A&amp;#x27;&lt;/span&gt; * offset,  &lt;span class=&#34;hljs-comment&#34;&gt;# 填充至返回地址&lt;/span&gt;&lt;br&gt;    write_plt,      &lt;span class=&#34;hljs-comment&#34;&gt;# write 函数 PLT 地址&lt;/span&gt;&lt;br&gt;    main_addr,      &lt;span class=&#34;hljs-comment&#34;&gt;# 返回地址（通常回到 main）&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,              &lt;span class=&#34;hljs-comment&#34;&gt;# fd = stdout&lt;/span&gt;&lt;br&gt;    write_got,      &lt;span class=&#34;hljs-comment&#34;&gt;# buf = GOT 地址，用于泄露&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-number&#34;&gt;4&lt;/span&gt;               &lt;span class=&#34;hljs-comment&#34;&gt;# count = 4 字节&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;64 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    pop_rdi, &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,         &lt;span class=&#34;hljs-comment&#34;&gt;# RDI = 1 (stdout)&lt;/span&gt;&lt;br&gt;    pop_rsi_r15, write_got, &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;,  &lt;span class=&#34;hljs-comment&#34;&gt;# RSI = GOT 地址&lt;/span&gt;&lt;br&gt;    pop_rdx, &lt;span class=&#34;hljs-number&#34;&gt;8&lt;/span&gt;,         &lt;span class=&#34;hljs-comment&#34;&gt;# RDX = 8 字节&lt;/span&gt;&lt;br&gt;    write_plt           &lt;span class=&#34;hljs-comment&#34;&gt;# 调用 write&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;read-函数&#34;&gt;&lt;a href=&#34;#read-函数&#34; class=&#34;headerlink&#34; title=&#34;read 函数&#34;&gt;&lt;/a&gt;read 函数&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;32 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;b&amp;#x27;A&amp;#x27;&lt;/span&gt; * offset,  &lt;span class=&#34;hljs-comment&#34;&gt;# 填充至返回地址&lt;/span&gt;&lt;br&gt;    read_plt,       &lt;span class=&#34;hljs-comment&#34;&gt;# read 函数 PLT 地址&lt;/span&gt;&lt;br&gt;    ret_addr,       &lt;span class=&#34;hljs-comment&#34;&gt;# 返回地址&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;,              &lt;span class=&#34;hljs-comment&#34;&gt;# fd = stdin&lt;/span&gt;&lt;br&gt;    buf_addr,       &lt;span class=&#34;hljs-comment&#34;&gt;# 目标地址（如 BSS 段）&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-number&#34;&gt;100&lt;/span&gt;             &lt;span class=&#34;hljs-comment&#34;&gt;# count = 100 字节&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;64 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    pop_rdi, &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;,         &lt;span class=&#34;hljs-comment&#34;&gt;# RDI = 0 (stdin)&lt;/span&gt;&lt;br&gt;    pop_rsi_r15, buf_addr, &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;,  &lt;span class=&#34;hljs-comment&#34;&gt;# RSI = 目标地址&lt;/span&gt;&lt;br&gt;    pop_rdx, &lt;span class=&#34;hljs-number&#34;&gt;100&lt;/span&gt;,       &lt;span class=&#34;hljs-comment&#34;&gt;# RDX = 100 字节&lt;/span&gt;&lt;br&gt;    read_plt,           &lt;span class=&#34;hljs-comment&#34;&gt;# 调用 read&lt;/span&gt;&lt;br&gt;    main_addr           &lt;span class=&#34;hljs-comment&#34;&gt;# 返回 main&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;puts-函数&#34;&gt;&lt;a href=&#34;#puts-函数&#34; class=&#34;headerlink&#34; title=&#34;puts 函数&#34;&gt;&lt;/a&gt;puts 函数&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;32 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;b&amp;#x27;A&amp;#x27;&lt;/span&gt; * offset,  &lt;span class=&#34;hljs-comment&#34;&gt;# 填充至返回地址&lt;/span&gt;&lt;br&gt;    puts_plt,       &lt;span class=&#34;hljs-comment&#34;&gt;# puts 函数 PLT 地址&lt;/span&gt;&lt;br&gt;    main_addr,      &lt;span class=&#34;hljs-comment&#34;&gt;# 返回地址&lt;/span&gt;&lt;br&gt;    puts_got        &lt;span class=&#34;hljs-comment&#34;&gt;# 参数：puts GOT 地址&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;64 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    pop_rdi, puts_got,  &lt;span class=&#34;hljs-comment&#34;&gt;# RDI = puts GOT 地址&lt;/span&gt;&lt;br&gt;    puts_plt,           &lt;span class=&#34;hljs-comment&#34;&gt;# 调用 puts&lt;/span&gt;&lt;br&gt;    main_addr           &lt;span class=&#34;hljs-comment&#34;&gt;# 返回 main&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;printf-函数（格式化字符串泄露）&#34;&gt;&lt;a href=&#34;#printf-函数（格式化字符串泄露）&#34; class=&#34;headerlink&#34; title=&#34;printf 函数（格式化字符串泄露）&#34;&gt;&lt;/a&gt;printf 函数（格式化字符串泄露）&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;32 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;b&amp;#x27;A&amp;#x27;&lt;/span&gt; * offset,  &lt;span class=&#34;hljs-comment&#34;&gt;# 填充至返回地址&lt;/span&gt;&lt;br&gt;    printf_plt,     &lt;span class=&#34;hljs-comment&#34;&gt;# printf 函数 PLT 地址&lt;/span&gt;&lt;br&gt;    main_addr,      &lt;span class=&#34;hljs-comment&#34;&gt;# 返回地址&lt;/span&gt;&lt;br&gt;    got_puts        &lt;span class=&#34;hljs-comment&#34;&gt;# 参数：格式化字符串（如 &amp;quot;%s&amp;quot;）&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;64 位构造&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;payload = flat(&lt;br&gt;    pop_rdi, format_str,    &lt;span class=&#34;hljs-comment&#34;&gt;# RDI = 格式化字符串地址&lt;/span&gt;&lt;br&gt;    pop_rsi_r15, got_read, &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;,  &lt;span class=&#34;hljs-comment&#34;&gt;# RSI = 目标地址&lt;/span&gt;&lt;br&gt;    printf_plt,             &lt;span class=&#34;hljs-comment&#34;&gt;# 调用 printf&lt;/span&gt;&lt;br&gt;    main_addr               &lt;span class=&#34;hljs-comment&#34;&gt;# 返回 main&lt;/span&gt;&lt;br&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h2 id=&#34;ret2libc-利用流程&#34;&gt;&lt;a href=&#34;#ret2libc-利用流程&#34; class=&#34;headerlink&#34; title=&#34;ret2libc 利用流程&#34;&gt;&lt;/a&gt;ret2libc 利用流程&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ret2libc&lt;/code&gt; 是一种经典的漏洞利用技术，绕过 NX 保护，通过调用 libc 中的函数（如 &lt;code&gt;system(&amp;quot;/bin/sh&amp;quot;)&lt;/code&gt;）获取 shell。以下是常规流程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;泄露 GOT 表地址&lt;/strong&gt;：利用 &lt;code&gt;puts&lt;/code&gt; 或 &lt;code&gt;write&lt;/code&gt; 泄露 &lt;code&gt;puts@got&lt;/code&gt; 的真实地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算 libc 基址&lt;/strong&gt;：通过接收到的地址，结合 libc 的偏移量，计算 libc 基址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;获取关键函数地址&lt;/strong&gt;：利用 libc 基址和偏移，得到 &lt;code&gt;system&lt;/code&gt; 和 &lt;code&gt;&amp;quot;/bin/sh&amp;quot;&lt;/code&gt; 字符串的地址。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;构造 ROP 链&lt;/strong&gt;：调用 &lt;code&gt;system(&amp;quot;/bin/sh&amp;quot;)&lt;/code&gt; 执行 shell。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;ROP-汇总对比表&#34;&gt;&lt;a href=&#34;#ROP-汇总对比表&#34; class=&#34;headerlink&#34; title=&#34;ROP 汇总对比表&#34;&gt;&lt;/a&gt;ROP 汇总对比表&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;函数&lt;/th&gt;
+&lt;th&gt;架构&lt;/th&gt;
+&lt;th&gt;参数方式&lt;/th&gt;
+&lt;th&gt;构造说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;write&lt;/td&gt;
+&lt;td&gt;32 位&lt;/td&gt;
+&lt;td&gt;栈上传参&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;fd=1, buf=got, count=4&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;write&lt;/td&gt;
+&lt;td&gt;64 位&lt;/td&gt;
+&lt;td&gt;RDI, RSI, RDX&lt;/td&gt;
+&lt;td&gt;ROP 控制 3 个寄存器后调用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;read&lt;/td&gt;
+&lt;td&gt;32 位&lt;/td&gt;
+&lt;td&gt;栈上传参&lt;/td&gt;
+&lt;td&gt;用于栈迁移或注入后续 ROP 链&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;read&lt;/td&gt;
+&lt;td&gt;64 位&lt;/td&gt;
+&lt;td&gt;RDI, RSI, RDX&lt;/td&gt;
+&lt;td&gt;常与 &lt;code&gt;leave_ret&lt;/code&gt; gadget 搭配使用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;puts&lt;/td&gt;
+&lt;td&gt;32 位&lt;/td&gt;
+&lt;td&gt;栈上传参&lt;/td&gt;
+&lt;td&gt;调用 &lt;code&gt;puts(got_xxx)&lt;/code&gt; 泄露地址&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;puts&lt;/td&gt;
+&lt;td&gt;64 位&lt;/td&gt;
+&lt;td&gt;RDI -&amp;gt; GOT 地址&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;pop rdi; call puts&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;printf&lt;/td&gt;
+&lt;td&gt;32 位&lt;/td&gt;
+&lt;td&gt;栈上传参&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;printf(fmt, val)&lt;/code&gt; 用于格式化泄露&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;printf&lt;/td&gt;
+&lt;td&gt;64 位&lt;/td&gt;
+&lt;td&gt;RDI, RSI&lt;/td&gt;
+&lt;td&gt;RDI 指向格式化字符串，RSI 指向地址&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h2 id=&#34;实用工具提示&#34;&gt;&lt;a href=&#34;#实用工具提示&#34; class=&#34;headerlink&#34; title=&#34;实用工具提示&#34;&gt;&lt;/a&gt;实用工具提示&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ROPgadget&lt;/strong&gt;：用于查找二进制文件中的 gadget，例如：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;ROPgadget --binary a.out --only &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;pop|ret&amp;#x27;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;pwndbg&lt;/strong&gt;：GDB 插件，方便调试和查找 gadget。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;pwntools&lt;/strong&gt;：Python 库，简化 ROP 链构造和 payload 生成。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;总结&#34;&gt;&lt;a href=&#34;#总结&#34; class=&#34;headerlink&#34; title=&#34;总结&#34;&gt;&lt;/a&gt;总结&lt;/h2&gt;&lt;p&gt;ELF 文件的保护机制和架构特性直接影响漏洞利用的难度和方式。理解 RELRO、Canary、NX 和 PIE 等保护机制的作用，以及如何通过 ROP 和 ret2libc 技术绕过这些保护，是 CTF 和二进制安全研究的核心技能。希望本文的分析和示例代码能为你的 PWN 学习提供帮助！&lt;/p&gt;
+</content>
+        <category term="PWN" />
+        <category term="ELF" />
+        <category term="ROP" />
+        <category term="CTF" />
+        <category term="二进制安全" />
+        <updated>2025-07-22T12:41:04.000Z</updated>
+    </entry>
+</feed>

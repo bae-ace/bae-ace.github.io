@@ -4,16 +4,21 @@
     <title>bae的博客 • Posts by &#34;子域名&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-21T01:30:22.000Z</updated>
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
     <category term="工具" />
     <category term="sqlmap" />
     <category term="渗透测试" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
     <category term="信息收集" />
     <category term="子域名" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/</id>
         <title>子域名枚举工具</title>
