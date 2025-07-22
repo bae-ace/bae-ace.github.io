@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>bae的博客 • Posts by &#34;初始测试&#34; category</title>
+        <link>https://bae-ace.github.io</link>
+        <description>bae的个人博客</description>
+        <language>zh-CN</language>
+        <pubDate>Sun, 20 Jul 2025 15:39:53 +0800</pubDate>
+        <lastBuildDate>Sun, 20 Jul 2025 15:39:53 +0800</lastBuildDate>
+        <category>PWN</category>
+        <category>ELF</category>
+        <category>ROP</category>
+        <category>CTF</category>
+        <category>二进制安全</category>
+        <category>hexo</category>
+        <category>博客搭建</category>
+        <category>初始测试</category>
+        <category>linux</category>
+        <category>命令</category>
+        <category>信息收集</category>
+        <category>子域名</category>
+        <category>渗透测试</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/hello-world/</guid>
+            <title>hello-world</title>
+            <link>https://bae-ace.github.io/2025/07/20/hello-world/</link>
+            <category>hexo</category>
+            <category>博客搭建</category>
+            <category>初始测试</category>
+            <pubDate>Sun, 20 Jul 2025 15:39:53 +0800</pubDate>
+            <description><![CDATA[ &lt;p&gt;🎉 欢迎来到我的博客！这是我的第一篇文章，用来测试 Hexo 是否成功部署啦～&lt;/p&gt;
+&lt;div class=&#34;note note-note-primary&#34;&gt;
+            &lt;p&gt;如果你看到这篇文章，说明博客已经启动成功啦！&lt;/p&gt;
+          &lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;https://bae-ace.github.io/img/exanple.jpg&#34;&gt;&lt;/p&gt;
+ ]]></description>
+        </item>
+    </channel>
+</rss>

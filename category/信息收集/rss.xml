@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>bae的博客 • Posts by &#34;信息收集&#34; category</title>
+        <link>https://bae-ace.github.io</link>
+        <description>bae的个人博客</description>
+        <language>zh-CN</language>
+        <pubDate>Mon, 21 Jul 2025 09:30:22 +0800</pubDate>
+        <lastBuildDate>Mon, 21 Jul 2025 09:30:22 +0800</lastBuildDate>
+        <category>PWN</category>
+        <category>ELF</category>
+        <category>ROP</category>
+        <category>CTF</category>
+        <category>二进制安全</category>
+        <category>hexo</category>
+        <category>博客搭建</category>
+        <category>初始测试</category>
+        <category>linux</category>
+        <category>命令</category>
+        <category>信息收集</category>
+        <category>子域名</category>
+        <category>渗透测试</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/</guid>
+            <title>子域名枚举工具</title>
+            <link>https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/</link>
+            <category>信息收集</category>
+            <category>子域名</category>
+            <category>渗透测试</category>
+            <pubDate>Mon, 21 Jul 2025 09:30:22 +0800</pubDate>
+            <description><![CDATA[ &lt;h2 id=&#34;1️⃣-Subfinder&#34;&gt;&lt;a href=&#34;#1️⃣-Subfinder&#34; class=&#34;headerlink&#34; title=&#34;1️⃣ Subfinder&#34;&gt;&lt;/a&gt;1️⃣ Subfinder&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;项目地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/projectdiscovery/subfinder&#34;&gt;🔗 https://github.com/projectdiscovery/subfinder&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;：快速、可靠的子域名枚举工具，集成多个被动数据源  &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;语言&lt;/strong&gt;：Go&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;✅-安装配置&#34;&gt;&lt;a href=&#34;#✅-安装配置&#34; class=&#34;headerlink&#34; title=&#34;✅ 安装配置&#34;&gt;&lt;/a&gt;✅ 安装配置&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;39&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 安装 Go 语言环境&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; apt update&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; apt install golang-go -y&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 验证 Go 安装&lt;/span&gt;&lt;br&gt;go version&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 配置 Go 环境变量（按需）&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;export GOPATH=$HOME/go&amp;#x27;&lt;/span&gt; &amp;gt;&amp;gt; ~/.zshrc&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;export PATH=$PATH:$GOPATH/bin&amp;#x27;&lt;/span&gt; &amp;gt;&amp;gt; ~/.zshrc&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;source&lt;/span&gt; ~/.zshrc&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 设置 Go 模块代理&lt;/span&gt;&lt;br&gt;go &lt;span class=&#34;hljs-built_in&#34;&gt;env&lt;/span&gt; -w GOPROXY=https://goproxy.cn,direct&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 安装 Subfinder&lt;/span&gt;&lt;br&gt;go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 验证安装&lt;/span&gt;&lt;br&gt;subfinder -version || &lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;hljs-built_in&#34;&gt;ln&lt;/span&gt; -s &lt;span class=&#34;hljs-variable&#34;&gt;$HOME&lt;/span&gt;/go/bin/subfinder /usr/local/bin/subfinder&lt;br&gt;​````&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;### 🛠 常见用法&lt;/span&gt;&lt;br&gt;&lt;br&gt;​```bash&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 基本子域名枚举&lt;/span&gt;&lt;br&gt;subfinder -d example.com&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 输出到文件&lt;/span&gt;&lt;br&gt;subfinder -d example.com -o result.txt&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 使用配置文件（推荐设置 API）&lt;/span&gt;&lt;br&gt;subfinder -d example.com -pc subfinder-config.yaml&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 批量扫描多个域名&lt;/span&gt;&lt;br&gt;subfinder -dL domains.txt -oL output.txt&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 配合 httpx 探测活跃子域&lt;/span&gt;&lt;br&gt;subfinder -d example.com | httpx -silent&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;2️⃣-Knock&#34;&gt;&lt;a href=&#34;#2️⃣-Knock&#34; class=&#34;headerlink&#34; title=&#34;2️⃣ Knock&#34;&gt;&lt;/a&gt;2️⃣ Knock&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;项目地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/guelfoweb/knock&#34;&gt;🔗 https://github.com/guelfoweb/knock&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;功能&lt;/strong&gt;：Python 编写的子域名爆破工具，使用字典枚举&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;语言&lt;/strong&gt;：Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;特点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可自定义字典进行暴力枚举&lt;/li&gt;
+&lt;li&gt;支持 WHOIS 检测&lt;/li&gt;
+&lt;li&gt;脚本化扩展能力强&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;✅-安装方式&#34;&gt;&lt;a href=&#34;#✅-安装方式&#34; class=&#34;headerlink&#34; title=&#34;✅ 安装方式&#34;&gt;&lt;/a&gt;✅ 安装方式&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/guelfoweb/knock.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; knock&lt;br&gt;pip3 install -r requirements.txt&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;🛠-常见用法&#34;&gt;&lt;a href=&#34;#🛠-常见用法&#34; class=&#34;headerlink&#34; title=&#34;🛠 常见用法&#34;&gt;&lt;/a&gt;🛠 常见用法&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 使用默认字典&lt;/span&gt;&lt;br&gt;python3 knockpy.py example.com&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 指定字典&lt;/span&gt;&lt;br&gt;python3 knockpy.py example.com -w /path/to/wordlist.txt&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 输出结果保存到目录&lt;/span&gt;&lt;br&gt;python3 knockpy.py example.com -o output_dir&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;3️⃣-TheHarvester&#34;&gt;&lt;a href=&#34;#3️⃣-TheHarvester&#34; class=&#34;headerlink&#34; title=&#34;3️⃣ TheHarvester&#34;&gt;&lt;/a&gt;3️⃣ TheHarvester&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;项目地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/laramies/theHarvester&#34;&gt;🔗 https://github.com/laramies/theHarvester&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;功能&lt;/strong&gt;：信息收集利器，可用于枚举子域名、邮箱、员工、IP 等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;语言&lt;/strong&gt;：Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;特点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;被动信息收集，支持多个搜索引擎&lt;/li&gt;
+&lt;li&gt;可收集邮箱&amp;#x2F;IP 等社工信息&lt;/li&gt;
+&lt;li&gt;适合 APT 情报分析与前期侦察&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;✅-安装方式（Kali-自带）&#34;&gt;&lt;a href=&#34;#✅-安装方式（Kali-自带）&#34; class=&#34;headerlink&#34; title=&#34;✅ 安装方式（Kali 自带）&#34;&gt;&lt;/a&gt;✅ 安装方式（Kali 自带）&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/laramies/theHarvester.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; theHarvester&lt;br&gt;pip3 install -r requirements.txt&lt;br&gt;python3 theHarvester.py -h&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;🛠-常见用法-1&#34;&gt;&lt;a href=&#34;#🛠-常见用法-1&#34; class=&#34;headerlink&#34; title=&#34;🛠 常见用法&#34;&gt;&lt;/a&gt;🛠 常见用法&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 使用 Baidu 枚举子域&lt;/span&gt;&lt;br&gt;python3 theHarvester.py -d example.com -b baidu&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 多个搜索引擎组合使用&lt;/span&gt;&lt;br&gt;python3 theHarvester.py -d example.com -b bing,crtsh&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 输出为 HTML 文件&lt;/span&gt;&lt;br&gt;python3 theHarvester.py -d example.com -b bing -f result&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看所有支持的数据源&lt;/span&gt;&lt;br&gt;python3 theHarvester.py -h&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;4️⃣-Amass&#34;&gt;&lt;a href=&#34;#4️⃣-Amass&#34; class=&#34;headerlink&#34; title=&#34;4️⃣ Amass&#34;&gt;&lt;/a&gt;4️⃣ Amass&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;项目地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/OWASP/Amass&#34;&gt;🔗 https://github.com/OWASP/Amass&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;功能&lt;/strong&gt;：最强大的子域名枚举框架之一，支持主动&amp;#x2F;被动混合模式，数据可视化&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;语言&lt;/strong&gt;：Go&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;特点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支持主动扫描 + 被动收集 + 混合模式&lt;/li&gt;
+&lt;li&gt;支持 ASN 分析、DNS 爆破、端口识别等&lt;/li&gt;
+&lt;li&gt;输出格式支持 TXT&amp;#x2F;JSON&amp;#x2F;GDF 等&lt;/li&gt;
+&lt;li&gt;可视化结果可联动 Neo4j、Maltego&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;✅-安装方式（Kali-可直接安装）&#34;&gt;&lt;a href=&#34;#✅-安装方式（Kali-可直接安装）&#34; class=&#34;headerlink&#34; title=&#34;✅ 安装方式（Kali 可直接安装）&#34;&gt;&lt;/a&gt;✅ 安装方式（Kali 可直接安装）&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; apt install amass&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 或者使用 go 安装&lt;/span&gt;&lt;br&gt;go install -v github.com/owasp-amass/amass/v4/...@latest&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;🛠-常见用法-2&#34;&gt;&lt;a href=&#34;#🛠-常见用法-2&#34; class=&#34;headerlink&#34; title=&#34;🛠 常见用法&#34;&gt;&lt;/a&gt;🛠 常见用法&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 被动模式枚举&lt;/span&gt;&lt;br&gt;amass enum -passive -d example.com&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 主动扫描模式（需 DNS 解析权限）&lt;/span&gt;&lt;br&gt;amass enum -active -d example.com&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 暴力破解 + 源信息标注&lt;/span&gt;&lt;br&gt;amass enum -brute -d example.com -src&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 输出结构化结果（JSON）&lt;/span&gt;&lt;br&gt;amass enum -d example.com -oA amass_output&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 可视化分析图谱&lt;/span&gt;&lt;br&gt;amass viz -d3 -&lt;span class=&#34;hljs-built_in&#34;&gt;dir&lt;/span&gt; amass_output&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;📦-工具对比总结表&#34;&gt;&lt;a href=&#34;#📦-工具对比总结表&#34; class=&#34;headerlink&#34; title=&#34;📦 工具对比总结表&#34;&gt;&lt;/a&gt;📦 工具对比总结表&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;工具&lt;/th&gt;
+&lt;th&gt;模式&lt;/th&gt;
+&lt;th&gt;特点&lt;/th&gt;
+&lt;th&gt;是否支持暴力&lt;/th&gt;
+&lt;th&gt;是否需配置 API&lt;/th&gt;
+&lt;th&gt;输出格式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;Subfinder&lt;/td&gt;
+&lt;td&gt;被动&lt;/td&gt;
+&lt;td&gt;快速、支持 API、多源整合&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;是（可选）&lt;/td&gt;
+&lt;td&gt;TXT &amp;#x2F; JSON&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Knock&lt;/td&gt;
+&lt;td&gt;字典暴力&lt;/td&gt;
+&lt;td&gt;简单、定制强、易扩展&lt;/td&gt;
+&lt;td&gt;✅ 是&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;TXT&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TheHarvester&lt;/td&gt;
+&lt;td&gt;被动&lt;/td&gt;
+&lt;td&gt;多维情报收集，社工必备&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;否&lt;/td&gt;
+&lt;td&gt;TXT &amp;#x2F; HTML&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Amass&lt;/td&gt;
+&lt;td&gt;主动 &amp;#x2F; 被动 &amp;#x2F; 混合&lt;/td&gt;
+&lt;td&gt;架构完整、可视化输出、功能最强大&lt;/td&gt;
+&lt;td&gt;✅ 是&lt;/td&gt;
+&lt;td&gt;✅ 建议配置&lt;/td&gt;
+&lt;td&gt;TXT &amp;#x2F; JSON &amp;#x2F; GDF&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+ ]]></description>
+        </item>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/</guid>
+            <title>通用搜索引擎技巧</title>
+            <link>https://bae-ace.github.io/2025/07/20/%E9%80%9A%E7%94%A8%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%8A%80%E5%B7%A7/</link>
+            <category>linux</category>
+            <category>命令</category>
+            <pubDate>Sun, 20 Jul 2025 23:51:13 +0800</pubDate>
+            <description><![CDATA[ &lt;h2 id=&#34;🔍-通用搜索引擎技巧（百度-Google-Bing）&#34;&gt;&lt;a href=&#34;#🔍-通用搜索引擎技巧（百度-Google-Bing）&#34; class=&#34;headerlink&#34; title=&#34;🔍 通用搜索引擎技巧（百度 &amp;#x2F; Google &amp;#x2F; Bing）&#34;&gt;&lt;/a&gt;🔍 通用搜索引擎技巧（百度 &amp;#x2F; Google &amp;#x2F; Bing）&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;🌐 &lt;strong&gt;按网站域名搜索（site）&lt;/strong&gt;&lt;br&gt;用于限定搜索结果来自某一特定网站&amp;#x2F;域名。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;site:cc.com&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🔗 &lt;strong&gt;按页面链接结构搜索（inurl）&lt;/strong&gt;&lt;br&gt;用于搜索 URL 中包含特定关键词的页面，常用于探测网站脚本语言：&lt;br&gt;示例关键词：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PHP 网站：&lt;code&gt;inurl:index.php?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ASP 网站：&lt;code&gt;inurl:index.asp?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ASPX 网站：&lt;code&gt;inurl:index.aspx?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;JSP 网站：&lt;code&gt;inurl:index.jsp?id=1&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;📛 &lt;strong&gt;按页面标题搜索（intitle）&lt;/strong&gt;&lt;br&gt;用于搜索网页标题中包含特定关键词的页面。&lt;br&gt;示例关键词：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;协会：&lt;code&gt;intitle:协会&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;bae：&lt;code&gt;intitle:bae&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;大使馆：&lt;code&gt;intitle:大使馆&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;五眼联盟：&lt;code&gt;intitle:五眼联盟&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🎯 &lt;strong&gt;精确匹配关键词（双引号）&lt;/strong&gt;&lt;br&gt;用于精确匹配短语或全名，不允许中间插词。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;🔗 &lt;strong&gt;组合搜索（多个语法结合）&lt;/strong&gt;&lt;br&gt;可以将多个语法结合使用，提高搜索精准度。&lt;br&gt;示例：&lt;br&gt;&lt;code&gt;intitle:bae site:bae.com&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;📑 &lt;strong&gt;高级搜索界面（百度）&lt;/strong&gt;&lt;br&gt;使用百度提供的高级搜索界面进行图形化配置：&lt;br&gt;&lt;a href=&#34;http://www.baidu.com/gaoji/advanced.html&#34;&gt;百度高级搜索&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🔎-Google-搜索（语法与百度类似）&#34;&gt;&lt;a href=&#34;#🔎-Google-搜索（语法与百度类似）&#34; class=&#34;headerlink&#34; title=&#34;🔎 Google 搜索（语法与百度类似）&#34;&gt;&lt;/a&gt;🔎 Google 搜索（语法与百度类似）&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;功能&lt;/th&gt;
+&lt;th&gt;搜索语法&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;指定站点&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;site:&amp;quot;cc.com&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PHP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.php?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ASP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.asp?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ASPX&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.aspx?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JSP&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:&amp;quot;index.jsp?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;标题包含&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:大使馆&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;精确搜索&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;组合搜索&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:bae site:bae.com&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🛰️-网络空间搜索引擎（资产搜索）&#34;&gt;&lt;a href=&#34;#🛰️-网络空间搜索引擎（资产搜索）&#34; class=&#34;headerlink&#34; title=&#34;🛰️ 网络空间搜索引擎（资产搜索）&#34;&gt;&lt;/a&gt;🛰️ 网络空间搜索引擎（资产搜索）&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;平台&lt;/th&gt;
+&lt;th&gt;网址&lt;/th&gt;
+&lt;th&gt;功能说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;ZoomEye&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://www.zoomeye.org/&#34;&gt;ZoomEye - Cyberspace Search Engine&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;中国开发的网络空间搜索引擎，可搜索主机、服务、组件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;FOFA&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://fofa.info/&#34;&gt;FOFA&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;面向安全研究人员的资产搜索引擎，支持语法化查询&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shodan&lt;/td&gt;
+&lt;td&gt;&lt;a href=&#34;https://www.shodan.io/&#34;&gt;Shodan&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;国外最知名的网络空间搜索引擎，可查开放端口、设备系统信息等&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;✅-总结对比表&#34;&gt;&lt;a href=&#34;#✅-总结对比表&#34; class=&#34;headerlink&#34; title=&#34;✅ 总结对比表&#34;&gt;&lt;/a&gt;✅ 总结对比表&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;搜索方式&lt;/th&gt;
+&lt;th&gt;典型语法&lt;/th&gt;
+&lt;th&gt;主要用途&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;site:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;site:cc.com&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;限定搜索域名&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;inurl:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;inurl:index.php?id=1&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;搜索网站结构&amp;#x2F;脚本语言&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;intitle:&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:bae&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;页面标题匹配&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;&amp;quot;&lt;/code&gt;（双引号）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;quot;教育&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;精确短语搜索&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;多语法组合&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;intitle:协会 site:gov.cn&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;精准定位内容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ZoomEye &amp;#x2F; FOFA &amp;#x2F; Shodan&lt;/td&gt;
+&lt;td&gt;Web 界面 &amp;#x2F; API&lt;/td&gt;
+&lt;td&gt;网络空间资产搜索，安全情报分析&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;figure class=&#34;highlight&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs&#34;&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt; ]]></description>
+        </item>
+    </channel>
+</rss>

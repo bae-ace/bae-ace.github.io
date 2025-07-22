@@ -4,21 +4,21 @@
     <title>bae的博客 • Posts by &#34;二进制安全&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-22T12:41:04.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <category term="渗透测试" />
+    <category term="工具" />
+    <category term="sqlmap" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/</id>
         <title>ELF 文件保护机制与 ROP 构造详解</title>

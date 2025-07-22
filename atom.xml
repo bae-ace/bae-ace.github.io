@@ -4,21 +4,21 @@
     <title>bae的博客</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-22T12:41:04.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <category term="渗透测试" />
+    <category term="工具" />
+    <category term="sqlmap" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/</id>
         <title>ELF 文件保护机制与 ROP 构造详解</title>
@@ -527,9 +527,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
+        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
-        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
     <entry>
@@ -650,9 +650,9 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
 </content>
-        <category term="渗透测试" />
         <category term="信息收集" />
         <category term="子域名" />
+        <category term="渗透测试" />
         <updated>2025-07-21T01:30:22.000Z</updated>
     </entry>
     <entry>
@@ -791,9 +791,7 @@
 &lt;td&gt;网络空间资产搜索，安全情报分析&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
-&lt;pre&gt;&lt;code class=&#34;hljs&#34;&gt;
-&lt;/code&gt;&lt;/pre&gt;
-</content>
+&lt;figure class=&#34;highlight&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs&#34;&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</content>
         <category term="linux" />
         <category term="命令" />
         <updated>2025-07-20T15:51:13.000Z</updated>

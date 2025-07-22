@@ -4,21 +4,21 @@
     <title>bae的博客 • Posts by &#34;工具&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-21T11:33:02.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <category term="渗透测试" />
+    <category term="工具" />
+    <category term="sqlmap" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</id>
         <title>SQLMap 自动化 SQL 注入工具</title>
@@ -252,9 +252,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
+        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
-        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
 </feed>

