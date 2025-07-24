@@ -12,6 +12,12 @@
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
+        <category>Web安全</category>
+        <category>SQL注入</category>
+        <category>网络安全</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
@@ -19,16 +25,13 @@
         <category>命令</category>
         <category>信息收集</category>
         <category>子域名</category>
-        <category>渗透测试</category>
-        <category>工具</category>
-        <category>sqlmap</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/</guid>
             <title>子域名枚举工具</title>
             <link>https://bae-ace.github.io/2025/07/21/%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9E%9A%E4%B8%BE%E5%B7%A5%E5%85%B7/</link>
+            <category>渗透测试</category>
             <category>信息收集</category>
             <category>子域名</category>
-            <category>渗透测试</category>
             <pubDate>Mon, 21 Jul 2025 09:30:22 +0800</pubDate>
             <description><![CDATA[ &lt;h2 id=&#34;1️⃣-Subfinder&#34;&gt;&lt;a href=&#34;#1️⃣-Subfinder&#34; class=&#34;headerlink&#34; title=&#34;1️⃣ Subfinder&#34;&gt;&lt;/a&gt;1️⃣ Subfinder&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;项目地址&lt;/strong&gt;：&lt;a href=&#34;https://github.com/projectdiscovery/subfinder&#34;&gt;🔗 https://github.com/projectdiscovery/subfinder&lt;/a&gt;  &lt;/li&gt;
