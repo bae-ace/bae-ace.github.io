@@ -4,30 +4,30 @@
     <title>bae的博客 • Posts by &#34;初始测试&#34; category</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-20T07:39:53.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="Web安全" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="Struts2" />
     <category term="RCE" />
     <category term="漏洞复现" />
     <category term="OGNL注入" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="SQL注入" />
-    <category term="网络安全" />
-    <category term="命令执行" />
-    <category term="漏洞利用" />
     <category term="linux" />
     <category term="命令" />
     <category term="信息收集" />
     <category term="子域名" />
+    <category term="命令执行" />
+    <category term="漏洞利用" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/20/hello-world/</id>
         <title>hello-world</title>
