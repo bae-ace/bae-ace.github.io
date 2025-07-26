@@ -7,35 +7,37 @@
         <language>zh-CN</language>
         <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>
         <lastBuildDate>Thu, 24 Jul 2025 07:51:59 +0800</lastBuildDate>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
         <category>Web安全</category>
-        <category>Struts2</category>
-        <category>RCE</category>
-        <category>漏洞复现</category>
-        <category>OGNL注入</category>
         <category>SQL注入</category>
-        <category>渗透测试</category>
         <category>网络安全</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
+        <category>Struts2</category>
+        <category>RCE</category>
+        <category>漏洞复现</category>
+        <category>OGNL注入</category>
         <category>linux</category>
         <category>命令</category>
+        <category>命令执行</category>
+        <category>漏洞利用</category>
         <category>信息收集</category>
         <category>子域名</category>
-        <category>工具</category>
-        <category>sqlmap</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</guid>
             <title>SQL注入攻击详解</title>
             <link>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</link>
+            <category>渗透测试</category>
             <category>Web安全</category>
             <category>SQL注入</category>
-            <category>渗透测试</category>
             <category>网络安全</category>
             <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;SQL注入攻击详解&#34;&gt;&lt;a href=&#34;#SQL注入攻击详解&#34; class=&#34;headerlink&#34; title=&#34;SQL注入攻击详解&#34;&gt;&lt;/a&gt;SQL注入攻击详解&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;SQL注入作为Web应用程序中最常见的安全漏洞之一，至今仍是攻击者利用的主要手段。本文将详细讲解SQL注入的各种利用方式，帮助安全研究人员和开发者深入理解这一经典漏洞。&lt;/p&gt;
