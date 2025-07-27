@@ -4,30 +4,31 @@
     <title>bae的博客 • Posts by &#34;渗透测试&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-26T10:53:13.000Z</updated>
+    <category term="Web安全" />
+    <category term="SQL注入" />
+    <category term="渗透测试" />
+    <category term="网络安全" />
+    <category term="Struts2" />
+    <category term="RCE" />
+    <category term="漏洞复现" />
+    <category term="OGNL注入" />
+    <category term="ThinkPHP" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
-    <category term="Web安全" />
-    <category term="SQL注入" />
-    <category term="网络安全" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="Struts2" />
-    <category term="RCE" />
-    <category term="漏洞复现" />
-    <category term="OGNL注入" />
-    <category term="linux" />
-    <category term="命令" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <category term="命令执行" />
     <category term="漏洞利用" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="信息收集" />
+    <category term="子域名" />
     <entry>
         <id>https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</id>
         <title>命令执行漏洞</title>
@@ -246,8 +247,8 @@
 &lt;hr&gt;
 &lt;h2 id=&#34;⚠️-免责声明&#34;&gt;&lt;a href=&#34;#⚠️-免责声明&#34; class=&#34;headerlink&#34; title=&#34;⚠️ 免责声明&#34;&gt;&lt;/a&gt;⚠️ 免责声明&lt;/h2&gt;&lt;p&gt;本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。&lt;/p&gt;
 </content>
-        <category term="渗透测试" />
         <category term="Web安全" />
+        <category term="渗透测试" />
         <category term="命令执行" />
         <category term="漏洞利用" />
         <updated>2025-07-26T10:53:13.000Z</updated>
@@ -437,9 +438,9 @@
 &lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供学习和研究使用，请勿用于非法用途。任何人使用本文信息进行违法活动，后果自负。&lt;/p&gt;
 &lt;/blockquote&gt;
 </content>
-        <category term="渗透测试" />
         <category term="Web安全" />
         <category term="SQL注入" />
+        <category term="渗透测试" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>
     </entry>
@@ -676,9 +677,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
+        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
-        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
     <entry>

