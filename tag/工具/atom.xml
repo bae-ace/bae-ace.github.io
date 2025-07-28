@@ -4,6 +4,9 @@
     <title>bae的博客 • Posts by &#34;工具&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-21T11:33:02.000Z</updated>
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
@@ -11,10 +14,7 @@
     <category term="二进制安全" />
     <category term="Web安全" />
     <category term="SQL注入" />
-    <category term="渗透测试" />
     <category term="网络安全" />
-    <category term="工具" />
-    <category term="sqlmap" />
     <category term="Struts2" />
     <category term="RCE" />
     <category term="漏洞复现" />
@@ -262,9 +262,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
-        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
+        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
 </feed>

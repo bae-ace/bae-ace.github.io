@@ -4,6 +4,9 @@
     <title>bae的博客 • Posts by &#34;系统基础&#34; category</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-20T07:41:52.000Z</updated>
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
@@ -11,10 +14,7 @@
     <category term="二进制安全" />
     <category term="Web安全" />
     <category term="SQL注入" />
-    <category term="渗透测试" />
     <category term="网络安全" />
-    <category term="工具" />
-    <category term="sqlmap" />
     <category term="Struts2" />
     <category term="RCE" />
     <category term="漏洞复现" />
