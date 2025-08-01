@@ -13,8 +13,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "RCE",
                 "Struts2",
+                "RCE",
                 "OGNL注入"
             ]
         }

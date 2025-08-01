@@ -42,8 +42,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "ThinkPHP",
-                "RCE"
+                "RCE",
+                "ThinkPHP"
             ]
         },
         {
@@ -55,8 +55,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "ThinkPHP",
-                "RCE"
+                "RCE",
+                "ThinkPHP"
             ]
         },
         {
@@ -81,8 +81,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "RCE",
                 "Struts2",
+                "RCE",
                 "OGNL注入"
             ]
         },

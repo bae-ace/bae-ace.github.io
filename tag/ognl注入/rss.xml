@@ -13,6 +13,9 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>PHP</category>
         <category>SSRF</category>
         <category>PWN</category>
@@ -20,22 +23,19 @@
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>工具</category>
-        <category>sqlmap</category>
-        <category>渗透测试</category>
-        <category>SQL注入</category>
-        <category>网络安全</category>
-        <category>ThinkPHP</category>
-        <category>RCE</category>
         <category>Struts2</category>
+        <category>RCE</category>
         <category>OGNL注入</category>
+        <category>ThinkPHP</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
-        <category>linux</category>
-        <category>命令</category>
+        <category>SQL注入</category>
+        <category>网络安全</category>
         <category>命令执行</category>
         <category>漏洞利用</category>
+        <category>linux</category>
+        <category>命令</category>
         <category>信息收集</category>
         <category>子域名</category>
         <item>
@@ -44,8 +44,8 @@
             <link>https://bae-ace.github.io/2025/07/24/Struts2-045-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%88%A9%E7%94%A8/</link>
             <category>Web安全</category>
             <category>漏洞复现</category>
-            <category>RCE</category>
             <category>Struts2</category>
+            <category>RCE</category>
             <category>OGNL注入</category>
             <pubDate>Thu, 24 Jul 2025 08:10:34 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;Struts2-045远程代码执行漏洞复现与原理分析&#34;&gt;&lt;a href=&#34;#Struts2-045远程代码执行漏洞复现与原理分析&#34; class=&#34;headerlink&#34; title=&#34;Struts2-045远程代码执行漏洞复现与原理分析&#34;&gt;&lt;/a&gt;Struts2-045远程代码执行漏洞复现与原理分析&lt;/h1&gt;&lt;h2 id=&#34;漏洞概述&#34;&gt;&lt;a href=&#34;#漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;漏洞概述&#34;&gt;&lt;/a&gt;漏洞概述&lt;/h2&gt;&lt;p&gt;Struts2-045（CVE-2017-5638）是Apache Struts2框架中的一个严重远程代码执行漏洞，该漏洞因其影响范围广、利用简单而备受关注。攻击者可以通过构造恶意的Content-Type请求头，在目标服务器上执行任意系统命令。&lt;/p&gt;
