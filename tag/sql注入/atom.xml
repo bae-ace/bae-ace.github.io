@@ -4,22 +4,28 @@
     <title>bae的博客 • Posts by &#34;sql注入&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-23T23:51:59.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="Web安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="SQL注入" />
     <category term="网络安全" />
-    <category term="Struts2" />
-    <category term="RCE" />
-    <category term="漏洞复现" />
-    <category term="OGNL注入" />
     <category term="ThinkPHP" />
+    <category term="RCE" />
+    <category term="Struts2" />
+    <category term="OGNL注入" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
@@ -214,8 +220,8 @@
 &lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供学习和研究使用，请勿用于非法用途。任何人使用本文信息进行违法活动，后果自负。&lt;/p&gt;
 &lt;/blockquote&gt;
 </content>
-        <category term="渗透测试" />
         <category term="Web安全" />
+        <category term="渗透测试" />
         <category term="SQL注入" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>

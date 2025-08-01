@@ -4,22 +4,28 @@
     <title>bae的博客 • Posts by &#34;thinkphp&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-28T06:18:44.000Z</updated>
-    <category term="工具" />
-    <category term="sqlmap" />
-    <category term="渗透测试" />
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="Web安全" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="SQL注入" />
     <category term="网络安全" />
-    <category term="Struts2" />
-    <category term="RCE" />
-    <category term="漏洞复现" />
-    <category term="OGNL注入" />
     <category term="ThinkPHP" />
+    <category term="RCE" />
+    <category term="Struts2" />
+    <category term="OGNL注入" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
@@ -249,9 +255,9 @@
 &lt;/blockquote&gt;
 </content>
         <category term="Web安全" />
-        <category term="RCE" />
         <category term="漏洞复现" />
         <category term="ThinkPHP" />
+        <category term="RCE" />
         <updated>2025-07-28T06:18:44.000Z</updated>
     </entry>
     <entry>
@@ -446,9 +452,9 @@
 &lt;h2 id=&#34;⚠️-免责声明&#34;&gt;&lt;a href=&#34;#⚠️-免责声明&#34; class=&#34;headerlink&#34; title=&#34;⚠️ 免责声明&#34;&gt;&lt;/a&gt;⚠️ 免责声明&lt;/h2&gt;&lt;p&gt;本文内容仅供网络安全学习和研究使用，请勿用于非法用途。任何个人或组织使用本文信息进行的违法活动，均与作者无关。读者应当遵守当地法律法规，在合法授权的环境下进行安全测试。&lt;/p&gt;
 </content>
         <category term="Web安全" />
-        <category term="RCE" />
         <category term="漏洞复现" />
         <category term="ThinkPHP" />
+        <category term="RCE" />
         <updated>2025-07-27T09:25:25.000Z</updated>
     </entry>
 </feed>

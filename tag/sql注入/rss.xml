@@ -7,22 +7,28 @@
         <language>zh-CN</language>
         <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>
         <lastBuildDate>Thu, 24 Jul 2025 07:51:59 +0800</lastBuildDate>
-        <category>工具</category>
-        <category>sqlmap</category>
-        <category>渗透测试</category>
+        <category>Web安全</category>
+        <category>Solr</category>
+        <category>XXE</category>
+        <category>漏洞复现</category>
+        <category>Vulhub</category>
+        <category>Kali</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>Web安全</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>SQL注入</category>
         <category>网络安全</category>
-        <category>Struts2</category>
-        <category>RCE</category>
-        <category>漏洞复现</category>
-        <category>OGNL注入</category>
         <category>ThinkPHP</category>
+        <category>RCE</category>
+        <category>Struts2</category>
+        <category>OGNL注入</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
@@ -36,8 +42,8 @@
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</guid>
             <title>SQL注入攻击详解</title>
             <link>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</link>
-            <category>渗透测试</category>
             <category>Web安全</category>
+            <category>渗透测试</category>
             <category>SQL注入</category>
             <category>网络安全</category>
             <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>

