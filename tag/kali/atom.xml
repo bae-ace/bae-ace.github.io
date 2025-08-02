@@ -5,15 +5,13 @@
     <link href="https://bae-ace.github.io" />
     <updated>2025-08-01T09:54:17.000Z</updated>
     <category term="Web安全" />
-    <category term="PHP" />
-    <category term="XXE" />
-    <category term="SSRF" />
-    <category term="漏洞复现" />
     <category term="权限绕过" />
     <category term="水平越权" />
     <category term="垂e直越权" />
     <category term="Pikachu靶场" />
     <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
     <category term="PWN" />
@@ -21,15 +19,17 @@
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="SQL注入" />
-    <category term="渗透测试" />
-    <category term="网络安全" />
     <category term="工具" />
     <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="Struts2" />
     <category term="RCE" />
     <category term="OGNL注入" />
     <category term="ThinkPHP" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
@@ -268,9 +268,9 @@
 &lt;p&gt;“渗透测试的艺术在于：构造、验证、提权、保持优雅”&lt;/p&gt;
 </content>
         <category term="Web安全" />
+        <category term="Solr" />
         <category term="XXE" />
         <category term="漏洞复现" />
-        <category term="Solr" />
         <category term="Vulhub" />
         <category term="Kali" />
         <updated>2025-08-01T09:54:17.000Z</updated>

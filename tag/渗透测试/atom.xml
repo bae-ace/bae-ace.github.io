@@ -5,15 +5,13 @@
     <link href="https://bae-ace.github.io" />
     <updated>2025-07-26T10:53:13.000Z</updated>
     <category term="Web安全" />
-    <category term="PHP" />
-    <category term="XXE" />
-    <category term="SSRF" />
-    <category term="漏洞复现" />
     <category term="权限绕过" />
     <category term="水平越权" />
     <category term="垂e直越权" />
     <category term="Pikachu靶场" />
     <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
     <category term="PWN" />
@@ -21,15 +19,17 @@
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="SQL注入" />
-    <category term="渗透测试" />
-    <category term="网络安全" />
     <category term="工具" />
     <category term="sqlmap" />
+    <category term="渗透测试" />
     <category term="Struts2" />
     <category term="RCE" />
     <category term="OGNL注入" />
     <category term="ThinkPHP" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="hexo" />
     <category term="博客搭建" />
     <category term="初始测试" />
@@ -449,8 +449,8 @@
 &lt;/blockquote&gt;
 </content>
         <category term="Web安全" />
-        <category term="SQL注入" />
         <category term="渗透测试" />
+        <category term="SQL注入" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>
     </entry>
@@ -687,9 +687,9 @@
 &lt;li&gt;📌 常用指令可整理成脚本，提升实战效率。&lt;/li&gt;
 &lt;/ul&gt;
 </content>
-        <category term="渗透测试" />
         <category term="工具" />
         <category term="sqlmap" />
+        <category term="渗透测试" />
         <updated>2025-07-21T11:33:02.000Z</updated>
     </entry>
     <entry>

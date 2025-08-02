@@ -8,15 +8,13 @@
         <pubDate>Sun, 20 Jul 2025 23:51:13 +0800</pubDate>
         <lastBuildDate>Sun, 20 Jul 2025 23:51:13 +0800</lastBuildDate>
         <category>Web安全</category>
-        <category>PHP</category>
-        <category>XXE</category>
-        <category>SSRF</category>
-        <category>漏洞复现</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
         <category>Pikachu靶场</category>
         <category>Solr</category>
+        <category>XXE</category>
+        <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
         <category>PWN</category>
@@ -24,15 +22,17 @@
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>SQL注入</category>
-        <category>渗透测试</category>
-        <category>网络安全</category>
         <category>工具</category>
         <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>Struts2</category>
         <category>RCE</category>
         <category>OGNL注入</category>
         <category>ThinkPHP</category>
+        <category>SQL注入</category>
+        <category>网络安全</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
