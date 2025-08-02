@@ -1,0 +1,1098 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bae">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）一、前言权限绕过漏洞是 Web 应用中常见的安全问题，分为水平越权和垂直越权两种类型。这类漏洞源于后端未对用户权限进行严格校验，允许攻击者访问未授权的数据或执行受限操作。本文基于 Pikachu 靶场 的 Over Permission 模块，详细讲解水平越权和垂直越权的成因、危害、利用方式及修复方法，旨在帮助安全从业者和开发者深入理解并防范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）">
+<meta property="og:url" content="https://bae-ace.github.io/2025/08/02/Pikachu-%E9%9D%B6%E5%9C%BA%EF%BC%9A%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88%E6%B0%B4%E5%B9%B3%E8%B6%8A%E6%9D%83%E4%B8%8E%E5%9E%82%E7%9B%B4%E8%B6%8A%E6%9D%83%EF%BC%89/index.html">
+<meta property="og:site_name" content="bae的博客">
+<meta property="og:description" content="Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）一、前言权限绕过漏洞是 Web 应用中常见的安全问题，分为水平越权和垂直越权两种类型。这类漏洞源于后端未对用户权限进行严格校验，允许攻击者访问未授权的数据或执行受限操作。本文基于 Pikachu 靶场 的 Over Permission 模块，详细讲解水平越权和垂直越权的成因、危害、利用方式及修复方法，旨在帮助安全从业者和开发者深入理解并防范">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bae-ace.github.io/img/pikachu-over-permission-cover.jpg">
+<meta property="article:published_time" content="2025-08-02T10:00:32.000Z">
+<meta property="article:modified_time" content="2025-08-02T10:25:00.584Z">
+<meta property="article:author" content="bae">
+<meta property="article:tag" content="Web安全">
+<meta property="article:tag" content="权限绕过">
+<meta property="article:tag" content="水平越权">
+<meta property="article:tag" content="垂e直越权">
+<meta property="article:tag" content="Pikachu靶场">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bae-ace.github.io/img/pikachu-over-permission-cover.jpg">
+  
+  
+  
+  <title>Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权） - bae的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bae-ace.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":60,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","app_key":"lVqIfnWUAiZZLIag2RoSpxoo","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2025-07-19T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>bae&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-books"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-book"></i>
+                <span>文档</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/" target="_self">
+                    
+                    <span>主题博客</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/guide/" target="_self">
+                    
+                    <span>配置指南</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_self">
+                    
+                    <span>图标用法</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/AI%E9%A3%8E%E6%99%AF.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        bae
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-02 18:00" pubdate>
+           2025 年 08 月 02 日 , 晚上 06:00 , 星期六
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span>次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Pikachu-靶场：权限绕过漏洞（水平越权与垂直越权）"><a href="#Pikachu-靶场：权限绕过漏洞（水平越权与垂直越权）" class="headerlink" title="Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）"></a>Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）</h1><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p><strong>权限绕过漏洞</strong>是 Web 应用中常见的安全问题，分为<strong>水平越权</strong>和<strong>垂直越权</strong>两种类型。这类漏洞源于后端未对用户权限进行严格校验，允许攻击者访问未授权的数据或执行受限操作。本文基于 <strong>Pikachu 靶场</strong> 的 <strong>Over Permission 模块</strong>，详细讲解水平越权和垂直越权的成因、危害、利用方式及修复方法，旨在帮助安全从业者和开发者深入理解并防范此类漏洞。</p>
+<hr>
+<h2 id="二、权限绕过漏洞概述"><a href="#二、权限绕过漏洞概述" class="headerlink" title="二、权限绕过漏洞概述"></a>二、权限绕过漏洞概述</h2><h3 id="1-什么是权限绕过漏洞？"><a href="#1-什么是权限绕过漏洞？" class="headerlink" title="1. 什么是权限绕过漏洞？"></a>1. 什么是权限绕过漏洞？</h3><p>权限绕过漏洞是指 Web 应用未正确验证用户权限，导致攻击者能够访问或操作超出其权限范围的资源或功能。按权限方向分为两种类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>水平越权</strong></td>
+<td>普通用户 A 能访问普通用户 B 的资源或数据（如查看其他用户的隐私信息）</td>
+</tr>
+<tr>
+<td><strong>垂直越权</strong></td>
+<td>普通用户通过伪造参数，执行只有管理员才能完成的操作（如用户管理）</td>
+</tr>
+</tbody></table>
+<h3 id="2-危害"><a href="#2-危害" class="headerlink" title="2. 危害"></a>2. 危害</h3><ul>
+<li><strong>水平越权</strong>：<ul>
+<li>泄露其他用户的敏感信息（如个人信息、订单记录）</li>
+<li>篡改其他用户的数据</li>
+</ul>
+</li>
+<li><strong>垂直越权</strong>：<ul>
+<li>执行管理功能（如创建&#x2F;删除用户、修改系统配置）</li>
+<li>完全控制 Web 应用</li>
+</ul>
+</li>
+<li><strong>潜在后果</strong>：<ul>
+<li>数据泄露</li>
+<li>系统功能滥用</li>
+<li>服务器被接管</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="三、靶场环境"><a href="#三、靶场环境" class="headerlink" title="三、靶场环境"></a>三、靶场环境</h2><h3 id="1-靶场信息"><a href="#1-靶场信息" class="headerlink" title="1. 靶场信息"></a>1. 靶场信息</h3><ul>
+<li><strong>地址</strong>：<code>http://192.168.147.137/pikachu/</code></li>
+<li><strong>监听端口</strong>：81</li>
+<li><strong>漏洞模块</strong>：<ul>
+<li><strong>水平越权</strong>：<code>/vul/overpermission/op1/</code></li>
+<li><strong>垂直越权</strong>：<code>/vul/overpermission/op2/</code></li>
+</ul>
+</li>
+<li><strong>测试工具</strong>：<ul>
+<li>Burp Suite（抓包与请求重放）</li>
+<li>浏览器（推荐 Firefox）</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-用户信息"><a href="#2-用户信息" class="headerlink" title="2. 用户信息"></a>2. 用户信息</h3><table>
+<thead>
+<tr>
+<th>用户名</th>
+<th>密码</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>kobe</code></td>
+<td>（任意）</td>
+<td>普通用户</td>
+</tr>
+<tr>
+<td><code>lucy</code></td>
+<td>（任意）</td>
+<td>普通用户</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td><code>123456</code></td>
+<td>管理员</td>
+</tr>
+<tr>
+<td><code>pikachu</code></td>
+<td><code>000000</code></td>
+<td>普通用户</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、水平越权漏洞实战-🎯"><a href="#四、水平越权漏洞实战-🎯" class="headerlink" title="四、水平越权漏洞实战 🎯"></a>四、水平越权漏洞实战 🎯</h2><h3 id="1-场景说明"><a href="#1-场景说明" class="headerlink" title="1. 场景说明"></a>1. 场景说明</h3><p>Pikachu 靶场的水平越权模块模拟了一个用户信息查询接口：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><br><span class="hljs-built_in">GET</span> /vul/overpermission/op1/op1_mem.php?<span class="hljs-attribute">username</span>=xxx<br><br></code></pre></td></tr></table></figure>
+
+<p>普通用户（如 <code>kobe</code>）登录后，可通过该接口查看自己的信息。但由于后端未验证请求参数 <code>username</code> 是否与当前用户匹配，攻击者可通过修改 <code>username</code> 参数，访问其他用户（如 <code>lucy</code>）的私有信息。</p>
+<h3 id="2-攻击步骤"><a href="#2-攻击步骤" class="headerlink" title="2. 攻击步骤"></a>2. 攻击步骤</h3><ol>
+<li><strong>登录 kobe 账户</strong>：<ul>
+<li>访问 <code>http://192.168.147.137:81/pikachu/</code>，使用 <code>kobe</code> 登录。</li>
+</ul>
+</li>
+<li><strong>抓取请求</strong>：<ul>
+<li>打开 Burp Suite，配置代理（默认：<code>127.0.0.1:8080</code>）。</li>
+<li>使用 Firefox 访问：</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs url">http://192.168.147.137:81/vul/overpermission/op1/op1_mem.php?username=kobe<br></code></pre></td></tr></table></figure>
+<ul>
+<li>Burp 拦截到类似以下请求：<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/vul/overpermission/op1/op1_mem.php?username=kobe</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>192.168.147.137:81<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>PHPSESSID=&lt;kobe的session&gt;<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64)<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br></code></pre></td></tr></table></figure></li>
+</ul>
+<ol start="3">
+<li><strong>修改参数</strong>：<ul>
+<li>在 Burp 的 Repeater 模块中，将 <code>username=kobe</code> 改为 <code>username=lucy</code>：<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">GET</span> /vul/overpermission/op1/op1_mem.php?<span class="hljs-attribute">username</span>=lucy HTTP/1.1<br>Host: 192.168.147.137:81<br>Cookie: <span class="hljs-attribute">PHPSESSID</span>=&lt;kobe的session&gt;<br><span class="hljs-built_in">..</span>.<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>发送请求</strong>：<ul>
+<li>点击发送，页面返回 <code>lucy</code> 的隐私数据（如邮箱、电话等）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-安全问题"><a href="#3-安全问题" class="headerlink" title="3. 安全问题"></a>3. 安全问题</h3><ul>
+<li>后端直接信任 GET 参数 <code>username</code>，未验证是否与当前会话用户（<code>$_SESSION[&#39;user&#39;]</code>）匹配。</li>
+<li>缺乏用户身份校验，导致普通用户可访问任意用户的数据。</li>
+</ul>
+<h3 id="4-修复建议"><a href="#4-修复建议" class="headerlink" title="4. 修复建议"></a>4. 修复建议</h3><p>在后端添加用户身份校验逻辑，确保请求的用户与会话用户一致：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span> (<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;user&#x27;</span>] != <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;username&#x27;</span>]) &#123;<br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;非法访问！&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、垂直越权漏洞实战"><a href="#五、垂直越权漏洞实战" class="headerlink" title="五、垂直越权漏洞实战"></a>五、垂直越权漏洞实战</h2><h3 id="1-场景说明-1"><a href="#1-场景说明-1" class="headerlink" title="1. 场景说明"></a>1. 场景说明</h3><p>Pikachu 靶场的垂直越权模块模拟了一个管理员管理接口：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">POST <span class="hljs-regexp">/vul/</span>overpermission<span class="hljs-regexp">/op2/</span>op2_admin_edit.php<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>管理员</strong>（<code>admin</code> &#x2F; <code>123456</code>）可通过该接口创建或修改用户信息。</li>
+<li><strong>普通用户</strong>（<code>pikachu</code> &#x2F; <code>000000</code>）本应无权访问该接口。</li>
+<li>由于后端未验证用户角色，普通用户可伪造请求执行管理操作。</li>
+</ul>
+<h3 id="2-攻击流程"><a href="#2-攻击流程" class="headerlink" title="2. 攻击流程"></a>2. 攻击流程</h3><ol>
+<li><strong>登录普通用户 pikachu</strong>：<ul>
+<li>访问 <code>http://192.168.147.137:81/pikachu/</code>，使用 <code>pikachu</code> &#x2F; <code>000000</code> 登录。</li>
+</ul>
+</li>
+<li><strong>抓取管理员请求</strong>：<ul>
+<li><p>使用 <code>admin</code> 账户登录，访问管理接口，抓取 POST 请求：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/vul/overpermission/op2/op2_admin_edit.php</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>192.168.147.137:81<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>PHPSESSID=&lt;admin的session&gt;<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>133<br><br><span class="language-dts"><span class="hljs-attr">username</span><span class="hljs-operator">=</span>t3<span class="hljs-variable">&amp;password</span>=<span class="hljs-number">123456</span><span class="hljs-variable">&amp;sex</span>=女<span class="hljs-variable">&amp;phonenum</span>=<span class="hljs-number">12345678908</span><span class="hljs-variable">&amp;email</span>=t3@qq.com<span class="hljs-variable">&amp;address</span>=北京<span class="hljs-variable">&amp;submit</span>=创建</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>替换 Cookie</strong>：<ul>
+<li><p>在 Burp Repeater 中，将请求的 <code>Cookie</code> 替换为 <code>pikachu</code> 的会话：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Cookie: <span class="hljs-attribute">PHPSESSID</span>=&lt;pikachu的session&gt;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>重放请求</strong>：<ul>
+<li>发送修改后的 POST 请求，观察响应。</li>
+<li>如果成功，系统创建新用户 <code>t3</code> 。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-安全问题-1"><a href="#3-安全问题-1" class="headerlink" title="3. 安全问题"></a>3. 安全问题</h3><ul>
+<li>管理员功能接口仅由前端隐藏（如菜单不可见），后端未验证用户角色。</li>
+<li>普通用户通过伪造请求即可执行敏感操作（如创建用户）。</li>
+</ul>
+<h3 id="4-修复建议-1"><a href="#4-修复建议-1" class="headerlink" title="4. 修复建议"></a>4. 修复建议</h3><p>在后端添加角色校验逻辑，确保只有管理员可访问管理接口：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span> (<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;role&#x27;</span>] != <span class="hljs-string">&#x27;admin&#x27;</span>) &#123;<br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;无权访问该接口！&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、漏洞原理总结"><a href="#六、漏洞原理总结" class="headerlink" title="六、漏洞原理总结"></a>六、漏洞原理总结</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>水平越权</th>
+<th>垂直越权</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>漏洞位置</strong></td>
+<td>用户间数据接口</td>
+<td>后台管理功能接口</td>
+</tr>
+<tr>
+<td><strong>攻击方式</strong></td>
+<td>修改 <code>username</code> 参数</td>
+<td>重放管理员请求，伪造普通用户身份</td>
+</tr>
+<tr>
+<td><strong>问题本质</strong></td>
+<td>未验证请求是否属于当前用户</td>
+<td>未验证用户是否具有管理员权限</td>
+</tr>
+<tr>
+<td><strong>危害</strong></td>
+<td>数据泄露</td>
+<td>非授权操作、管理功能滥用</td>
+</tr>
+<tr>
+<td><strong>修复重点</strong></td>
+<td>接口绑定用户身份校验</td>
+<td>严格校验接口访问者的角色</td>
+</tr>
+</tbody></table>
+<h3 id="1-成因"><a href="#1-成因" class="headerlink" title="1. 成因"></a>1. 成因</h3><ul>
+<li><strong>水平越权</strong>：后端信任用户输入（如 <code>username</code>），未校验与会话用户的一致性。</li>
+<li><strong>垂直越权</strong>：管理接口未验证用户角色，允许任意用户通过伪造请求访问。</li>
+</ul>
+<h3 id="2-利用方式"><a href="#2-利用方式" class="headerlink" title="2. 利用方式"></a>2. 利用方式</h3><ul>
+<li><strong>水平越权</strong>：通过修改 URL 参数（如 <code>username</code>），访问其他用户数据。</li>
+<li><strong>垂直越权</strong>：使用 Burp Suite 重放管理员请求，替换为普通用户的会话。</li>
+</ul>
+<h3 id="3-危害"><a href="#3-危害" class="headerlink" title="3. 危害"></a>3. 危害</h3><ul>
+<li><strong>水平越权</strong>：导致用户隐私泄露，可能引发后续社会工程学攻击。</li>
+<li><strong>垂直越权</strong>：可能导致系统完全失控，如创建恶意管理员账户。</li>
+</ul>
+<hr>
+<h2 id="七、防护建议"><a href="#七、防护建议" class="headerlink" title="七、防护建议"></a>七、防护建议</h2><ol>
+<li><p><strong>严格权限校验</strong></p>
+<ul>
+<li><strong>水平越权</strong>：确保请求参数与当前会话用户一致（如 <code>$_SESSION[&#39;user&#39;] == $_GET[&#39;username&#39;]</code>）。</li>
+<li><strong>垂直越权</strong>：验证用户角色，确保管理接口仅管理员可访问（如 <code>$_SESSION[&#39;role&#39;] == &#39;admin&#39;</code>）。</li>
+</ul>
+</li>
+<li><p><strong>最小权限原则</strong></p>
+<ul>
+<li>配置 Web 应用以最低权限运行，限制普通用户的功能访问。</li>
+<li>确保敏感接口（如用户管理）仅对特定角色开放。</li>
+</ul>
+</li>
+<li><p><strong>安全编码</strong></p>
+<ul>
+<li>对所有用户输入进行严格校验，防止参数篡改。</li>
+<li>使用安全的会话管理机制（如 CSRF 令牌）。</li>
+</ul>
+</li>
+<li><p><strong>部署 WAF</strong></p>
+<ul>
+<li>配置 Web 应用防火墙，拦截异常请求（如非法的 <code>username</code> 参数或未授权的管理请求）。</li>
+<li>使用正则规则检测可疑参数。</li>
+</ul>
+</li>
+<li><p><strong>日志监控</strong></p>
+<ul>
+<li>记录所有接口访问日志，监控异常的权限请求。</li>
+<li>定期审计日志，及时发现潜在越权行为。</li>
+</ul>
+</li>
+<li><p><strong>前端与后端协同</strong></p>
+<ul>
+<li>前端隐藏敏感功能（如管理员菜单），但不能仅依赖前端控制。</li>
+<li>后端必须独立验证所有请求的权限。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>漏洞类型</strong></td>
+<td>权限绕过（水平越权、垂直越权）</td>
+</tr>
+<tr>
+<td><strong>靶场</strong></td>
+<td>Pikachu（<code>http://192.168.147.137:81/pikachu/</code>）</td>
+</tr>
+<tr>
+<td><strong>漏洞模块</strong></td>
+<td><code>/vul/overpermission/op1/</code>（水平越权）<br> &#x2F;vul&#x2F;overpermission&#x2F;op2&#x2F;（垂直越权）</td>
+</tr>
+<tr>
+<td><strong>危害</strong></td>
+<td>数据泄露、未经授权的操作、系统失控</td>
+</tr>
+<tr>
+<td><strong>修复核心</strong></td>
+<td>用户身份校验、角色权限验证</td>
+</tr>
+</tbody></table>
+<p>Pikachu 靶场的 <strong>Over Permission 模块</strong> 通过模拟水平越权和垂直越权场景，展示了权限校验缺失的严重后果。水平越权允许普通用户访问其他用户数据，垂直越权则让普通用户执行管理员操作。通过本文的复现，读者可以深入理解越权漏洞的成因、利用方式及修复方法。开发者应在开发中始终遵循“后端校验优先”原则，结合 WAF 和日志监控，构建安全的 Web 应用。</p>
+<blockquote>
+<p><strong>免责声明</strong>：本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/" class="category-chain-item">Web安全</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Web%E5%AE%89%E5%85%A8/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="category-chain-item">漏洞分析</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Web%E5%AE%89%E5%85%A8/" class="print-no-link">#Web安全</a>
+      
+        <a href="/tags/%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87/" class="print-no-link">#权限绕过</a>
+      
+        <a href="/tags/%E6%B0%B4%E5%B9%B3%E8%B6%8A%E6%9D%83/" class="print-no-link">#水平越权</a>
+      
+        <a href="/tags/%E5%9E%82e%E7%9B%B4%E8%B6%8A%E6%9D%83/" class="print-no-link">#垂e直越权</a>
+      
+        <a href="/tags/Pikachu%E9%9D%B6%E5%9C%BA/" class="print-no-link">#Pikachu靶场</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）</div>
+      <div>https://bae-ace.github.io/2025/08/02/Pikachu-靶场：权限绕过漏洞（水平越权与垂直越权）/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bae</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/" title="Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）">
+                        <span class="hidden-mobile">Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"CHbSLmwKFof8sHkOvlnoDfza-MdYXbMMI","appKey":"lVqIfnWUAiZZLIag2RoSpxoo","serverURLs":"https://chbslmwk.api.lncldglobal.com","placeholder":"留言仅限讨论，禁止广告等行为","path":"window.location.pathname","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://bae-ace.github.io" target="_blank" rel="nofollow noopener"><span>github</span></a> <i class="iconfont icon-love"></i> <a href="https://bae-ace.github.io/" target="_blank" rel="nofollow noopener"><span>bae</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/love.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxingxing.js"></script>
+<script src="//cdn.jsdelivr.net/gh/bynotes/texiao/source/js/xiaoxuehua.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

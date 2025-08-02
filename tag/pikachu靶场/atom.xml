@@ -1,0 +1,328 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://bae-ace.github.io</id>
+    <title>bae的博客 • Posts by &#34;pikachu靶场&#34; tag</title>
+    <link href="https://bae-ace.github.io" />
+    <updated>2025-08-02T10:00:32.000Z</updated>
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="PHP" />
+    <category term="SSRF" />
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
+    <category term="权限绕过" />
+    <category term="水平越权" />
+    <category term="垂e直越权" />
+    <category term="Pikachu靶场" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="Struts2" />
+    <category term="RCE" />
+    <category term="OGNL注入" />
+    <category term="ThinkPHP" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="命令执行" />
+    <category term="漏洞利用" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/08/02/Pikachu-%E9%9D%B6%E5%9C%BA%EF%BC%9A%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88%E6%B0%B4%E5%B9%B3%E8%B6%8A%E6%9D%83%E4%B8%8E%E5%9E%82%E7%9B%B4%E8%B6%8A%E6%9D%83%EF%BC%89/</id>
+        <title>Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/08/02/Pikachu-%E9%9D%B6%E5%9C%BA%EF%BC%9A%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88%E6%B0%B4%E5%B9%B3%E8%B6%8A%E6%9D%83%E4%B8%8E%E5%9E%82%E7%9B%B4%E8%B6%8A%E6%9D%83%EF%BC%89/"/>
+        <content type="html">&lt;h1 id=&#34;Pikachu-靶场：权限绕过漏洞（水平越权与垂直越权）&#34;&gt;&lt;a href=&#34;#Pikachu-靶场：权限绕过漏洞（水平越权与垂直越权）&#34; class=&#34;headerlink&#34; title=&#34;Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）&#34;&gt;&lt;/a&gt;Pikachu 靶场：权限绕过漏洞（水平越权与垂直越权）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;权限绕过漏洞&lt;/strong&gt;是 Web 应用中常见的安全问题，分为&lt;strong&gt;水平越权&lt;/strong&gt;和&lt;strong&gt;垂直越权&lt;/strong&gt;两种类型。这类漏洞源于后端未对用户权限进行严格校验，允许攻击者访问未授权的数据或执行受限操作。本文基于 &lt;strong&gt;Pikachu 靶场&lt;/strong&gt; 的 &lt;strong&gt;Over Permission 模块&lt;/strong&gt;，详细讲解水平越权和垂直越权的成因、危害、利用方式及修复方法，旨在帮助安全从业者和开发者深入理解并防范此类漏洞。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、权限绕过漏洞概述&#34;&gt;&lt;a href=&#34;#二、权限绕过漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;二、权限绕过漏洞概述&#34;&gt;&lt;/a&gt;二、权限绕过漏洞概述&lt;/h2&gt;&lt;h3 id=&#34;1-什么是权限绕过漏洞？&#34;&gt;&lt;a href=&#34;#1-什么是权限绕过漏洞？&#34; class=&#34;headerlink&#34; title=&#34;1. 什么是权限绕过漏洞？&#34;&gt;&lt;/a&gt;1. 什么是权限绕过漏洞？&lt;/h3&gt;&lt;p&gt;权限绕过漏洞是指 Web 应用未正确验证用户权限，导致攻击者能够访问或操作超出其权限范围的资源或功能。按权限方向分为两种类型：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;类型&lt;/th&gt;
+&lt;th&gt;定义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;水平越权&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;普通用户 A 能访问普通用户 B 的资源或数据（如查看其他用户的隐私信息）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;普通用户通过伪造参数，执行只有管理员才能完成的操作（如用户管理）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;2-危害&#34;&gt;&lt;a href=&#34;#2-危害&#34; class=&#34;headerlink&#34; title=&#34;2. 危害&#34;&gt;&lt;/a&gt;2. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;泄露其他用户的敏感信息（如个人信息、订单记录）&lt;/li&gt;
+&lt;li&gt;篡改其他用户的数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;执行管理功能（如创建&amp;#x2F;删除用户、修改系统配置）&lt;/li&gt;
+&lt;li&gt;完全控制 Web 应用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;潜在后果&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;数据泄露&lt;/li&gt;
+&lt;li&gt;系统功能滥用&lt;/li&gt;
+&lt;li&gt;服务器被接管&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、靶场环境&#34;&gt;&lt;a href=&#34;#三、靶场环境&#34; class=&#34;headerlink&#34; title=&#34;三、靶场环境&#34;&gt;&lt;/a&gt;三、靶场环境&lt;/h2&gt;&lt;h3 id=&#34;1-靶场信息&#34;&gt;&lt;a href=&#34;#1-靶场信息&#34; class=&#34;headerlink&#34; title=&#34;1. 靶场信息&#34;&gt;&lt;/a&gt;1. 靶场信息&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;地址&lt;/strong&gt;：&lt;code&gt;http://192.168.147.137/pikachu/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监听端口&lt;/strong&gt;：81&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏洞模块&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：&lt;code&gt;/vul/overpermission/op1/&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：&lt;code&gt;/vul/overpermission/op2/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;测试工具&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;Burp Suite（抓包与请求重放）&lt;/li&gt;
+&lt;li&gt;浏览器（推荐 Firefox）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-用户信息&#34;&gt;&lt;a href=&#34;#2-用户信息&#34; class=&#34;headerlink&#34; title=&#34;2. 用户信息&#34;&gt;&lt;/a&gt;2. 用户信息&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;用户名&lt;/th&gt;
+&lt;th&gt;密码&lt;/th&gt;
+&lt;th&gt;角色&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;kobe&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;（任意）&lt;/td&gt;
+&lt;td&gt;普通用户&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;lucy&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;（任意）&lt;/td&gt;
+&lt;td&gt;普通用户&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;admin&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;123456&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;管理员&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;pikachu&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;000000&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;普通用户&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、水平越权漏洞实战-🎯&#34;&gt;&lt;a href=&#34;#四、水平越权漏洞实战-🎯&#34; class=&#34;headerlink&#34; title=&#34;四、水平越权漏洞实战 🎯&#34;&gt;&lt;/a&gt;四、水平越权漏洞实战 🎯&lt;/h2&gt;&lt;h3 id=&#34;1-场景说明&#34;&gt;&lt;a href=&#34;#1-场景说明&#34; class=&#34;headerlink&#34; title=&#34;1. 场景说明&#34;&gt;&lt;/a&gt;1. 场景说明&lt;/h3&gt;&lt;p&gt;Pikachu 靶场的水平越权模块模拟了一个用户信息查询接口：&lt;/p&gt;
+&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;GET&lt;/span&gt; /vul/overpermission/op1/op1_mem.php?&lt;span class=&#34;hljs-attribute&#34;&gt;username&lt;/span&gt;=xxx&lt;br&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;普通用户（如 &lt;code&gt;kobe&lt;/code&gt;）登录后，可通过该接口查看自己的信息。但由于后端未验证请求参数 &lt;code&gt;username&lt;/code&gt; 是否与当前用户匹配，攻击者可通过修改 &lt;code&gt;username&lt;/code&gt; 参数，访问其他用户（如 &lt;code&gt;lucy&lt;/code&gt;）的私有信息。&lt;/p&gt;
+&lt;h3 id=&#34;2-攻击步骤&#34;&gt;&lt;a href=&#34;#2-攻击步骤&#34; class=&#34;headerlink&#34; title=&#34;2. 攻击步骤&#34;&gt;&lt;/a&gt;2. 攻击步骤&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;登录 kobe 账户&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;访问 &lt;code&gt;http://192.168.147.137:81/pikachu/&lt;/code&gt;，使用 &lt;code&gt;kobe&lt;/code&gt; 登录。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;抓取请求&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;打开 Burp Suite，配置代理（默认：&lt;code&gt;127.0.0.1:8080&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;使用 Firefox 访问：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs url&#34;&gt;http://192.168.147.137:81/vul/overpermission/op1/op1_mem.php?username=kobe&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;Burp 拦截到类似以下请求：&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;GET&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;/vul/overpermission/op1/op1_mem.php?username=kobe&lt;/span&gt; &lt;span class=&#34;hljs-meta&#34;&gt;HTTP/1.1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Host&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;192.168.147.137:81&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Cookie&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;PHPSESSID=&amp;lt;kobe的session&amp;gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;User-Agent&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Accept&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;text/html&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Connection&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;close&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;&lt;strong&gt;修改参数&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在 Burp 的 Repeater 模块中，将 &lt;code&gt;username=kobe&lt;/code&gt; 改为 &lt;code&gt;username=lucy&lt;/code&gt;：&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;GET&lt;/span&gt; /vul/overpermission/op1/op1_mem.php?&lt;span class=&#34;hljs-attribute&#34;&gt;username&lt;/span&gt;=lucy HTTP/1.1&lt;br&gt;Host: 192.168.147.137:81&lt;br&gt;Cookie: &lt;span class=&#34;hljs-attribute&#34;&gt;PHPSESSID&lt;/span&gt;=&amp;lt;kobe的session&amp;gt;&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;..&lt;/span&gt;.&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;点击发送，页面返回 &lt;code&gt;lucy&lt;/code&gt; 的隐私数据（如邮箱、电话等）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-安全问题&#34;&gt;&lt;a href=&#34;#3-安全问题&#34; class=&#34;headerlink&#34; title=&#34;3. 安全问题&#34;&gt;&lt;/a&gt;3. 安全问题&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;后端直接信任 GET 参数 &lt;code&gt;username&lt;/code&gt;，未验证是否与当前会话用户（&lt;code&gt;$_SESSION[&amp;#39;user&amp;#39;]&lt;/code&gt;）匹配。&lt;/li&gt;
+&lt;li&gt;缺乏用户身份校验，导致普通用户可访问任意用户的数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-修复建议&#34;&gt;&lt;a href=&#34;#4-修复建议&#34; class=&#34;headerlink&#34; title=&#34;4. 修复建议&#34;&gt;&lt;/a&gt;4. 修复建议&lt;/h3&gt;&lt;p&gt;在后端添加用户身份校验逻辑，确保请求的用户与会话用户一致：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;user&amp;#x27;&lt;/span&gt;] != &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;username&amp;#x27;&lt;/span&gt;]) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;非法访问！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;五、垂直越权漏洞实战&#34;&gt;&lt;a href=&#34;#五、垂直越权漏洞实战&#34; class=&#34;headerlink&#34; title=&#34;五、垂直越权漏洞实战&#34;&gt;&lt;/a&gt;五、垂直越权漏洞实战&lt;/h2&gt;&lt;h3 id=&#34;1-场景说明-1&#34;&gt;&lt;a href=&#34;#1-场景说明-1&#34; class=&#34;headerlink&#34; title=&#34;1. 场景说明&#34;&gt;&lt;/a&gt;1. 场景说明&lt;/h3&gt;&lt;p&gt;Pikachu 靶场的垂直越权模块模拟了一个管理员管理接口：&lt;/p&gt;
+&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;POST &lt;span class=&#34;hljs-regexp&#34;&gt;/vul/&lt;/span&gt;overpermission&lt;span class=&#34;hljs-regexp&#34;&gt;/op2/&lt;/span&gt;op2_admin_edit.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;管理员&lt;/strong&gt;（&lt;code&gt;admin&lt;/code&gt; &amp;#x2F; &lt;code&gt;123456&lt;/code&gt;）可通过该接口创建或修改用户信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;普通用户&lt;/strong&gt;（&lt;code&gt;pikachu&lt;/code&gt; &amp;#x2F; &lt;code&gt;000000&lt;/code&gt;）本应无权访问该接口。&lt;/li&gt;
+&lt;li&gt;由于后端未验证用户角色，普通用户可伪造请求执行管理操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-攻击流程&#34;&gt;&lt;a href=&#34;#2-攻击流程&#34; class=&#34;headerlink&#34; title=&#34;2. 攻击流程&#34;&gt;&lt;/a&gt;2. 攻击流程&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;登录普通用户 pikachu&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;访问 &lt;code&gt;http://192.168.147.137:81/pikachu/&lt;/code&gt;，使用 &lt;code&gt;pikachu&lt;/code&gt; &amp;#x2F; &lt;code&gt;000000&lt;/code&gt; 登录。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;抓取管理员请求&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;使用 &lt;code&gt;admin&lt;/code&gt; 账户登录，访问管理接口，抓取 POST 请求：&lt;/p&gt;
+&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;POST&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;/vul/overpermission/op2/op2_admin_edit.php&lt;/span&gt; &lt;span class=&#34;hljs-meta&#34;&gt;HTTP/1.1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Host&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;192.168.147.137:81&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Cookie&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;PHPSESSID=&amp;lt;admin的session&amp;gt;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Content-Type&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;application/x-www-form-urlencoded&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Content-Length&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;133&lt;br&gt;&lt;br&gt;&lt;span class=&#34;language-dts&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;username&lt;/span&gt;&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;t3&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;password&lt;/span&gt;=&lt;span class=&#34;hljs-number&#34;&gt;123456&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;sex&lt;/span&gt;=女&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;phonenum&lt;/span&gt;=&lt;span class=&#34;hljs-number&#34;&gt;12345678908&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;email&lt;/span&gt;=t3@qq.com&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;address&lt;/span&gt;=北京&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;submit&lt;/span&gt;=创建&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;替换 Cookie&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在 Burp Repeater 中，将请求的 &lt;code&gt;Cookie&lt;/code&gt; 替换为 &lt;code&gt;pikachu&lt;/code&gt; 的会话：&lt;/p&gt;
+&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;Cookie: &lt;span class=&#34;hljs-attribute&#34;&gt;PHPSESSID&lt;/span&gt;=&amp;lt;pikachu的session&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重放请求&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;发送修改后的 POST 请求，观察响应。&lt;/li&gt;
+&lt;li&gt;如果成功，系统创建新用户 &lt;code&gt;t3&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-安全问题-1&#34;&gt;&lt;a href=&#34;#3-安全问题-1&#34; class=&#34;headerlink&#34; title=&#34;3. 安全问题&#34;&gt;&lt;/a&gt;3. 安全问题&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;管理员功能接口仅由前端隐藏（如菜单不可见），后端未验证用户角色。&lt;/li&gt;
+&lt;li&gt;普通用户通过伪造请求即可执行敏感操作（如创建用户）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-修复建议-1&#34;&gt;&lt;a href=&#34;#4-修复建议-1&#34; class=&#34;headerlink&#34; title=&#34;4. 修复建议&#34;&gt;&lt;/a&gt;4. 修复建议&lt;/h3&gt;&lt;p&gt;在后端添加角色校验逻辑，确保只有管理员可访问管理接口：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;role&amp;#x27;&lt;/span&gt;] != &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;admin&amp;#x27;&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;无权访问该接口！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;六、漏洞原理总结&#34;&gt;&lt;a href=&#34;#六、漏洞原理总结&#34; class=&#34;headerlink&#34; title=&#34;六、漏洞原理总结&#34;&gt;&lt;/a&gt;六、漏洞原理总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;水平越权&lt;/th&gt;
+&lt;th&gt;垂直越权&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞位置&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;用户间数据接口&lt;/td&gt;
+&lt;td&gt;后台管理功能接口&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;攻击方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;修改 &lt;code&gt;username&lt;/code&gt; 参数&lt;/td&gt;
+&lt;td&gt;重放管理员请求，伪造普通用户身份&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;问题本质&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;未验证请求是否属于当前用户&lt;/td&gt;
+&lt;td&gt;未验证用户是否具有管理员权限&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;数据泄露&lt;/td&gt;
+&lt;td&gt;非授权操作、管理功能滥用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;修复重点&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;接口绑定用户身份校验&lt;/td&gt;
+&lt;td&gt;严格校验接口访问者的角色&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;1-成因&#34;&gt;&lt;a href=&#34;#1-成因&#34; class=&#34;headerlink&#34; title=&#34;1. 成因&#34;&gt;&lt;/a&gt;1. 成因&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：后端信任用户输入（如 &lt;code&gt;username&lt;/code&gt;），未校验与会话用户的一致性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：管理接口未验证用户角色，允许任意用户通过伪造请求访问。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-利用方式&#34;&gt;&lt;a href=&#34;#2-利用方式&#34; class=&#34;headerlink&#34; title=&#34;2. 利用方式&#34;&gt;&lt;/a&gt;2. 利用方式&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：通过修改 URL 参数（如 &lt;code&gt;username&lt;/code&gt;），访问其他用户数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：使用 Burp Suite 重放管理员请求，替换为普通用户的会话。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-危害&#34;&gt;&lt;a href=&#34;#3-危害&#34; class=&#34;headerlink&#34; title=&#34;3. 危害&#34;&gt;&lt;/a&gt;3. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：导致用户隐私泄露，可能引发后续社会工程学攻击。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：可能导致系统完全失控，如创建恶意管理员账户。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、防护建议&#34;&gt;&lt;a href=&#34;#七、防护建议&#34; class=&#34;headerlink&#34; title=&#34;七、防护建议&#34;&gt;&lt;/a&gt;七、防护建议&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;严格权限校验&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水平越权&lt;/strong&gt;：确保请求参数与当前会话用户一致（如 &lt;code&gt;$_SESSION[&amp;#39;user&amp;#39;] == $_GET[&amp;#39;username&amp;#39;]&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;垂直越权&lt;/strong&gt;：验证用户角色，确保管理接口仅管理员可访问（如 &lt;code&gt;$_SESSION[&amp;#39;role&amp;#39;] == &amp;#39;admin&amp;#39;&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;最小权限原则&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置 Web 应用以最低权限运行，限制普通用户的功能访问。&lt;/li&gt;
+&lt;li&gt;确保敏感接口（如用户管理）仅对特定角色开放。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;安全编码&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对所有用户输入进行严格校验，防止参数篡改。&lt;/li&gt;
+&lt;li&gt;使用安全的会话管理机制（如 CSRF 令牌）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;部署 WAF&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置 Web 应用防火墙，拦截异常请求（如非法的 &lt;code&gt;username&lt;/code&gt; 参数或未授权的管理请求）。&lt;/li&gt;
+&lt;li&gt;使用正则规则检测可疑参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;日志监控&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记录所有接口访问日志，监控异常的权限请求。&lt;/li&gt;
+&lt;li&gt;定期审计日志，及时发现潜在越权行为。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;前端与后端协同&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;前端隐藏敏感功能（如管理员菜单），但不能仅依赖前端控制。&lt;/li&gt;
+&lt;li&gt;后端必须独立验证所有请求的权限。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八、总结&#34;&gt;&lt;a href=&#34;#八、总结&#34; class=&#34;headerlink&#34; title=&#34;八、总结&#34;&gt;&lt;/a&gt;八、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;权限绕过（水平越权、垂直越权）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;靶场&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Pikachu（&lt;code&gt;http://192.168.147.137:81/pikachu/&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞模块&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;/vul/overpermission/op1/&lt;/code&gt;（水平越权）&lt;br&gt; &amp;#x2F;vul&amp;#x2F;overpermission&amp;#x2F;op2&amp;#x2F;（垂直越权）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;数据泄露、未经授权的操作、系统失控&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;修复核心&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;用户身份校验、角色权限验证&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;Pikachu 靶场的 &lt;strong&gt;Over Permission 模块&lt;/strong&gt; 通过模拟水平越权和垂直越权场景，展示了权限校验缺失的严重后果。水平越权允许普通用户访问其他用户数据，垂直越权则让普通用户执行管理员操作。通过本文的复现，读者可以深入理解越权漏洞的成因、利用方式及修复方法。开发者应在开发中始终遵循“后端校验优先”原则，结合 WAF 和日志监控，构建安全的 Web 应用。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+        <category term="Web安全" />
+        <category term="权限绕过" />
+        <category term="水平越权" />
+        <category term="垂e直越权" />
+        <category term="Pikachu靶场" />
+        <updated>2025-08-02T10:00:32.000Z</updated>
+    </entry>
+</feed>
