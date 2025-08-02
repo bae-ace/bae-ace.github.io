@@ -8,27 +8,27 @@
         <pubDate>Sat, 02 Aug 2025 18:00:32 +0800</pubDate>
         <lastBuildDate>Sat, 02 Aug 2025 18:00:32 +0800</lastBuildDate>
         <category>Web安全</category>
-        <category>Solr</category>
+        <category>PHP</category>
         <category>XXE</category>
+        <category>SSRF</category>
         <category>漏洞复现</category>
+        <category>权限绕过</category>
+        <category>水平越权</category>
+        <category>垂e直越权</category>
+        <category>Pikachu靶场</category>
+        <category>Solr</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>PHP</category>
-        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>权限绕过</category>
-        <category>水平越权</category>
-        <category>垂e直越权</category>
-        <category>Pikachu靶场</category>
+        <category>SQL注入</category>
+        <category>渗透测试</category>
+        <category>网络安全</category>
         <category>工具</category>
         <category>sqlmap</category>
-        <category>渗透测试</category>
-        <category>SQL注入</category>
-        <category>网络安全</category>
         <category>Struts2</category>
         <category>RCE</category>
         <category>OGNL注入</category>
@@ -333,9 +333,9 @@
             <title>Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</title>
             <link>https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/</link>
             <category>Web安全</category>
-            <category>Solr</category>
             <category>XXE</category>
             <category>漏洞复现</category>
+            <category>Solr</category>
             <category>Vulhub</category>
             <category>Kali</category>
             <pubDate>Fri, 01 Aug 2025 17:54:17 +0800</pubDate>
@@ -569,10 +569,10 @@
             <title>PHP XXE 漏洞利用与原理</title>
             <link>https://bae-ace.github.io/2025/07/29/PHP-XXE-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/</link>
             <category>Web安全</category>
-            <category>XXE</category>
-            <category>漏洞复现</category>
             <category>PHP</category>
+            <category>XXE</category>
             <category>SSRF</category>
+            <category>漏洞复现</category>
             <pubDate>Tue, 29 Jul 2025 14:39:23 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;PHP-XXE-漏洞利用与原理&#34;&gt;&lt;a href=&#34;#PHP-XXE-漏洞利用与原理&#34; class=&#34;headerlink&#34; title=&#34;PHP XXE 漏洞利用与原理&#34;&gt;&lt;/a&gt;PHP XXE 漏洞利用与原理&lt;/h1&gt;&lt;h2 id=&#34;引言&#34;&gt;&lt;a href=&#34;#引言&#34; class=&#34;headerlink&#34; title=&#34;引言&#34;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;XML External Entity Injection（XXE）是一种针对 XML 解析器的安全漏洞，广泛存在于处理 XML 输入的 Web 应用中。PHP 应用若使用不安全的 XML 解析配置，可能导致攻击者通过构造恶意 XML 载荷读取敏感文件、发起 SSRF（服务器端请求伪造）或执行其他恶意操作。本文将详细讲解 PHP XXE 漏洞的原理、利用步骤、靶场环境搭建，以及防护建议，旨在帮助读者深入理解并有效应对此类漏洞。&lt;/p&gt;
 &lt;hr&gt;
@@ -1591,8 +1591,8 @@
             <title>SQL注入攻击详解</title>
             <link>https://bae-ace.github.io/2025/07/24/SQL%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E8%AF%A6%E8%A7%A3/</link>
             <category>Web安全</category>
-            <category>渗透测试</category>
             <category>SQL注入</category>
+            <category>渗透测试</category>
             <category>网络安全</category>
             <pubDate>Thu, 24 Jul 2025 07:51:59 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;SQL注入攻击详解&#34;&gt;&lt;a href=&#34;#SQL注入攻击详解&#34; class=&#34;headerlink&#34; title=&#34;SQL注入攻击详解&#34;&gt;&lt;/a&gt;SQL注入攻击详解&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;SQL注入作为Web应用程序中最常见的安全漏洞之一，至今仍是攻击者利用的主要手段。本文将详细讲解SQL注入的各种利用方式，帮助安全研究人员和开发者深入理解这一经典漏洞。&lt;/p&gt;
@@ -2056,9 +2056,9 @@
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</guid>
             <title>SQLMap 自动化 SQL 注入工具</title>
             <link>https://bae-ace.github.io/2025/07/21/SQLMap-%E8%87%AA%E5%8A%A8%E5%8C%96-SQL-%E6%B3%A8%E5%85%A5%E5%B7%A5%E5%85%B7/</link>
+            <category>渗透测试</category>
             <category>工具</category>
             <category>sqlmap</category>
-            <category>渗透测试</category>
             <pubDate>Mon, 21 Jul 2025 19:33:02 +0800</pubDate>
             <description><![CDATA[ &lt;h2 id=&#34;SQLMap-自动化-SQL-注入工具&#34;&gt;&lt;a href=&#34;#SQLMap-自动化-SQL-注入工具&#34; class=&#34;headerlink&#34; title=&#34;SQLMap 自动化 SQL 注入工具&#34;&gt;&lt;/a&gt;SQLMap 自动化 SQL 注入工具&lt;/h2&gt;&lt;h2 id=&#34;一、🔍-核心功能与命令选项&#34;&gt;&lt;a href=&#34;#一、🔍-核心功能与命令选项&#34; class=&#34;headerlink&#34; title=&#34;一、🔍 核心功能与命令选项&#34;&gt;&lt;/a&gt;一、🔍 核心功能与命令选项&lt;/h2&gt;&lt;h3 id=&#34;（一）基础检测类-🧪&#34;&gt;&lt;a href=&#34;#（一）基础检测类-🧪&#34; class=&#34;headerlink&#34; title=&#34;（一）基础检测类 🧪&#34;&gt;&lt;/a&gt;（一）基础检测类 🧪&lt;/h3&gt;&lt;table&gt;
 &lt;thead&gt;

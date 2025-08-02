@@ -59,11 +59,11 @@
       
       <tag>Web安全</tag>
       
-      <tag>Solr</tag>
-      
       <tag>XXE</tag>
       
       <tag>漏洞复现</tag>
+      
+      <tag>Solr</tag>
       
       <tag>Vulhub</tag>
       
@@ -96,13 +96,13 @@
       
       <tag>Web安全</tag>
       
-      <tag>XXE</tag>
-      
-      <tag>漏洞复现</tag>
-      
       <tag>PHP</tag>
       
+      <tag>XXE</tag>
+      
       <tag>SSRF</tag>
+      
+      <tag>漏洞复现</tag>
       
     </tags>
     
@@ -265,9 +265,9 @@
       
       <tag>Web安全</tag>
       
-      <tag>渗透测试</tag>
-      
       <tag>SQL注入</tag>
+      
+      <tag>渗透测试</tag>
       
       <tag>网络安全</tag>
       
@@ -331,11 +331,11 @@
     
     <tags>
       
+      <tag>渗透测试</tag>
+      
       <tag>工具</tag>
       
       <tag>sqlmap</tag>
-      
-      <tag>渗透测试</tag>
       
     </tags>
     
