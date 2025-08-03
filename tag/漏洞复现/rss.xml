@@ -5,13 +5,9 @@
         <link>https://bae-ace.github.io</link>
         <description>bae的个人博客</description>
         <language>zh-CN</language>
-        <pubDate>Fri, 01 Aug 2025 17:54:17 +0800</pubDate>
-        <lastBuildDate>Fri, 01 Aug 2025 17:54:17 +0800</lastBuildDate>
+        <pubDate>Sun, 03 Aug 2025 20:49:30 +0800</pubDate>
+        <lastBuildDate>Sun, 03 Aug 2025 20:49:30 +0800</lastBuildDate>
         <category>Web安全</category>
-        <category>权限绕过</category>
-        <category>水平越权</category>
-        <category>垂e直越权</category>
-        <category>Pikachu靶场</category>
         <category>Solr</category>
         <category>XXE</category>
         <category>漏洞复现</category>
@@ -22,17 +18,19 @@
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>工具</category>
-        <category>sqlmap</category>
-        <category>渗透测试</category>
         <category>Struts2</category>
         <category>RCE</category>
         <category>OGNL注入</category>
-        <category>ThinkPHP</category>
+        <category>权限绕过</category>
+        <category>水平越权</category>
+        <category>垂e直越权</category>
+        <category>Pikachu靶场</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>SQL注入</category>
         <category>网络安全</category>
-        <category>PHP</category>
-        <category>SSRF</category>
+        <category>ThinkPHP</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
@@ -40,8 +38,322 @@
         <category>命令</category>
         <category>命令执行</category>
         <category>漏洞利用</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>信息收集</category>
         <category>子域名</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/08/03/Phpcms-v9-6-0-%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%EF%BC%9A%E8%B6%8A%E6%9D%83%E9%87%8D%E7%BD%AE%E4%BB%BB%E6%84%8F%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81/</guid>
+            <title>Phpcms v9.6.0 逻辑漏洞：越权重置任意用户密码</title>
+            <link>https://bae-ace.github.io/2025/08/03/Phpcms-v9-6-0-%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%EF%BC%9A%E8%B6%8A%E6%9D%83%E9%87%8D%E7%BD%AE%E4%BB%BB%E6%84%8F%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81/</link>
+            <category>Web安全</category>
+            <category>漏洞复现</category>
+            <category>Struts2</category>
+            <category>RCE</category>
+            <category>OGNL注入</category>
+            <pubDate>Sun, 03 Aug 2025 20:49:30 +0800</pubDate>
+            <description><![CDATA[ &lt;h1 id=&#34;Phpcms-v9-6-0-逻辑漏洞：越权重置任意用户密码详解&#34;&gt;&lt;a href=&#34;#Phpcms-v9-6-0-逻辑漏洞：越权重置任意用户密码详解&#34; class=&#34;headerlink&#34; title=&#34;Phpcms v9.6.0 逻辑漏洞：越权重置任意用户密码详解&#34;&gt;&lt;/a&gt;Phpcms v9.6.0 逻辑漏洞：越权重置任意用户密码详解&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;在 Web 应用中，&lt;strong&gt;逻辑漏洞&lt;/strong&gt;因其隐蔽性和高危害性而备受关注。&lt;strong&gt;Phpcms v9.6.0&lt;/strong&gt; 存在一个严重的认证绕过逻辑漏洞，攻击者可通过伪造 Cookie 中的 &lt;code&gt;xxx_reguserid&lt;/code&gt; 值，越权触发密码重置邮件功能，从而重置任意用户（包括管理员）的密码，且无需登录即可实施攻击。这一漏洞可能导致系统完全沦陷，危害极大。&lt;/p&gt;
+&lt;p&gt;本文基于靶场环境，详细复现 Phpcms v9.6.0 的密码重置逻辑漏洞，涵盖环境搭建、漏洞原理、利用流程及防护建议，旨在帮助安全从业者和开发者深入理解逻辑漏洞的成因与防范措施。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;掌握逻辑漏洞的原理与危害&lt;/li&gt;
+&lt;li&gt;学会利用 Cookie 伪造实现越权操作&lt;/li&gt;
+&lt;li&gt;理解密码重置流程中的安全设计缺陷&lt;/li&gt;
+&lt;li&gt;掌握修复逻辑漏洞的最佳实践&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、漏洞概述&#34;&gt;&lt;a href=&#34;#二、漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;二、漏洞概述&#34;&gt;&lt;/a&gt;二、漏洞概述&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;：认证绕过 &amp;#x2F; 越权密码重置（逻辑漏洞）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;影响版本&lt;/strong&gt;：Phpcms v9.6.0&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶场环境&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Windows 7 虚拟机&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Web 环境&lt;/strong&gt;：PhpStudy + Phpcms v9.6.0&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶站地址&lt;/strong&gt;：&lt;code&gt;http://192.168.56.104&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;危害&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;无需认证即可重置任意用户密码（包括管理员）&lt;/li&gt;
+&lt;li&gt;批量获取用户账号控制权&lt;/li&gt;
+&lt;li&gt;导致系统完全失控&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;利用条件&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;伪造 Cookie 中的 &lt;code&gt;xxx_reguserid&lt;/code&gt; 值&lt;/li&gt;
+&lt;li&gt;控制目标用户的邮箱地址&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难度&lt;/strong&gt;：中等（需了解 Cookie 构造和密码重置流程）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、靶场环境搭建&#34;&gt;&lt;a href=&#34;#三、靶场环境搭建&#34; class=&#34;headerlink&#34; title=&#34;三、靶场环境搭建&#34;&gt;&lt;/a&gt;三、靶场环境搭建&lt;/h2&gt;&lt;h3 id=&#34;1-环境信息&#34;&gt;&lt;a href=&#34;#1-环境信息&#34; class=&#34;headerlink&#34; title=&#34;1. 环境信息&#34;&gt;&lt;/a&gt;1. 环境信息&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Windows 7（虚拟机）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Web 环境&lt;/strong&gt;：PhpStudy（集成 PHP + MySQL）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶站地址&lt;/strong&gt;：&lt;code&gt;http://192.168.56.104&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶场软件&lt;/strong&gt;：Phpcms v9.6.0&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;测试工具&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;Burp Suite（抓包与 Cookie 获取）&lt;/li&gt;
+&lt;li&gt;Firefox（登录测试用户）&lt;/li&gt;
+&lt;li&gt;Google Chrome（伪造 Cookie）&lt;/li&gt;
+&lt;li&gt;两个邮箱（如 QQ 或 163 邮箱，用于接收重置邮件）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-部署步骤&#34;&gt;&lt;a href=&#34;#2-部署步骤&#34; class=&#34;headerlink&#34; title=&#34;2. 部署步骤&#34;&gt;&lt;/a&gt;2. 部署步骤&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安装 PhpStudy&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在 Windows 7 虚拟机中安装 PhpStudy，配置 PHP 和 MySQL 环境。&lt;/li&gt;
+&lt;li&gt;确保 Web 服务监听在 &lt;code&gt;192.168.56.104:80&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;部署 Phpcms v9.6.0&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;下载 Phpcms v9.6.0，解压到 PhpStudy 的 &lt;code&gt;WWW&lt;/code&gt; 目录。&lt;/li&gt;
+&lt;li&gt;访问 &lt;code&gt;http://192.168.56.104&lt;/code&gt; 完成安装，配置数据库连接。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注册测试用户&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;创建一个以 “1” 开头的用户，例如：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;用户名&lt;/strong&gt;：&lt;code&gt;1abc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：任意（如 &lt;code&gt;123456&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;邮箱&lt;/strong&gt;：&lt;code&gt;attacker@qq.com&lt;/code&gt;（攻击者控制的邮箱）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;确保目标系统存在管理员账户（如 &lt;code&gt;admin&lt;/code&gt;，邮箱为 &lt;code&gt;admin@qq.com&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、漏洞原理剖析&#34;&gt;&lt;a href=&#34;#四、漏洞原理剖析&#34; class=&#34;headerlink&#34; title=&#34;四、漏洞原理剖析&#34;&gt;&lt;/a&gt;四、漏洞原理剖析&lt;/h2&gt;&lt;h3 id=&#34;1-漏洞本质&#34;&gt;&lt;a href=&#34;#1-漏洞本质&#34; class=&#34;headerlink&#34; title=&#34;1. 漏洞本质&#34;&gt;&lt;/a&gt;1. 漏洞本质&lt;/h3&gt;&lt;p&gt;Phpcms v9.6.0 的密码重置功能存在以下逻辑缺陷：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Cookie 伪造&lt;/strong&gt;：服务端根据 Cookie 中的 &lt;code&gt;xxx_reguserid&lt;/code&gt; 字段判断用户身份，但未验证用户是否已登录或该字段是否合法。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证流程缺失&lt;/strong&gt;：攻击者可伪造 &lt;code&gt;xxx_reguserid&lt;/code&gt;（如设置为 &lt;code&gt;1&lt;/code&gt;，对应管理员用户 ID），向任意邮箱发送重置密码邮件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无关联校验&lt;/strong&gt;：系统未验证 &lt;code&gt;xxx_reguserid&lt;/code&gt; 是否与目标邮箱地址绑定，导致攻击者可为任意用户（如 &lt;code&gt;admin&lt;/code&gt;）发起密码重置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-利用链&#34;&gt;&lt;a href=&#34;#2-利用链&#34; class=&#34;headerlink&#34; title=&#34;2. 利用链&#34;&gt;&lt;/a&gt;2. 利用链&lt;/h3&gt;&lt;figure class=&#34;highlight livescript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs livescript&#34;&gt;伪造 Cookie（xxx_reguserid） -&amp;gt; 访问重置邮件发送接口 -&amp;gt; 指定目标邮箱（如 admin@qq.com） -&amp;gt; 接收重置邮件 -&amp;gt; 重置密码 -&amp;gt; 控制账户&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;3-危害&#34;&gt;&lt;a href=&#34;#3-危害&#34; class=&#34;headerlink&#34; title=&#34;3. 危害&#34;&gt;&lt;/a&gt;3. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无需认证&lt;/strong&gt;：攻击者无需登录即可触发密码重置。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;任意用户控制&lt;/strong&gt;：可重置管理员或其他用户密码，获取完整系统权限。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量攻击&lt;/strong&gt;：通过遍历用户 ID，批量发送重置邮件，控制多个账户。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、漏洞利用流程&#34;&gt;&lt;a href=&#34;#五、漏洞利用流程&#34; class=&#34;headerlink&#34; title=&#34;五、漏洞利用流程&#34;&gt;&lt;/a&gt;五、漏洞利用流程&lt;/h2&gt;&lt;h3 id=&#34;1-准备阶段&#34;&gt;&lt;a href=&#34;#1-准备阶段&#34; class=&#34;headerlink&#34; title=&#34;1. 准备阶段&#34;&gt;&lt;/a&gt;1. 准备阶段&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;邮箱准备&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;攻击者邮箱：&lt;code&gt;attacker@qq.com&lt;/code&gt;（用于注册测试用户）&lt;/li&gt;
+&lt;li&gt;目标邮箱：&lt;code&gt;admin@qq.com&lt;/code&gt;（管理员账户绑定的邮箱，需可控）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注册测试用户&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;用户名：&lt;code&gt;1abc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;密码：任意（如 &lt;code&gt;123456&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;邮箱：&lt;code&gt;attacker@qq.com&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;Burp Suite（抓取 Cookie）&lt;/li&gt;
+&lt;li&gt;Firefox（登录测试用户）&lt;/li&gt;
+&lt;li&gt;Google Chrome（伪造 Cookie）&lt;/li&gt;
+&lt;li&gt;邮箱客户端（接收重置邮件）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-登录测试用户并获取-Cookie&#34;&gt;&lt;a href=&#34;#2-登录测试用户并获取-Cookie&#34; class=&#34;headerlink&#34; title=&#34;2. 登录测试用户并获取 Cookie&#34;&gt;&lt;/a&gt;2. 登录测试用户并获取 Cookie&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;登录 1abc 账户&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用 Firefox 访问 &lt;code&gt;http://192.168.56.104&lt;/code&gt;，登录用户 &lt;code&gt;1abc&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;抓取 Cookie&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;打开 Burp Suite，配置代理（默认：&lt;code&gt;127.0.0.1:8080&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;访问任意页面（如首页），在 Burp 中拦截请求。&lt;/li&gt;
+&lt;li&gt;找到 Cookie 中的 &lt;code&gt;xxx_username&lt;/code&gt; 字段，例如：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;figure class=&#34;highlight abnf&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs abnf&#34;&gt;xxx_username&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;MWFiYw&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;说明&lt;/strong&gt;：&lt;code&gt;MWFiYw==&lt;/code&gt; 是用户名 &lt;code&gt;1abc&lt;/code&gt; 的 Base64 编码值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;&lt;strong&gt;复制 Cookie&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;记录 &lt;code&gt;xxx_username=MWFiYw==&lt;/code&gt;，用于后续伪造。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-伪造-Cookie（控制台操作）&#34;&gt;&lt;a href=&#34;#3-伪造-Cookie（控制台操作）&#34; class=&#34;headerlink&#34; title=&#34;3. 伪造 Cookie（控制台操作）&#34;&gt;&lt;/a&gt;3. 伪造 Cookie（控制台操作）&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;打开 Chrome&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用 Google Chrome（无需登录任何账户）。&lt;/li&gt;
+&lt;li&gt;访问靶站首页：&lt;code&gt;http://192.168.56.104&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;伪造 Cookie&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;按 &lt;code&gt;F12&lt;/code&gt; 打开开发者工具，切换到 Console 面板。&lt;/li&gt;
+&lt;li&gt;输入以下命令：&lt;figure class=&#34;highlight javascript&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs javascript&#34;&gt;&lt;span class=&#34;hljs-variable language_&#34;&gt;document&lt;/span&gt;.&lt;span class=&#34;hljs-property&#34;&gt;cookie&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;xxx_reguserid=MWFiYw==&amp;quot;&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;目的&lt;/strong&gt;：通过伪造 &lt;code&gt;xxx_reguserid&lt;/code&gt;，让系统误认为当前请求来自用户 &lt;code&gt;1abc&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;验证 Cookie&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在 Console 中输入 &lt;code&gt;document.cookie&lt;/code&gt;，确认 Cookie 已设置：&lt;figure class=&#34;highlight abnf&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs abnf&#34;&gt;xxx_reguserid&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;MWFiYw&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;hljs-operator&#34;&gt;=&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;4-触发密码重置邮件&#34;&gt;&lt;a href=&#34;#4-触发密码重置邮件&#34; class=&#34;headerlink&#34; title=&#34;4. 触发密码重置邮件&#34;&gt;&lt;/a&gt;4. 触发密码重置邮件&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;访问重置邮件接口&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;在 Chrome 中访问以下 URL，指定管理员邮箱：&lt;figure class=&#34;highlight sas&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs sas&#34;&gt;http://192.168.56.104/&lt;span class=&#34;hljs-keyword&#34;&gt;index&lt;/span&gt;.php?m=member&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;c&lt;/span&gt;=&lt;span class=&#34;hljs-keyword&#34;&gt;index&lt;/span&gt;&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;a&lt;/span&gt;=send_newmail&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;siteid&lt;/span&gt;=1&lt;span class=&#34;hljs-variable&#34;&gt;&amp;amp;newemail&lt;/span&gt;=admin@qq.com&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数说明&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;m=member&amp;amp;c=index&amp;amp;a=send_newmail&lt;/code&gt;：触发密码重置邮件发送功能。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;siteid=1&lt;/code&gt;：站点 ID（通常为默认值 1）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;newemail=admin@qq.com&lt;/code&gt;：目标账户的邮箱地址（需攻击者可控）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;检查响应&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;如果页面返回：&lt;figure class=&#34;highlight&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs&#34;&gt;1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+说明请求成功，系统已向 &lt;code&gt;admin@qq.com&lt;/code&gt; 发送了密码重置邮件 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;5-完成密码重置&#34;&gt;&lt;a href=&#34;#5-完成密码重置&#34; class=&#34;headerlink&#34; title=&#34;5. 完成密码重置&#34;&gt;&lt;/a&gt;5. 完成密码重置&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;访问忘记密码页面&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;打开：&lt;code&gt;http://192.168.56.104/index.php?m=member&amp;amp;c=index&amp;amp;a=public_forget_password&amp;amp;siteid=1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;输入目标邮箱：&lt;code&gt;admin@qq.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;输入验证码（若有）。&lt;/li&gt;
+&lt;li&gt;提交请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查收邮件&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;登录 &lt;code&gt;admin@qq.com&lt;/code&gt; 邮箱，查看重置邮件。&lt;/li&gt;
+&lt;li&gt;邮件通常包含重置链接或验证码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重置密码&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;按照邮件指引，设置新密码（如 &lt;code&gt;newpassword123&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;6-登录管理员账户&#34;&gt;&lt;a href=&#34;#6-登录管理员账户&#34; class=&#34;headerlink&#34; title=&#34;6. 登录管理员账户&#34;&gt;&lt;/a&gt;6. 登录管理员账户&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用新密码登录管理员账户：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;用户名&lt;/strong&gt;：&lt;code&gt;admin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：&lt;code&gt;newpassword123&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;地址&lt;/strong&gt;：&lt;code&gt;http://192.168.56.104&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;成功登录后，可完全控制系统后台 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、漏洞原理深入分析&#34;&gt;&lt;a href=&#34;#六、漏洞原理深入分析&#34; class=&#34;headerlink&#34; title=&#34;六、漏洞原理深入分析&#34;&gt;&lt;/a&gt;六、漏洞原理深入分析&lt;/h2&gt;&lt;h3 id=&#34;1-问题点&#34;&gt;&lt;a href=&#34;#1-问题点&#34; class=&#34;headerlink&#34; title=&#34;1. 问题点&#34;&gt;&lt;/a&gt;1. 问题点&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;问题点&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Cookie 伪造&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;服务端信任 &lt;code&gt;xxx_reguserid&lt;/code&gt; 字段，未验证用户是否已登录或字段合法性。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;验证流程缺失&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;系统允许未认证用户通过伪造 Cookie 调用密码重置接口。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;无关联校验&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;未验证 &lt;code&gt;xxx_reguserid&lt;/code&gt; 是否与 &lt;code&gt;newemail&lt;/code&gt; 绑定的用户 ID 一致。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h3 id=&#34;2-漏洞代码分析（假设）&#34;&gt;&lt;a href=&#34;#2-漏洞代码分析（假设）&#34; class=&#34;headerlink&#34; title=&#34;2. 漏洞代码分析（假设）&#34;&gt;&lt;/a&gt;2. 漏洞代码分析（假设）&lt;/h3&gt;&lt;p&gt;Phpcms 的密码重置接口可能包含类似以下逻辑：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 重置邮件发送接口&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$reguserid&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_COOKIE&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;xxx_reguserid&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$newemail&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;newemail&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-variable&#34;&gt;$reguserid&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;send_reset_email&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$newemail&lt;/span&gt;); &lt;span class=&#34;hljs-comment&#34;&gt;// 直接发送重置邮件&lt;/span&gt;&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;无权限&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;问题&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;未验证 &lt;code&gt;xxx_reguserid&lt;/code&gt; 是否来自合法会话。&lt;/li&gt;
+&lt;li&gt;未检查 &lt;code&gt;$reguserid&lt;/code&gt; 是否与 &lt;code&gt;$newemail&lt;/code&gt; 关联的用户匹配。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-危害-1&#34;&gt;&lt;a href=&#34;#3-危害-1&#34; class=&#34;headerlink&#34; title=&#34;3. 危害&#34;&gt;&lt;/a&gt;3. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;无需认证&lt;/strong&gt;：攻击者无需登录即可触发重置邮件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;管理员接管&lt;/strong&gt;：可重置管理员密码，获取系统最高权限。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量攻击&lt;/strong&gt;：通过枚举用户 ID，批量重置多个账户密码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、防护建议&#34;&gt;&lt;a href=&#34;#七、防护建议&#34; class=&#34;headerlink&#34; title=&#34;七、防护建议&#34;&gt;&lt;/a&gt;七、防护建议&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;加强 Cookie 校验&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;验证 &lt;code&gt;xxx_reguserid&lt;/code&gt; 是否与当前会话用户匹配：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (!&lt;span class=&#34;hljs-keyword&#34;&gt;isset&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;userid&amp;#x27;&lt;/span&gt;]) || &lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;userid&amp;#x27;&lt;/span&gt;] != &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;base64_decode&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_COOKIE&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;xxx_reguserid&amp;#x27;&lt;/span&gt;])) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;非法访问！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;确保 Cookie 不可随意伪造（如添加签名或加密）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;关联校验&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;验证目标邮箱是否与请求用户绑定：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$user&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;get_user_by_id&lt;/span&gt;(&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;base64_decode&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_COOKIE&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;xxx_reguserid&amp;#x27;&lt;/span&gt;]));&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-variable&#34;&gt;$user&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;email&amp;#x27;&lt;/span&gt;] != &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;newemail&amp;#x27;&lt;/span&gt;]) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;邮箱不匹配！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;强制登录验证&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要求用户登录后才能访问密码重置接口：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (!&lt;span class=&#34;hljs-keyword&#34;&gt;isset&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;logged_in&amp;#x27;&lt;/span&gt;]) || &lt;span class=&#34;hljs-variable&#34;&gt;$_SESSION&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;logged_in&amp;#x27;&lt;/span&gt;] !== &lt;span class=&#34;hljs-literal&#34;&gt;true&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;请先登录！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;限制重置频率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;添加频率限制（如每小时限制发送邮件次数）。&lt;/li&gt;
+&lt;li&gt;使用验证码或二次验证（如短信、邮箱验证码）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;部署 WAF&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置 Web 应用防火墙，拦截异常的密码重置请求。&lt;/li&gt;
+&lt;li&gt;检测可疑的 &lt;code&gt;newemail&lt;/code&gt; 参数或频繁请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;日志监控&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记录所有密码重置请求，监控异常行为。&lt;/li&gt;
+&lt;li&gt;定期审计日志，发现潜在攻击。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;升级系统&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;升级到 Phpcms 最新版本，修复已知逻辑漏洞。&lt;/li&gt;
+&lt;li&gt;定期检查系统补丁和安全更新。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八、总结&#34;&gt;&lt;a href=&#34;#八、总结&#34; class=&#34;headerlink&#34; title=&#34;八、总结&#34;&gt;&lt;/a&gt;八、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;认证绕过 &amp;#x2F; 越权密码重置（逻辑漏洞）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;影响版本&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Phpcms v9.6.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;靶场环境&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Windows 7 + PhpStudy + Phpcms&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;利用方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;伪造 Cookie + 触发重置邮件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;重置任意用户密码、系统完全沦陷&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;修复核心&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Cookie 校验、关联验证、登录限制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;Phpcms v9.6.0 的逻辑漏洞展示了认证流程设计缺陷的严重后果。攻击者通过伪造 Cookie 中的 &lt;code&gt;xxx_reguserid&lt;/code&gt;，可无门槛地重置任意用户密码，包括管理员账户，从而完全控制系统。开发者应在设计认证和密码重置功能时，严格校验用户身份、关联性和会话状态，结合频率限制和 WAF，构建多层次防御体系。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供安全研究和防护参考，请勿用于非法攻击活动。&lt;/p&gt;
+&lt;/blockquote&gt;
+ ]]></description>
+        </item>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/</guid>
             <title>Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</title>
