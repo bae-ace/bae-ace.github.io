@@ -4,21 +4,25 @@
     <title>bae的博客 • Posts by &#34;漏洞复现&#34; tag</title>
     <link href="https://bae-ace.github.io" />
     <updated>2025-08-03T12:49:30.000Z</updated>
-    <category term="PWN" />
-    <category term="ELF" />
-    <category term="ROP" />
-    <category term="CTF" />
-    <category term="二进制安全" />
     <category term="Web安全" />
     <category term="Solr" />
     <category term="XXE" />
     <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
+    <category term="文件上传" />
+    <category term="RCE" />
+    <category term="Nginx" />
+    <category term="PHP-FPM" />
+    <category term="蚁剑" />
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
     <category term="PHP" />
     <category term="SSRF" />
     <category term="Struts2" />
-    <category term="RCE" />
     <category term="OGNL注入" />
     <category term="权限绕过" />
     <category term="水平越权" />
@@ -31,7 +35,6 @@
     <category term="网络安全" />
     <category term="ThinkPHP" />
     <category term="WebShell" />
-    <category term="蚁剑" />
     <category term="冰蝎" />
     <category term="漏洞利用" />
     <category term="hexo" />
@@ -349,8 +352,8 @@
 </content>
         <category term="Web安全" />
         <category term="漏洞复现" />
-        <category term="Struts2" />
         <category term="RCE" />
+        <category term="Struts2" />
         <category term="OGNL注入" />
         <updated>2025-08-03T12:49:30.000Z</updated>
     </entry>
@@ -1383,8 +1386,8 @@
 </content>
         <category term="Web安全" />
         <category term="漏洞复现" />
-        <category term="Struts2" />
         <category term="RCE" />
+        <category term="Struts2" />
         <category term="OGNL注入" />
         <updated>2025-07-24T00:10:34.000Z</updated>
     </entry>

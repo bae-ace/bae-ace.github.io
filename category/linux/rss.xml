@@ -7,21 +7,25 @@
         <language>zh-CN</language>
         <pubDate>Sun, 20 Jul 2025 15:41:52 +0800</pubDate>
         <lastBuildDate>Sun, 20 Jul 2025 15:41:52 +0800</lastBuildDate>
-        <category>PWN</category>
-        <category>ELF</category>
-        <category>ROP</category>
-        <category>CTF</category>
-        <category>二进制安全</category>
         <category>Web安全</category>
         <category>Solr</category>
         <category>XXE</category>
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
+        <category>文件上传</category>
+        <category>RCE</category>
+        <category>Nginx</category>
+        <category>PHP-FPM</category>
+        <category>蚁剑</category>
+        <category>PWN</category>
+        <category>ELF</category>
+        <category>ROP</category>
+        <category>CTF</category>
+        <category>二进制安全</category>
         <category>PHP</category>
         <category>SSRF</category>
         <category>Struts2</category>
-        <category>RCE</category>
         <category>OGNL注入</category>
         <category>权限绕过</category>
         <category>水平越权</category>
@@ -34,7 +38,6 @@
         <category>网络安全</category>
         <category>ThinkPHP</category>
         <category>WebShell</category>
-        <category>蚁剑</category>
         <category>冰蝎</category>
         <category>漏洞利用</category>
         <category>hexo</category>

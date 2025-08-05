@@ -13,8 +13,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "Struts2",
                 "RCE",
+                "Struts2",
                 "OGNL注入"
             ]
         },
@@ -82,8 +82,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "Struts2",
                 "RCE",
+                "Struts2",
                 "OGNL注入"
             ]
         }

