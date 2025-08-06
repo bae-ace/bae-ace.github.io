@@ -8,55 +8,56 @@
         <pubDate>Fri, 01 Aug 2025 17:54:17 +0800</pubDate>
         <lastBuildDate>Fri, 01 Aug 2025 17:54:17 +0800</lastBuildDate>
         <category>Web安全</category>
-        <category>Solr</category>
-        <category>XXE</category>
-        <category>漏洞复现</category>
-        <category>Vulhub</category>
-        <category>Kali</category>
         <category>文件上传</category>
         <category>RCE</category>
         <category>Nginx</category>
         <category>PHP-FPM</category>
+        <category>Vulhub</category>
         <category>蚁剑</category>
+        <category>PHP</category>
+        <category>XXE</category>
+        <category>SSRF</category>
+        <category>漏洞复现</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>PHP</category>
-        <category>SSRF</category>
+        <category>Solr</category>
+        <category>Kali</category>
         <category>Struts2</category>
         <category>OGNL注入</category>
+        <category>工具</category>
+        <category>sqlmap</category>
+        <category>渗透测试</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
         <category>Pikachu靶场</category>
-        <category>工具</category>
-        <category>sqlmap</category>
-        <category>渗透测试</category>
         <category>SQL注入</category>
         <category>网络安全</category>
         <category>ThinkPHP</category>
-        <category>WebShell</category>
-        <category>冰蝎</category>
-        <category>漏洞利用</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
         <category>linux</category>
         <category>命令</category>
+        <category>WebShell</category>
+        <category>冰蝎</category>
+        <category>漏洞利用</category>
         <category>命令执行</category>
         <category>信息收集</category>
         <category>子域名</category>
+        <category>LFI</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/</guid>
             <title>Apache Solr CVE-2017-12629 XXE 漏洞复现与利用（基于 Vulhub）</title>
             <link>https://bae-ace.github.io/2025/08/01/Apache-Solr-CVE-2017-12629-XXE-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%88%A9%E7%94%A8%EF%BC%88%E5%9F%BA%E4%BA%8E-Vulhub%EF%BC%89/</link>
             <category>Web安全</category>
-            <category>Solr</category>
+            <category>Vulhub</category>
             <category>XXE</category>
             <category>漏洞复现</category>
-            <category>Vulhub</category>
+            <category>Solr</category>
             <category>Kali</category>
             <pubDate>Fri, 01 Aug 2025 17:54:17 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;深入剖析-Apache-Solr-CVE-2017-12629-XXE-漏洞（基于-Vulhub）&#34;&gt;&lt;a href=&#34;#深入剖析-Apache-Solr-CVE-2017-12629-XXE-漏洞（基于-Vulhub）&#34; class=&#34;headerlink&#34; title=&#34;深入剖析 Apache Solr CVE-2017-12629 XXE 漏洞（基于 Vulhub）&#34;&gt;&lt;/a&gt;深入剖析 Apache Solr CVE-2017-12629 XXE 漏洞（基于 Vulhub）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CVE-2017-12629&lt;/strong&gt; 是一个影响 Apache Solr 的 **XML 外部实体注入（XXE）**漏洞，允许攻击者通过构造恶意的 XML 输入，加载外部实体或敏感文件，从而导致信息泄露或进一步攻击。该漏洞难度中等偏上，需要结合远程 DTD（文档类型定义）加载和外带技术进行利用。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场和 &lt;strong&gt;Kali Linux&lt;/strong&gt; 环境，详细复现该漏洞，涵盖环境搭建、原理分析、利用流程及防护建议，旨在帮助安全从业者深入理解 XXE 漏洞的危害与利用方式。&lt;/p&gt;
