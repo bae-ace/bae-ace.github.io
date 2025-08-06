@@ -8,57 +8,57 @@
         <pubDate>Tue, 05 Aug 2025 15:44:09 +0800</pubDate>
         <lastBuildDate>Tue, 05 Aug 2025 15:44:09 +0800</lastBuildDate>
         <category>Web安全</category>
-        <category>文件上传</category>
-        <category>RCE</category>
-        <category>Nginx</category>
-        <category>PHP-FPM</category>
-        <category>Vulhub</category>
-        <category>蚁剑</category>
-        <category>PHP</category>
+        <category>Solr</category>
         <category>XXE</category>
-        <category>SSRF</category>
         <category>漏洞复现</category>
+        <category>Vulhub</category>
+        <category>Kali</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>Solr</category>
-        <category>Kali</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>Struts2</category>
+        <category>RCE</category>
         <category>OGNL注入</category>
-        <category>工具</category>
-        <category>sqlmap</category>
-        <category>渗透测试</category>
+        <category>文件上传</category>
+        <category>Nginx</category>
+        <category>PHP-FPM</category>
+        <category>蚁剑</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
         <category>Pikachu靶场</category>
         <category>SQL注入</category>
+        <category>渗透测试</category>
         <category>网络安全</category>
+        <category>工具</category>
+        <category>sqlmap</category>
         <category>ThinkPHP</category>
         <category>hexo</category>
         <category>博客搭建</category>
         <category>初始测试</category>
-        <category>linux</category>
-        <category>命令</category>
         <category>WebShell</category>
         <category>冰蝎</category>
         <category>漏洞利用</category>
+        <category>linux</category>
+        <category>命令</category>
         <category>命令执行</category>
+        <category>LFI</category>
         <category>信息收集</category>
         <category>子域名</category>
-        <category>LFI</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/</guid>
             <title>Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞（基于 Vulhub）</title>
             <link>https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/</link>
             <category>Web安全</category>
-            <category>文件上传</category>
+            <category>Vulhub</category>
             <category>RCE</category>
+            <category>文件上传</category>
             <category>Nginx</category>
             <category>PHP-FPM</category>
-            <category>Vulhub</category>
             <category>蚁剑</category>
             <pubDate>Tue, 05 Aug 2025 15:44:09 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34;&gt;&lt;a href=&#34;#Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34; class=&#34;headerlink&#34; title=&#34;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&#34;&gt;&lt;/a&gt;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;文件上传漏洞是 Web 安全领域的高危漏洞之一，尤其是结合 &lt;strong&gt;Nginx&lt;/strong&gt; 和 &lt;strong&gt;PHP-FPM&lt;/strong&gt; 配置不当，攻击者可通过伪装文件后缀、路径构造和配置绕过，执行任意 PHP 代码，进而实现 &lt;strong&gt;远程命令执行（RCE）&lt;/strong&gt;。这种漏洞危害极大，可能导致服务器完全失控。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场，详细复现 Nginx 与 PHP-FPM 配置不当导致的文件上传 RCE 漏洞，涵盖原理分析、利用流程、蚁剑连接及防护措施，旨在帮助安全从业者深入理解漏洞成因与防范方法。&lt;/p&gt;
