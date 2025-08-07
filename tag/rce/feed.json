@@ -13,8 +13,8 @@
             "tags": [
                 "Web安全",
                 "Vulhub",
-                "RCE",
                 "文件上传",
+                "RCE",
                 "蚁剑",
                 "LFI"
             ]
@@ -28,8 +28,8 @@
             "tags": [
                 "Web安全",
                 "Vulhub",
-                "RCE",
                 "文件上传",
+                "RCE",
                 "Nginx",
                 "PHP-FPM",
                 "蚁剑"
@@ -44,8 +44,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "Struts2",
                 "RCE",
+                "Struts2",
                 "OGNL注入"
             ]
         },
@@ -84,8 +84,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "Struts2",
                 "RCE",
+                "Struts2",
                 "OGNL注入"
             ]
         }

