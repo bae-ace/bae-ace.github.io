@@ -13,11 +13,11 @@
             "tags": [
                 "Web安全",
                 "Vulhub",
-                "文件上传",
                 "RCE",
+                "蚁剑",
+                "文件上传",
                 "Nginx",
-                "PHP-FPM",
-                "蚁剑"
+                "PHP-FPM"
             ]
         }
     ]

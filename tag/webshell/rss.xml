@@ -13,18 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>文件上传</category>
-        <category>RCE</category>
-        <category>Nginx</category>
-        <category>PHP-FPM</category>
-        <category>蚁剑</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>Struts2</category>
-        <category>OGNL注入</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -35,9 +30,9 @@
         <category>SQL注入</category>
         <category>网络安全</category>
         <category>ThinkPHP</category>
-        <category>PHP</category>
-        <category>SSRF</category>
+        <category>RCE</category>
         <category>WebShell</category>
+        <category>蚁剑</category>
         <category>冰蝎</category>
         <category>漏洞利用</category>
         <category>hexo</category>
@@ -46,18 +41,24 @@
         <category>linux</category>
         <category>命令</category>
         <category>命令执行</category>
+        <category>文件上传</category>
+        <category>Nginx</category>
+        <category>PHP-FPM</category>
+        <category>Struts2</category>
+        <category>OGNL注入</category>
         <category>LFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <category>DVWA</category>
         <category>安全防护</category>
+        <category>RFI</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</guid>
             <title>WebShell 快速植入与绕过：ASP/ASPX/PHP/JSP/JSPX</title>
             <link>https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</link>
             <category>Web安全</category>
-            <category>蚁剑</category>
             <category>WebShell</category>
+            <category>蚁剑</category>
             <category>冰蝎</category>
             <category>漏洞利用</category>
             <pubDate>Mon, 04 Aug 2025 21:25:51 +0800</pubDate>

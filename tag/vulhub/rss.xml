@@ -13,18 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>文件上传</category>
-        <category>RCE</category>
-        <category>Nginx</category>
-        <category>PHP-FPM</category>
-        <category>蚁剑</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>Struts2</category>
-        <category>OGNL注入</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -35,9 +30,9 @@
         <category>SQL注入</category>
         <category>网络安全</category>
         <category>ThinkPHP</category>
-        <category>PHP</category>
-        <category>SSRF</category>
+        <category>RCE</category>
         <category>WebShell</category>
+        <category>蚁剑</category>
         <category>冰蝎</category>
         <category>漏洞利用</category>
         <category>hexo</category>
@@ -46,20 +41,26 @@
         <category>linux</category>
         <category>命令</category>
         <category>命令执行</category>
+        <category>文件上传</category>
+        <category>Nginx</category>
+        <category>PHP-FPM</category>
+        <category>Struts2</category>
+        <category>OGNL注入</category>
         <category>LFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <category>DVWA</category>
         <category>安全防护</category>
+        <category>RFI</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/06/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E4%B8%8E%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0-RCE/</guid>
             <title>本地文件包含（LFI）与文件上传漏洞联动实现 RCE</title>
             <link>https://bae-ace.github.io/2025/08/06/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E4%B8%8E%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E8%81%94%E5%8A%A8%E5%AE%9E%E7%8E%B0-RCE/</link>
             <category>Web安全</category>
             <category>Vulhub</category>
-            <category>文件上传</category>
             <category>RCE</category>
             <category>蚁剑</category>
+            <category>文件上传</category>
             <category>LFI</category>
             <pubDate>Wed, 06 Aug 2025 21:43:58 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;本地文件包含（LFI）与文件上传漏洞联动实现-RCE-详解&#34;&gt;&lt;a href=&#34;#本地文件包含（LFI）与文件上传漏洞联动实现-RCE-详解&#34; class=&#34;headerlink&#34; title=&#34;本地文件包含（LFI）与文件上传漏洞联动实现 RCE 详解&#34;&gt;&lt;/a&gt;本地文件包含（LFI）与文件上传漏洞联动实现 RCE 详解&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;本地文件包含（LFI）&lt;strong&gt;和&lt;/strong&gt;文件上传漏洞&lt;/strong&gt;是 Web 安全领域常见的高危漏洞，当两者结合时，可通过上传恶意文件并利用 LFI 包含执行，轻松实现&lt;strong&gt;远程命令执行（RCE）&lt;/strong&gt;，导致服务器完全失控。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场，详细复现 LFI 与文件上传漏洞的联动攻击，涵盖原理分析、利用方式、绕过技巧及防护措施，旨在帮助安全从业者深入理解漏洞成因与防范方法。&lt;/p&gt;
@@ -335,11 +336,11 @@
             <link>https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/</link>
             <category>Web安全</category>
             <category>Vulhub</category>
-            <category>文件上传</category>
             <category>RCE</category>
+            <category>蚁剑</category>
+            <category>文件上传</category>
             <category>Nginx</category>
             <category>PHP-FPM</category>
-            <category>蚁剑</category>
             <pubDate>Tue, 05 Aug 2025 15:44:09 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34;&gt;&lt;a href=&#34;#Nginx-与-PHP-FPM-配置不当导致文件上传-RCE-漏洞详解（基于-Vulhub）&#34; class=&#34;headerlink&#34; title=&#34;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&#34;&gt;&lt;/a&gt;Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞详解（基于 Vulhub）&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;文件上传漏洞是 Web 安全领域的高危漏洞之一，尤其是结合 &lt;strong&gt;Nginx&lt;/strong&gt; 和 &lt;strong&gt;PHP-FPM&lt;/strong&gt; 配置不当，攻击者可通过伪装文件后缀、路径构造和配置绕过，执行任意 PHP 代码，进而实现 &lt;strong&gt;远程命令执行（RCE）&lt;/strong&gt;。这种漏洞危害极大，可能导致服务器完全失控。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场，详细复现 Nginx 与 PHP-FPM 配置不当导致的文件上传 RCE 漏洞，涵盖原理分析、利用流程、蚁剑连接及防护措施，旨在帮助安全从业者深入理解漏洞成因与防范方法。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;

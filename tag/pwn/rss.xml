@@ -13,18 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>文件上传</category>
-        <category>RCE</category>
-        <category>Nginx</category>
-        <category>PHP-FPM</category>
-        <category>蚁剑</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
-        <category>Struts2</category>
-        <category>OGNL注入</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -35,9 +30,9 @@
         <category>SQL注入</category>
         <category>网络安全</category>
         <category>ThinkPHP</category>
-        <category>PHP</category>
-        <category>SSRF</category>
+        <category>RCE</category>
         <category>WebShell</category>
+        <category>蚁剑</category>
         <category>冰蝎</category>
         <category>漏洞利用</category>
         <category>hexo</category>
@@ -46,11 +41,17 @@
         <category>linux</category>
         <category>命令</category>
         <category>命令执行</category>
+        <category>文件上传</category>
+        <category>Nginx</category>
+        <category>PHP-FPM</category>
+        <category>Struts2</category>
+        <category>OGNL注入</category>
         <category>LFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <category>DVWA</category>
         <category>安全防护</category>
+        <category>RFI</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/07/22/ELF-%E6%96%87%E4%BB%B6%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E4%B8%8E-ROP-%E6%9E%84%E9%80%A0%E8%AF%A6%E8%A7%A3/</guid>
             <title>ELF 文件保护机制与 ROP 构造详解</title>

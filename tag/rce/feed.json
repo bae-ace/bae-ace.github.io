@@ -13,9 +13,9 @@
             "tags": [
                 "Web安全",
                 "Vulhub",
-                "文件上传",
                 "RCE",
                 "蚁剑",
+                "文件上传",
                 "LFI"
             ]
         },
@@ -28,11 +28,11 @@
             "tags": [
                 "Web安全",
                 "Vulhub",
-                "文件上传",
                 "RCE",
+                "蚁剑",
+                "文件上传",
                 "Nginx",
-                "PHP-FPM",
-                "蚁剑"
+                "PHP-FPM"
             ]
         },
         {
@@ -58,8 +58,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "RCE",
-                "ThinkPHP"
+                "ThinkPHP",
+                "RCE"
             ]
         },
         {
@@ -71,8 +71,8 @@
             "tags": [
                 "Web安全",
                 "漏洞复现",
-                "RCE",
-                "ThinkPHP"
+                "ThinkPHP",
+                "RCE"
             ]
         },
         {
