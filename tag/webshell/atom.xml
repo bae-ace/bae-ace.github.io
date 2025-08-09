@@ -10,13 +10,13 @@
     <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
-    <category term="PHP" />
-    <category term="SSRF" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="权限绕过" />
     <category term="水平越权" />
     <category term="垂e直越权" />
@@ -37,18 +37,20 @@
     <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <category term="XSS" />
+    <category term="DVWA" />
+    <category term="反射型XSS" />
+    <category term="安全防护" />
     <category term="命令执行" />
+    <category term="LFI" />
     <category term="文件上传" />
+    <category term="信息收集" />
+    <category term="子域名" />
     <category term="Nginx" />
     <category term="PHP-FPM" />
     <category term="Struts2" />
     <category term="OGNL注入" />
-    <category term="LFI" />
-    <category term="DVWA" />
-    <category term="安全防护" />
     <category term="RFI" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <entry>
         <id>https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</id>
         <title>WebShell 快速植入与绕过：ASP/ASPX/PHP/JSP/JSPX</title>

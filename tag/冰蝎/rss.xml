@@ -13,13 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>PHP</category>
-        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -40,18 +40,20 @@
         <category>初始测试</category>
         <category>linux</category>
         <category>命令</category>
+        <category>XSS</category>
+        <category>DVWA</category>
+        <category>反射型XSS</category>
+        <category>安全防护</category>
         <category>命令执行</category>
+        <category>LFI</category>
         <category>文件上传</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <category>Nginx</category>
         <category>PHP-FPM</category>
         <category>Struts2</category>
         <category>OGNL注入</category>
-        <category>LFI</category>
-        <category>DVWA</category>
-        <category>安全防护</category>
         <category>RFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/04/WebShell-%E5%BF%AB%E9%80%9F%E6%A4%8D%E5%85%A5%E4%B8%8E%E7%BB%95%E8%BF%87%EF%BC%9AASP-ASPX-PHP-JSP-JSPX/</guid>
             <title>WebShell 快速植入与绕过：ASP/ASPX/PHP/JSP/JSPX</title>

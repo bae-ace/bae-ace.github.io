@@ -13,13 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>PHP</category>
-        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -40,27 +40,29 @@
         <category>初始测试</category>
         <category>linux</category>
         <category>命令</category>
+        <category>XSS</category>
+        <category>DVWA</category>
+        <category>反射型XSS</category>
+        <category>安全防护</category>
         <category>命令执行</category>
+        <category>LFI</category>
         <category>文件上传</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <category>Nginx</category>
         <category>PHP-FPM</category>
         <category>Struts2</category>
         <category>OGNL注入</category>
-        <category>LFI</category>
-        <category>DVWA</category>
-        <category>安全防护</category>
         <category>RFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/07/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%88%A9%E7%94%A8/</guid>
             <title>本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用</title>
             <link>https://bae-ace.github.io/2025/08/07/%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%88%A9%E7%94%A8/</link>
             <category>Web安全</category>
             <category>漏洞利用</category>
-            <category>LFI</category>
             <category>DVWA</category>
             <category>安全防护</category>
+            <category>LFI</category>
             <pubDate>Thu, 07 Aug 2025 19:03:45 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;本地文件包含（LFI）漏洞详解：基于-DVWA-的原理与利用&#34;&gt;&lt;a href=&#34;#本地文件包含（LFI）漏洞详解：基于-DVWA-的原理与利用&#34; class=&#34;headerlink&#34; title=&#34;本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用&#34;&gt;&lt;/a&gt;本地文件包含（LFI）漏洞详解：基于 DVWA 的原理与利用&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;本地文件包含（LFI，Local File Inclusion）&lt;/strong&gt; 是一种常见的 Web 安全漏洞，攻击者通过控制动态包含的文件路径，读取服务器上的敏感文件，甚至结合其他漏洞（如文件上传）实现远程代码执行（RCE）。本文基于 &lt;strong&gt;DVWA（Damn Vulnerable Web Application）&lt;/strong&gt; 靶场的 LFI 模块，详细剖析 LFI 漏洞的原理、代码结构、利用方式、绕过技巧及防护措施，旨在帮助安全从业者和开发者深入理解 LFI 漏洞的成因与防范方法。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
@@ -311,8 +313,8 @@
             <category>Vulhub</category>
             <category>RCE</category>
             <category>蚁剑</category>
-            <category>文件上传</category>
             <category>LFI</category>
+            <category>文件上传</category>
             <pubDate>Wed, 06 Aug 2025 21:43:58 +0800</pubDate>
             <description><![CDATA[ &lt;h1 id=&#34;本地文件包含（LFI）与文件上传漏洞联动实现-RCE-详解&#34;&gt;&lt;a href=&#34;#本地文件包含（LFI）与文件上传漏洞联动实现-RCE-详解&#34; class=&#34;headerlink&#34; title=&#34;本地文件包含（LFI）与文件上传漏洞联动实现 RCE 详解&#34;&gt;&lt;/a&gt;本地文件包含（LFI）与文件上传漏洞联动实现 RCE 详解&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;本地文件包含（LFI）&lt;strong&gt;和&lt;/strong&gt;文件上传漏洞&lt;/strong&gt;是 Web 安全领域常见的高危漏洞，当两者结合时，可通过上传恶意文件并利用 LFI 包含执行，轻松实现&lt;strong&gt;远程命令执行（RCE）&lt;/strong&gt;，导致服务器完全失控。本文基于 &lt;strong&gt;Vulhub&lt;/strong&gt; 靶场，详细复现 LFI 与文件上传漏洞的联动攻击，涵盖原理分析、利用方式、绕过技巧及防护措施，旨在帮助安全从业者深入理解漏洞成因与防范方法。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;

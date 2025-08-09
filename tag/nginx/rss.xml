@@ -13,13 +13,13 @@
         <category>漏洞复现</category>
         <category>Vulhub</category>
         <category>Kali</category>
-        <category>PHP</category>
-        <category>SSRF</category>
         <category>PWN</category>
         <category>ELF</category>
         <category>ROP</category>
         <category>CTF</category>
         <category>二进制安全</category>
+        <category>PHP</category>
+        <category>SSRF</category>
         <category>权限绕过</category>
         <category>水平越权</category>
         <category>垂e直越权</category>
@@ -40,18 +40,20 @@
         <category>初始测试</category>
         <category>linux</category>
         <category>命令</category>
+        <category>XSS</category>
+        <category>DVWA</category>
+        <category>反射型XSS</category>
+        <category>安全防护</category>
         <category>命令执行</category>
+        <category>LFI</category>
         <category>文件上传</category>
+        <category>信息收集</category>
+        <category>子域名</category>
         <category>Nginx</category>
         <category>PHP-FPM</category>
         <category>Struts2</category>
         <category>OGNL注入</category>
-        <category>LFI</category>
-        <category>DVWA</category>
-        <category>安全防护</category>
         <category>RFI</category>
-        <category>信息收集</category>
-        <category>子域名</category>
         <item>
             <guid isPermalink="true">https://bae-ace.github.io/2025/08/05/Nginx-%E4%B8%8E-PHP-FPM-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-RCE-%E6%BC%8F%E6%B4%9E/</guid>
             <title>Nginx 与 PHP-FPM 配置不当导致文件上传 RCE 漏洞（基于 Vulhub）</title>

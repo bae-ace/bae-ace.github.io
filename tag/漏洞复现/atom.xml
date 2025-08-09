@@ -10,13 +10,13 @@
     <category term="漏洞复现" />
     <category term="Vulhub" />
     <category term="Kali" />
-    <category term="PHP" />
-    <category term="SSRF" />
     <category term="PWN" />
     <category term="ELF" />
     <category term="ROP" />
     <category term="CTF" />
     <category term="二进制安全" />
+    <category term="PHP" />
+    <category term="SSRF" />
     <category term="权限绕过" />
     <category term="水平越权" />
     <category term="垂e直越权" />
@@ -37,18 +37,20 @@
     <category term="初始测试" />
     <category term="linux" />
     <category term="命令" />
+    <category term="XSS" />
+    <category term="DVWA" />
+    <category term="反射型XSS" />
+    <category term="安全防护" />
     <category term="命令执行" />
+    <category term="LFI" />
     <category term="文件上传" />
+    <category term="信息收集" />
+    <category term="子域名" />
     <category term="Nginx" />
     <category term="PHP-FPM" />
     <category term="Struts2" />
     <category term="OGNL注入" />
-    <category term="LFI" />
-    <category term="DVWA" />
-    <category term="安全防护" />
     <category term="RFI" />
-    <category term="信息收集" />
-    <category term="子域名" />
     <entry>
         <id>https://bae-ace.github.io/2025/08/03/Phpcms-v9-6-0-%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%EF%BC%9A%E8%B6%8A%E6%9D%83%E9%87%8D%E7%BD%AE%E4%BB%BB%E6%84%8F%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81/</id>
         <title>Phpcms v9.6.0 逻辑漏洞：越权重置任意用户密码</title>
